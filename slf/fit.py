@@ -13,16 +13,14 @@ import sys
 sys.path.append('/Users/thomasdonoghue/Documents/GitCode/')
 from foof.fit import FOOF
 
-from utils import exclude_psd, _check
+from utils import exclude_psd, CheckDims
 
 ################################################################################
 ################################################################################
 
+@CheckDims
 def fsl_ransac(freqs, psd):
     """Fit slope with RANSAC, across whole range."""""
-
-    freqs = _check(freqs)
-    psd = _check(psd)
 
     ransac_model = RANSACRegressor(random_state=42)
     ransac_model.fit(np.log10(freqs), np.log10(psd))
@@ -31,11 +29,9 @@ def fsl_ransac(freqs, psd):
     return sl_ran
 
 
+@CheckDims
 def fsl_ransac_alph(freqs, psd):
     """Fit slope with RANSAC, excluding pre-defined alpha band."""
-
-    freqs = _check(freqs)
-    psd = _check(psd)
 
     psd, freqs = exclude_psd(psd, freqs, [7, 14])
 
@@ -46,11 +42,9 @@ def fsl_ransac_alph(freqs, psd):
     return sl_ran_alph
 
 
+@CheckDims
 def fsl_ransac_oscs(freqs, psd):
     """Fit slope with RANSAC, ignoring FOOF derived osc bands."""
-
-    psd = _check(psd)
-    freqs = _check(freqs)
 
     m = 2.0
 
@@ -65,11 +59,9 @@ def fsl_ransac_oscs(freqs, psd):
     return sl_ran
 
 
+@CheckDims
 def fsl_rlm(freqs, psd):
     """Fit slope with RLM, across whole range."""
-
-    freqs = _check(freqs)
-    psd = _check(psd)
 
     fx = sm.add_constant(np.log10(freqs))
 
@@ -79,11 +71,9 @@ def fsl_rlm(freqs, psd):
     return sl_rlm
 
 
+@CheckDims
 def fsl_rlm_alph(freqs, psd):
     """Fit slope with RLM, excluding pre-defined alpha band."""
-
-    freqs = _check(freqs)
-    psd = _check(psd)
 
     psd, freqs = exclude_psd(psd, freqs, [7, 14])
 
@@ -94,12 +84,9 @@ def fsl_rlm_alph(freqs, psd):
 
     return sl_rlm_alph
 
-
+@CheckDims
 def fsl_rlm_oscs(freqs, psd):
     """Fit slope with RLM, ignoring FOOF derived osc bands."""
-
-    psd = _check(psd)
-    freqs = _check(freqs)
 
     chi, cens, pows, bws = _foof_fit(freqs, psd)
 
