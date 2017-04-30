@@ -1,4 +1,9 @@
-"""Slope Fitting functions."""
+"""Slope Fitting functions.
+
+All these functions have the same design:
+- They take freqs & psd IN LINEAR SPACE.
+- They return a slope fit using a given method.
+"""
 
 import numpy as np
 import statsmodels.api as sm
@@ -14,7 +19,7 @@ from utils import exclude_psd, _check
 ################################################################################
 
 def fsl_ransac(freqs, psd):
-    """   """""
+    """Fit slope with RANSAC, across whole range."""""
 
     freqs = _check(freqs)
     psd = _check(psd)
@@ -27,7 +32,7 @@ def fsl_ransac(freqs, psd):
 
 
 def fsl_ransac_alph(freqs, psd):
-    """   """
+    """Fit slope with RANSAC, excluding pre-defined alpha band."""
 
     freqs = _check(freqs)
     psd = _check(psd)
@@ -42,7 +47,7 @@ def fsl_ransac_alph(freqs, psd):
 
 
 def fsl_ransac_oscs(freqs, psd):
-    """   """
+    """Fit slope with RANSAC, ignoring FOOF derived osc bands."""
 
     psd = _check(psd)
     freqs = _check(freqs)
@@ -61,7 +66,7 @@ def fsl_ransac_oscs(freqs, psd):
 
 
 def fsl_rlm(freqs, psd):
-    """   """
+    """Fit slope with RLM, across whole range."""
 
     freqs = _check(freqs)
     psd = _check(psd)
@@ -75,7 +80,7 @@ def fsl_rlm(freqs, psd):
 
 
 def fsl_rlm_alph(freqs, psd):
-    """   """
+    """Fit slope with RLM, excluding pre-defined alpha band."""
 
     freqs = _check(freqs)
     psd = _check(psd)
@@ -91,7 +96,7 @@ def fsl_rlm_alph(freqs, psd):
 
 
 def fsl_rlm_oscs(freqs, psd):
-    """   """
+    """Fit slope with RLM, ignoring FOOF derived osc bands."""
 
     psd = _check(psd)
     freqs = _check(freqs)
@@ -110,7 +115,7 @@ def fsl_rlm_oscs(freqs, psd):
 ################################################################################
 
 def _foof_fit(freqs, psd):
-    """   """
+    """Fit FOOF."""
 
     freqs = np.squeeze(freqs)
 
@@ -121,6 +126,7 @@ def _foof_fit(freqs, psd):
     return foof.chi_, foof.centers_, foof.powers_, foof.stdevs_
 
 def _drop_oscs(freqs, psd, cens, bws):
+    """Drop osc bands from PSD."""
 
     m = 2.0
     for cen, bw in zip(cens, bws):
