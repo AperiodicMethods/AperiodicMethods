@@ -36,6 +36,18 @@ def exclude_psd(psd, freqs, exclude):
 ################################################################################
 ################################################################################
 
+def CheckDims(func):
+    """Decorator function to check all inputs are 2-D."""
+
+    def wrapper(*args):
+        args = [_check(arg) for arg in args]
+        return func(*args)
+
+    return wrapper
+
+################################################################################
+################################################################################
+
 def _check(arr):
     """Check that array is 2-D, reshape if not."""
 
