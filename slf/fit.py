@@ -51,8 +51,7 @@ def fsl_ransac_oscs(freqs, psd):
 
     _, cens, _, bws = _foof_fit(freqs, psd)
 
-    for cen, bw in zip(cens, bws):
-        psd, freqs = exclude_psd(psd, freqs, [cen-m*bw, cen+m*bw])
+    freqs, psd = _drop_oscs(freqs, psd, cens, bws)
 
     ransac_model = RANSACRegressor(random_state=42)
     ransac_model.fit(np.log10(freqs), np.log10(psd))
@@ -99,12 +98,7 @@ def fsl_rlm_oscs(freqs, psd):
 
     chi, cens, pows, bws = _foof_fit(freqs, psd)
 
-    m = 2.0
-    for cen, bw in zip(cens, bws):
-        # Note: hack for old FOOF BW issue
-        if bw > 3: continue
-        print(cen, bw)
-        psd, freqs = exclude_psd(psd, freqs, [cen-m*bw, cen+m*bw])
+    freqs, psd = _drop_oscs(freqs, psd, cens, bws)
 
     fx = sm.add_constant(np.log10(freqs))
     fit_rlm = sm.RLM(np.log10(psd), fx).fit()
@@ -125,3 +119,15 @@ def _foof_fit(freqs, psd):
     foof.model(freqs, psd)
 
     return foof.chi_, foof.centers_, foof.powers_, foof.stdevs_
+
+def _drop_oscs(freqs, psd, cens, bws):
+
+    m = 2.0
+    for cen, bw in zip(cens, bws):
+
+        # Note: hack for old FOOF BW issue
+        if bw > 3: continue
+
+        psd, freqs = exclude_psd(psd, freqs, [cen-m*bw, cen+m*bw])
+
+    return freqs, psd
