@@ -18,10 +18,7 @@ def extract_psd(psd, freqs, f_low, f_high):
     # Drop frequencies above f_high
     f_high_mask = freqs_ext <= f_high
     freqs_ext = freqs_ext[f_high_mask]
-    psd_ext = psd_ext[f_high_mask]
-
-    # Reshape PSD for foof specs
-    psd_ext = np.reshape(psd_ext, [len(freqs_ext), 1])
+    psd_ext = _check(psd_ext[f_high_mask])
 
     return psd_ext, freqs_ext
 
@@ -40,7 +37,7 @@ def exclude_psd(psd, freqs, exclude):
 ################################################################################
 
 def _check(arr):
-    """   """
+    """Check that array is 2-D, reshape if not."""
 
     if arr.ndim == 1: return arr.reshape([len(arr), 1])
     else: return arr
