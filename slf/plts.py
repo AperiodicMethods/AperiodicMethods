@@ -1,3 +1,5 @@
+"""Plots for slope fitting project."""
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -5,6 +7,7 @@ import matplotlib.pyplot as plt
 ##
 
 def plt_psd_1(freqs, dat, log_f=True, log_p=True, label=None):
+    """Plot a single PSD."""
 
     min_f = 2; max_f = 40
     min_p = 0.01; max_p = 400
@@ -25,6 +28,7 @@ def plt_psd_1(freqs, dat, log_f=True, log_p=True, label=None):
     plt.ylim([min_p, max_p])
 
 def plt_psd_2(freqs_1, dat_1, freqs_2, dat_2, log_f=True, log_p=True):
+    """Plot two PSD's together."""
 
     plt.figure()
     plt_psd_1(freqs_1, dat_1, log_f, log_p)

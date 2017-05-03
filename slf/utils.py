@@ -1,3 +1,5 @@
+"""Utilities for slope fitting project."""
+
 import numpy as np
 
 ################################################################################
@@ -51,5 +53,7 @@ def CheckDims(func):
 def _check(arr):
     """Check that array is 2-D, reshape if not."""
 
-    if arr.ndim == 1: return arr.reshape([len(arr), 1])
-    else: return arr
+    if arr.ndim == 1:
+        return arr.reshape([len(arr), 1])
+    else:
+        return arr

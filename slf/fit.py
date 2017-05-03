@@ -13,7 +13,7 @@ import sys
 sys.path.append('/Users/thomasdonoghue/Documents/GitCode/')
 from foof.fit import FOOF
 
-from utils import exclude_psd, CheckDims
+from slf.utils import exclude_psd, CheckDims
 
 ################################################################################
 ################################################################################
@@ -45,8 +45,6 @@ def fsl_ransac_alph(freqs, psd):
 @CheckDims
 def fsl_ransac_oscs(freqs, psd):
     """Fit slope with RANSAC, ignoring FOOF derived osc bands."""
-
-    m = 2.0
 
     _, cens, _, bws = _foof_fit(freqs, psd)
 
