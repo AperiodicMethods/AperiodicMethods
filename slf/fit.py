@@ -25,6 +25,7 @@ if FOOF_VER == 'old':
     from foof.fit import FOOF
 
 if FOOF_VER == 'bayes':
+
     # Import Bayes FOOF is currently on desktop to keep out of way of old FOOF
     sys.path.append('/Users/thomasdonoghue/Desktop/')
     from foof.fit import FOOF
