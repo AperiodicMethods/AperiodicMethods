@@ -5,15 +5,31 @@ All these functions have the same design:
 - They return a slope fit using a given method.
 """
 
+import sys
 import numpy as np
 import statsmodels.api as sm
 from sklearn.linear_model import RANSACRegressor
 
-import sys
-sys.path.append('/Users/thomasdonoghue/Documents/GitCode/')
-from foof.fit import FOOF
+# Import FOOF - Set which version to import
+#  NOTE: this is super messy / dangerous path usage - bad Tom.
+#    (Also, this only works on Tom's laptop atm.)
+#    The mess is to compare FOOF versions. Soon move to new FOOF only.
 
-from slf.utils import exclude_psd, CheckDims
+# Set which version of foof to use
+FOOF_VER ='bayes'
+
+if FOOF_VER == 'old':
+
+    # Import FOOF (old version, in GitCode)
+    sys.path.append('/Users/thomasdonoghue/Documents/GitCode')
+    from foof.fit import FOOF
+
+if FOOF_VER == 'bayes':
+    # Import Bayes FOOF is currently on desktop to keep out of way of old FOOF
+    sys.path.append('/Users/thomasdonoghue/Desktop/')
+    from foof.fit import FOOF
+
+from slf.core.utils import exclude_psd, CheckDims
 
 ################################################################################
 ################################################################################
@@ -96,6 +112,12 @@ def fsl_rlm_oscs(freqs, psd):
 
     return sl_rlm
 
+def mae_fit(val, fit):
+    return abs(val - fit)
+
+def mse_fit(val, fit):
+    return (val - fit)**2
+
 ################################################################################
 ################################################################################
 
@@ -104,9 +126,14 @@ def _foof_fit(freqs, psd):
 
     freqs = np.squeeze(freqs)
 
-    foof = FOOF(min_p=0.2, res=np.mean(np.diff(freqs)),
-                fmin=freqs.min(), fmax=freqs.max())
-    foof.model(freqs, psd)
+    if FOOF_VER == 'old':
+        foof = FOOF(min_p=0.2, res=np.mean(np.diff(freqs)),
+                    fmin=freqs.min(), fmax=freqs.max())
+        foof.model(freqs, psd)
+
+    if FOOF_VER == 'bayes':
+        foof = FOOF(freqs, res=np.mean(np.diff(freqs)), min_p=0.2)
+        foof.fit(psd)
 
     return foof.chi_, foof.centers_, foof.powers_, foof.stdevs_
 
@@ -117,7 +144,8 @@ def _drop_oscs(freqs, psd, cens, bws):
     for cen, bw in zip(cens, bws):
 
         # Note: hack for old FOOF BW issue
-        if bw > 3: continue
+        if FOOF_VER == 'old':
+            if bw > 3: continue
 
         psd, freqs = exclude_psd(psd, freqs, [cen-m*bw, cen+m*bw])
 
