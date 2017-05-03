@@ -20,13 +20,23 @@ def main():
     for cur_subj in subjs:
 
         # Print sats
-        print('\n\n\nRUNNING: ', str(cur_subj), '\n\n\n')
+        print('\n\n\nRUNNING SUBJECT: ', str(cur_subj), '\n\n\n')
 
         # Get subject data files
-        dat_f, ev_f, _ = db.get_subj_files(cur_subj)
+        try:
+            dat_f, ev_f, _ = db.get_subj_files(cur_subj)
+        except:
+            continue
 
-        # Set current data files to work on
-        f_ind = 1
+        # Get the resting data file - file 001
+        temp = [ef.split('_')[1] for ef in ev_f]
+        temp = [fn[-3:] for fn in temp]
+        f_ind = None
+        for i in range(len(temp)):
+            if temp[i] == '001':
+                f_ind = i
+        if not f_ind:
+            continue
 
         # Get file file path for data file & associated event file
         dat_f_name = db.gen_dat_path(cur_subj, dat_f[f_ind])
@@ -68,7 +78,6 @@ def main():
         raw.add_channels([stim_raw], force_update_info=True)
 
         # Load events from file
-
         # Initialize headers and variable to store event info
         headers = ['type', 'value', 'latency', 'duration', 'urevent']
         evs = np.empty(shape=[0, 3])
