@@ -2,17 +2,24 @@
 
 import os
 
-##
-##
+########################################################################################
+########################################################################################
 
 class SLFDB(object):
-    """
+    """Class to hold database information for slope fitting project.
 
-
+    Attributes
+    ----------
+    project_path : str
+        xx
+    data_path : str
+        xx
+    subjs_path : str
+        xx
     """
 
     def __init__(self, gen_paths=True):
-        """   """
+        """Initialize SLFDB object."""
 
         # Set base path for project
         self.project_path = ("/Users/thomasdonoghue/Documents/"
@@ -22,21 +29,21 @@ class SLFDB(object):
         self.data_path = str()
         self.subjs_path = str()
 
-        #
+        # Generate project paths
         if gen_paths:
             self.gen_paths()
 
 
     def gen_paths(self):
-        """   """
+        """Generate paths."""
 
         self.data_path = os.path.join(self.project_path, '2-Data')
         self.subjs_path = os.path.join(self.data_path, 'EEGDev', 'Subjs')
 
     def check_subjs(self):
-        """   """
+        """Check which subjects are avaiable in database."""
 
-        # Check what subjects are available
+        # Check which subjects are available
         subjs = os.listdir(self.subjs_path)
         subjs= list(filter(lambda x: x[0] != '.', subjs))
 
@@ -55,6 +62,13 @@ class SLFDB(object):
         chs = [fi for fi in files if 'channels' in fi]
 
         if not len(eeg) == len(evs) == len(chs):
-            print('Oh Shit. Something seems to have gong wrong.')
+            print('Oh Shit. Something seems to have gone wrong.')
 
         return eeg, evs, chs
+
+    def gen_dat_path(self, subj_number, dat_file):
+        """Generate full file path to a data file."""
+
+        return os.path.join(self.subjs_path, subj_number,
+                            'EEG', 'preprocessed', 'csv_format',
+                            dat_file)
