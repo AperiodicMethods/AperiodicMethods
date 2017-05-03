@@ -112,10 +112,14 @@ def fsl_rlm_oscs(freqs, psd):
 
     return sl_rlm
 
-def mae_fit(val, fit):
+def abs_err(val, fit):
+    """Absolute error of fit."""
+
     return abs(val - fit)
 
-def mse_fit(val, fit):
+def sqd_err(val, fit):
+    """Squared error of fit."""
+
     return (val - fit)**2
 
 ################################################################################
