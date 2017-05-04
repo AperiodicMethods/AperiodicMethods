@@ -28,6 +28,7 @@ class SLFDB(object):
         # Initialize paths
         self.data_path = str()
         self.subjs_path = str()
+        self.psd_path = str()
 
         # Generate project paths
         if gen_paths:
@@ -39,15 +40,17 @@ class SLFDB(object):
 
         self.data_path = os.path.join(self.project_path, '2-Data')
         self.subjs_path = os.path.join(self.data_path, 'EEGDev', 'Subjs')
+        self.psd_path = os.path.join(self.data_path, 'psds')
+
 
     def check_subjs(self):
         """Check which subjects are avaiable in database."""
 
         # Check which subjects are available
-        subjs = os.listdir(self.subjs_path)
-        subjs= list(filter(lambda x: x[0] != '.', subjs))
+        subjs = _clean_files(os.listdir(self.subjs_path))
 
         return subjs
+
 
     def get_subj_files(self, subj_number):
         """Get the preprocessed, EEG data file names (csv format) a specified subject."""
@@ -66,9 +69,26 @@ class SLFDB(object):
 
         return eeg, evs, chs
 
+
+    def get_psd_files(self):
+        """Get the available PSD files."""
+
+        psd_files = _clean_files(os.listdir(self.psd_path))
+
+        return psd_files
+
+
     def gen_dat_path(self, subj_number, dat_file):
         """Generate full file path to a data file."""
 
         return os.path.join(self.subjs_path, subj_number,
                             'EEG', 'preprocessed', 'csv_format',
                             dat_file)
+
+##
+##
+
+def _clean_files(files):
+    """   """
+
+    return list(filter(lambda x: x[0] != '.', files))
