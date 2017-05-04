@@ -64,10 +64,18 @@ class SLFDB(object):
         evs = [fi for fi in files if 'events' in fi]
         chs = [fi for fi in files if 'channels' in fi]
 
+        # Quick hack to ignore subjs with problematic files
         if not len(eeg) == len(evs) == len(chs):
             print('Oh Shit. Something seems to have gone wrong.')
+            return None, None, None
 
         return eeg, evs, chs
+
+
+    def get_subj_nums(self):
+        """   """
+
+        pass
 
 
     def get_psd_files(self):
@@ -76,6 +84,14 @@ class SLFDB(object):
         psd_files = _clean_files(os.listdir(self.psd_path))
 
         return psd_files
+
+
+    def get_psd_subjs(self):
+        """Get a list of subject number for whom PSDs are calculated."""
+
+        psd_files = self.get_psd_files()
+
+        return [fi.split('_')[0] for fi in psd_files]
 
 
     def gen_dat_path(self, subj_number, dat_file):
