@@ -10,8 +10,8 @@ import shutil
 
 DAT_DIR = '/Users/thomasdonoghue/Documents/Research/1-Projects/Slope/2-Data/EEGDev/Subjs/'
 
-##
-##
+####################################################################################################
+####################################################################################################
 
 def main():
 
@@ -31,9 +31,9 @@ def main():
         except:
             pass
 
-        # Remove raw format raw data
+        # Remove raw data
         try:
-            shutil.rmtree(os.path.join(DAT_DIR, subj, 'EEG', 'raw', 'raw_format'))
+            shutil.rmtree(os.path.join(DAT_DIR, subj, 'EEG', 'raw'))
         except:
             pass
 
