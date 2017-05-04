@@ -2,8 +2,8 @@
 
 import numpy as np
 
-##
-##
+##########################################################################################
+##########################################################################################
 
 def load_psd(f_name):
     """   """
@@ -26,9 +26,3 @@ def fit_sls(freqs, psds, fn):
         sls.append(fn(freqs, psd))
 
     return sls
-
-def check_sls(sls):
-    """   """
-
-    print('Mean slope value: ', np.mean(sls))
-    print('Median slope value: ', np.median(sls))
