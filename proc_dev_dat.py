@@ -1,15 +1,13 @@
-"""   """
+"""Process EEG data from the EEGDev dataset, saving out PSDs from resting EEG data."""
 
 import csv
 import numpy as np
 import mne
 
-
 from slf.core.db import SLFDB
 
-
-##
-##
+####################################################################################################
+####################################################################################################
 
 def main():
 
@@ -26,6 +24,7 @@ def main():
         try:
             dat_f, ev_f, _ = db.get_subj_files(cur_subj)
         except:
+            print('\tFAILED TO GET SUBJ FILES')
             continue
 
         # Get the resting data file - file 001
@@ -36,6 +35,7 @@ def main():
             if temp[i] == '001':
                 f_ind = i
         if not f_ind:
+            print('\tFAILED TO FIND 001 BLOCK')
             continue
 
         # Get file file path for data file & associated event file
@@ -48,12 +48,12 @@ def main():
         # Read default montage
         montage = mne.channels.read_montage('GSN-HydroCel-129')
         keep_chans = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20,
-                      21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
-                      38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50, 51, 52, 53, 54, 55, 57,
-                      58, 59, 60, 61, 62, 64, 65, 66, 67, 69, 70, 71, 72, 74, 75, 76, 77,
-                      78, 79, 80, 82, 83, 84, 85, 86, 87, 89, 90, 91, 92, 93, 95, 96, 97,
-                      98, 100, 101, 102, 103, 104, 105, 106, 108, 109, 110, 111, 112, 114,
-                      115, 116, 117, 118, 120, 121, 122, 123, 124, 129])
+                              21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
+                              38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50, 51, 52, 53, 54, 55, 57,
+                              58, 59, 60, 61, 62, 64, 65, 66, 67, 69, 70, 71, 72, 74, 75, 76, 77,
+                              78, 79, 80, 82, 83, 84, 85, 86, 87, 89, 90, 91, 92, 93, 95, 96, 97,
+                              98, 100, 101, 102, 103, 104, 105, 106, 108, 109, 110, 111, 112, 114,
+                              115, 116, 117, 118, 120, 121, 122, 123, 124, 129])
 
         # Fix zero based indexing (screw off matlab)
         keep_chans = keep_chans - 1
@@ -88,10 +88,12 @@ def main():
             for row in reader:
 
                 # Skip the empty rows
-                if row == []: continue
+                if row == []:
+                    continue
 
                 # Skip the header row, since there is one FOR EVERY DAMN EVENT. SERIOUSLY?
-                if row[0] == 'type': continue
+                if row[0] == 'type':
+                    continue
 
                 # Collect actual event data rows
                 evs = np.vstack((evs, np.array([int(row[2]), 0, int(row[0])])))
@@ -133,9 +135,9 @@ def main():
         ec_avg_psds = np.mean(ec_psds, axis=0)
 
         # Save out PSDs
-        np.savez(str(cur_subj) + 'ec_psds.npz', ec_freqs, ec_avg_psds,
+        np.savez(str(cur_subj) + '_ec_psds.npz', ec_freqs, ec_avg_psds,
                  np.array(ec_epochs.ch_names))
-        np.savez(str(cur_subj) + 'eo_psds.npz', eo_freqs, eo_avg_psds,
+        np.savez(str(cur_subj) + '_eo_psds.npz', eo_freqs, eo_avg_psds,
                  np.array(eo_epochs.ch_names))
 
         # Print status
