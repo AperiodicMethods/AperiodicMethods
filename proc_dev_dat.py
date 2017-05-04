@@ -1,5 +1,6 @@
 """Process EEG data from the EEGDev dataset, saving out PSDs from resting EEG data."""
 
+import os
 import csv
 import numpy as np
 import mne
@@ -31,10 +32,10 @@ def main():
         temp = [ef.split('_')[1] for ef in ev_f]
         temp = [fn[-3:] for fn in temp]
         f_ind = None
-        for i in range(len(temp)):
-            if temp[i] == '001':
+        for i, tt in enumerate(temp):
+            if tt == '001':
                 f_ind = i
-        if not f_ind:
+        if f_ind is None:
             print('\tFAILED TO FIND 001 BLOCK')
             continue
 
@@ -135,10 +136,10 @@ def main():
         ec_avg_psds = np.mean(ec_psds, axis=0)
 
         # Save out PSDs
-        np.savez(str(cur_subj) + '_ec_psds.npz', ec_freqs, ec_avg_psds,
-                 np.array(ec_epochs.ch_names))
-        np.savez(str(cur_subj) + '_eo_psds.npz', eo_freqs, eo_avg_psds,
-                 np.array(eo_epochs.ch_names))
+        np.savez(os.path.join(db.psd_path, str(cur_subj) + '_ec_psds.npz'),
+                 ec_freqs, ec_avg_psds, np.array(ec_epochs.ch_names))
+        np.savez(os.path.join(db.psd_path, str(cur_subj) + '_eo_psds.npz'),
+                 eo_freqs, eo_avg_psds, np.array(eo_epochs.ch_names))
 
         # Print status
         print('\n\n\nSAVED DATA FOR SUBJ: ', str(cur_subj), '\n\n\n')
