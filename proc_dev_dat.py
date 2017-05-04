@@ -7,6 +7,10 @@ import mne
 
 from slf.core.db import SLFDB
 
+
+SKIP_SUBJS = ['A00054488']
+
+
 ####################################################################################################
 ####################################################################################################
 
@@ -15,8 +19,19 @@ def main():
     # Get project database objects, and list of available subjects
     db = SLFDB()
     subjs = db.check_subjs()
+    done = db.get_psd_subjs()
 
     for cur_subj in subjs:
+
+        # Skip specified subjects
+        if cur_subj in SKIP_SUBJS:
+            print('\n\n\nSKIPPING SUBJECT: ', str(cur_subj), '\n\n\n')
+            continue
+
+        # Skip subject if PSD already calculated
+        if cur_subj in done:
+            print('\n\n\nSUBJECT ALREADY RUN: ', str(cur_subj), '\n\n\n')
+            continue
 
         # Print sats
         print('\n\n\nRUNNING SUBJECT: ', str(cur_subj), '\n\n\n')
@@ -24,6 +39,9 @@ def main():
         # Get subject data files
         try:
             dat_f, ev_f, _ = db.get_subj_files(cur_subj)
+            if dat_f is None:
+                print('\n\n\nSKIPPING DUE TO FILE ISSUE: ', str(cur_subj), '\n\n\n')
+                continue
         except:
             print('\tFAILED TO GET SUBJ FILES')
             continue
