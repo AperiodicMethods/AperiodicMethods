@@ -2,6 +2,8 @@
 Testing Slope Fitting approaches on synthetic PSDs, and applying these methods to EEG datasets.
 In particular: what is the best fitting approach to use, and how can we best reduce oscillatory influences when estimating 1/f.
 
+Note: If cloned, using scripts / notebooks inside this repository assumes that the root directory has been added to PYTHONPATH.
+
 ## SLF
 SLF is a custom module for slope fitting. At it's core, it contains fit.py, with a range of slope fitting functions. 
 Currently, it is also intermixed with utilities for the Slope Fitting Project, including dealing with the EEGDev dataset.
