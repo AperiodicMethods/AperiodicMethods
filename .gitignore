@@ -2,3 +2,5 @@
 *ipynb_checkpoints/*
 # Ignore compiled python files
 *.pyc
+# Ignore PSD data files
+/data/psds/*
