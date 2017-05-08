@@ -47,7 +47,8 @@ class SynFits():
 
         for k, fn in self.fit_funcs.items():
             for i in range(n_psds):
-                self.errs[k][i] = sqd_err(-slv, fn(fs, psds[:, i]))
+                #self.errs[k][i] = sqd_err(-slv, fn(fs, psds[:, i]))
+                self.errs[k][i] = abs_err(-slv, fn(fs, psds[:, i]))
 
 
     def comp_errs(self):
