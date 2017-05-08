@@ -24,6 +24,7 @@ def extract_psd(psd, freqs, f_low, f_high):
 
     return psd_ext, freqs_ext
 
+
 def exclude_psd(psd, freqs, exclude):
     """Drop an exclusion range of frequencies."""
 
