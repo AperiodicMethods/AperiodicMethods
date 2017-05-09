@@ -149,8 +149,7 @@ def _drop_oscs(freqs, psd, cens, bws):
     for cen, bw in zip(cens, bws):
 
         # Note: hack for old FOOF BW issue
-        if FOOF_VER == 'old':
-            if bw > 3: continue
+        if bw > 5: continue
 
         psd, freqs = exclude_psd(psd, freqs, [cen-m*bw, cen+m*bw])
 
