@@ -1,6 +1,5 @@
 # Ignore ipynb checkpoint files
-*.ipynb_checkpoints/*
-*/.ipynb_checkpoints/*
+**.ipynb_checkpoints**
 # Ignore compiled python files
 *.pyc
 # Ignore PSD data files
