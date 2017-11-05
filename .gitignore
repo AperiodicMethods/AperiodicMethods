@@ -3,4 +3,6 @@
 # Ignore compiled python files
 *.pyc
 # Ignore PSD data files
-/data/psds/*
+/data/psds/
+# Ignore mac directory files
+.DS_Store*
