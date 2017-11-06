@@ -3,8 +3,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-##
-##
+####################################################################################################
+####################################################################################################
 
 def plt_psd_1(freqs, dat, log_f=True, log_p=True, label=None):
     """Plot a single PSD."""
@@ -27,11 +27,10 @@ def plt_psd_1(freqs, dat, log_f=True, log_p=True, label=None):
     plt.xlim([min_f, max_f])
     plt.ylim([min_p, max_p])
 
+
 def plt_psd_2(freqs_1, dat_1, freqs_2, dat_2, log_f=True, log_p=True):
     """Plot two PSD's together."""
 
     plt.figure()
     plt_psd_1(freqs_1, dat_1, log_f, log_p)
-    plt.hold(True)
     plt_psd_1(freqs_2, dat_2, log_f, log_p)
-    plt.hold(False)
