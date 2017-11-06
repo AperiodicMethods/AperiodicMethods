@@ -5,41 +5,34 @@ All these functions have the same design:
 - They return a slope fit using a given method.
 """
 
-import sys
 import numpy as np
 import statsmodels.api as sm
+from scipy.optimize import curve_fit
 from sklearn.linear_model import RANSACRegressor
 
-# Import FOOF - Set which version to import
-#  NOTE: this is super messy / dangerous path usage - bad Tom.
-#    (Also, this only works on Tom's laptop atm.)
-#    The mess is to compare FOOF versions. Soon move to new FOOF only.
-
-# Set which version of foof to use
-# FOOF_VER ='bayes'
-
-# if FOOF_VER == 'old':
-
-#     # Import FOOF (old version, in GitCode)
-#     sys.path.append('/Users/thomasdonoghue/Documents/GitCode')
-#     from foof.fit import FOOF
-
-# if FOOF_VER == 'bayes':
-
-#     # Import Bayes FOOF is currently on desktop to keep out of way of old FOOF
-#     sys.path.append('/Users/thomasdonoghue/Desktop/')
-#     from foof.fit import FOOF
-
 from fooof import FOOOF
+from fooof.funcs import loglorentzian_nk_function as expf
 
-from slf.core.utils import exclude_psd, CheckDims
+from slf.core.utils import exclude_psd, CheckDims1D, CheckDims2D
 
 ####################################################################################################
 ####################################################################################################
 
-@CheckDims
+@CheckDims2D
+def fsl_ols(freqs, psd):
+    """Fit slope with OlS, across whole range."""
+
+    fx = sm.add_constant(np.log10(freqs))
+
+    ols_model = sm.OLS(np.log10(psd), fx).fit()
+    sl_ols = ols_model.params[1]
+
+    return sl_ols
+
+
+@CheckDims2D
 def fsl_ransac(freqs, psd):
-    """Fit slope with RANSAC, across whole range."""""
+    """Fit slope with RANSAC, across whole range."""
 
     ransac_model = RANSACRegressor(random_state=42)
     ransac_model.fit(np.log10(freqs), np.log10(psd))
@@ -48,7 +41,7 @@ def fsl_ransac(freqs, psd):
     return sl_ran
 
 
-@CheckDims
+@CheckDims2D
 def fsl_ransac_alph(freqs, psd):
     """Fit slope with RANSAC, excluding pre-defined alpha band."""
 
@@ -61,11 +54,11 @@ def fsl_ransac_alph(freqs, psd):
     return sl_ran_alph
 
 
-@CheckDims
+@CheckDims2D
 def fsl_ransac_oscs(freqs, psd):
     """Fit slope with RANSAC, ignoring FOOF derived osc bands."""
 
-    _, cens, _, bws = _fooof_fit(freqs, psd, [freqs.min(), freqs.max()])
+    _, cens, _, bws = _fooof_fit(freqs, psd)
 
     freqs, psd = _drop_oscs(freqs, psd, cens, bws)
 
@@ -76,7 +69,7 @@ def fsl_ransac_oscs(freqs, psd):
     return sl_ran
 
 
-@CheckDims
+@CheckDims2D
 def fsl_rlm(freqs, psd):
     """Fit slope with RLM, across whole range."""
 
@@ -88,7 +81,7 @@ def fsl_rlm(freqs, psd):
     return sl_rlm
 
 
-@CheckDims
+@CheckDims2D
 def fsl_rlm_alph(freqs, psd):
     """Fit slope with RLM, excluding pre-defined alpha band."""
 
@@ -101,11 +94,12 @@ def fsl_rlm_alph(freqs, psd):
 
     return sl_rlm_alph
 
-@CheckDims
+
+@CheckDims2D
 def fsl_rlm_oscs(freqs, psd):
     """Fit slope with RLM, ignoring FOOF derived osc bands."""
 
-    chi, cens, pows, bws = _fooof_fit(freqs, psd, [freqs.min(), freqs.max()])
+    _, cens, _, bws = _fooof_fit(freqs, psd)
 
     freqs, psd = _drop_oscs(freqs, psd, cens, bws)
 
@@ -116,10 +110,47 @@ def fsl_rlm_oscs(freqs, psd):
     return sl_rlm
 
 
+@CheckDims1D
+def fsl_exp(freqs, psd):
+    """   """
+
+    fit_exp, _ = curve_fit(expf, freqs, np.log10(psd), p0=[1, 1])
+    sl_exp = -fit_exp[1]
+
+    return sl_exp
+
+
+@CheckDims1D
+def fsl_exp_alph(freqs, psd):
+    """   """
+
+    freqs, psd = exclude_psd(freqs, psd, [7, 14])
+
+    fit_exp, _ = curve_fit(expf, freqs, np.log10(psd), p0=[1, 1])
+    sl_exp_alph = -fit_exp[1]
+
+    return sl_exp_alph
+
+
+@CheckDims1D
+def fsl_exp_excl(freqs, psd):
+    """   """
+
+    _, cens, _, bws = _fooof_fit(freqs, psd)
+
+    freqs, psd = _drop_oscs(freqs, psd, cens, bws)
+
+    fit_exp, _ = curve_fit(expf, freqs, np.log10(psd), p0=[1, 1])
+    sl_exp_excl = -fit_exp[1]
+
+    return sl_exp_excl
+
+
 def abs_err(val, fit):
     """Absolute error of fit."""
 
     return abs(val - fit)
+
 
 def sqd_err(val, fit):
     """Squared error of fit."""
@@ -129,33 +160,15 @@ def sqd_err(val, fit):
 ####################################################################################################
 ####################################################################################################
 
-# def _foof_fit(freqs, psd):
-#     """Fit FOOF."""
-
-#     freqs = np.squeeze(freqs)
-
-#     if FOOF_VER == 'old':
-#         foof = FOOF(min_p=0.2, res=np.mean(np.diff(freqs)),
-#                     fmin=freqs.min(), fmax=freqs.max())
-#         foof.model(freqs, psd)
-
-#     if FOOF_VER == 'bayes':
-#         foof = FOOF(freqs, res=np.mean(np.diff(freqs)), min_p=0.2)
-#         foof.fit(psd)
-
-#     return foof.chi_, foof.centers_, foof.powers_, foof.stdevs_
-
-
-def _fooof_fit(freqs, psd, f_range):
+@CheckDims1D
+def _fooof_fit(freqs, psd):
     """Fit FOOOF."""
 
     freqs = np.squeeze(freqs)
+    psd = np.squeeze(psd)
 
-    print(freqs.shape)
-    print(psd.shape)
-
-    fm = FOOOF(verbose=False)
-    fm.fit(freqs, psd, f_range)
+    fm = FOOOF(bandwidth_limits=[1, 8], verbose=False)
+    fm.fit(freqs, psd, [freqs.min(), freqs.max()])
 
     return fm.background_params_[1], fm._gaussian_params[:, 0], fm._gaussian_params[:, 1], fm._gaussian_params[:, 2],
 
@@ -165,9 +178,6 @@ def _drop_oscs(freqs, psd, cens, bws):
 
     m = 2.0
     for cen, bw in zip(cens, bws):
-
-        # Note: hack for old FOOF BW issue
-        #if bw > 5: continue
 
         freqs, psd = exclude_psd(freqs, psd, [cen-m*bw, cen+m*bw])
 
