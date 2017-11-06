@@ -5,8 +5,27 @@ import numpy as np
 ################################################################################
 ################################################################################
 
-def extract_psd(psd, freqs, f_low, f_high):
-    """Extract frequency range of interest from PSD data."""
+def extract_psd(freqs, psd, f_low, f_high):
+    """Extract frequency range of interest from PSD data.
+
+    Parameters
+    ----------
+    freqs : ?
+        xx
+    psd : ?
+        xx
+    f_low : ?
+        xx
+    f_high : ?
+        xx
+
+    Returns
+    -------
+    freqs_out : ?
+        xx
+    psd_out : ?
+        xx
+    """
 
     # Boolean indexing needs to be array - not list
     if isinstance(freqs, list):
@@ -22,11 +41,28 @@ def extract_psd(psd, freqs, f_low, f_high):
     freqs_ext = freqs_ext[f_high_mask]
     psd_ext = _check(psd_ext[f_high_mask])
 
-    return psd_ext, freqs_ext
+    return freqs_ext, psd_ext
 
 
-def exclude_psd(psd, freqs, exclude):
-    """Drop an exclusion range of frequencies."""
+def exclude_psd(freqs, psd, exclude):
+    """Drop an exclusion range of frequencies.
+
+    Parameters
+    ----------
+    freqs : ?
+        xx
+    psd : ?
+        xx
+    exclude : ?
+        xx
+
+    Returns
+    -------
+    freqs_out : ?
+        xx
+    psd_out : ?
+        xx
+    """
 
     f_mask = np.array([(a or b) for a, b in zip(freqs < exclude[0],
                                                 freqs > exclude[1])])
@@ -34,7 +70,7 @@ def exclude_psd(psd, freqs, exclude):
     freqs_out = _check(freqs[f_mask])
     psd_out = _check(psd[f_mask])
 
-    return psd_out, freqs_out
+    return freqs_out, psd_out
 
 ################################################################################
 ################################################################################
