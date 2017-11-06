@@ -16,24 +16,26 @@ from sklearn.linear_model import RANSACRegressor
 #    The mess is to compare FOOF versions. Soon move to new FOOF only.
 
 # Set which version of foof to use
-FOOF_VER ='bayes'
+# FOOF_VER ='bayes'
 
-if FOOF_VER == 'old':
+# if FOOF_VER == 'old':
 
-    # Import FOOF (old version, in GitCode)
-    sys.path.append('/Users/thomasdonoghue/Documents/GitCode')
-    from foof.fit import FOOF
+#     # Import FOOF (old version, in GitCode)
+#     sys.path.append('/Users/thomasdonoghue/Documents/GitCode')
+#     from foof.fit import FOOF
 
-if FOOF_VER == 'bayes':
+# if FOOF_VER == 'bayes':
 
-    # Import Bayes FOOF is currently on desktop to keep out of way of old FOOF
-    sys.path.append('/Users/thomasdonoghue/Desktop/')
-    from foof.fit import FOOF
+#     # Import Bayes FOOF is currently on desktop to keep out of way of old FOOF
+#     sys.path.append('/Users/thomasdonoghue/Desktop/')
+#     from foof.fit import FOOF
+
+from fooof import FOOOF
 
 from slf.core.utils import exclude_psd, CheckDims
 
-################################################################################
-################################################################################
+####################################################################################################
+####################################################################################################
 
 @CheckDims
 def fsl_ransac(freqs, psd):
@@ -50,7 +52,7 @@ def fsl_ransac(freqs, psd):
 def fsl_ransac_alph(freqs, psd):
     """Fit slope with RANSAC, excluding pre-defined alpha band."""
 
-    psd, freqs = exclude_psd(psd, freqs, [7, 14])
+    freqs, psd = exclude_psd(freqs, psd, [7, 14])
 
     ransac_model = RANSACRegressor(random_state=42)
     ransac_model.fit(np.log10(freqs), np.log10(psd))
@@ -63,7 +65,7 @@ def fsl_ransac_alph(freqs, psd):
 def fsl_ransac_oscs(freqs, psd):
     """Fit slope with RANSAC, ignoring FOOF derived osc bands."""
 
-    _, cens, _, bws = _foof_fit(freqs, psd)
+    _, cens, _, bws = _fooof_fit(freqs, psd, [freqs.min(), freqs.max()])
 
     freqs, psd = _drop_oscs(freqs, psd, cens, bws)
 
@@ -90,7 +92,7 @@ def fsl_rlm(freqs, psd):
 def fsl_rlm_alph(freqs, psd):
     """Fit slope with RLM, excluding pre-defined alpha band."""
 
-    psd, freqs = exclude_psd(psd, freqs, [7, 14])
+    freqs, psd = exclude_psd(freqs, psd, [7, 14])
 
     fx = sm.add_constant(np.log10(freqs))
 
@@ -103,7 +105,7 @@ def fsl_rlm_alph(freqs, psd):
 def fsl_rlm_oscs(freqs, psd):
     """Fit slope with RLM, ignoring FOOF derived osc bands."""
 
-    chi, cens, pows, bws = _foof_fit(freqs, psd)
+    chi, cens, pows, bws = _fooof_fit(freqs, psd, [freqs.min(), freqs.max()])
 
     freqs, psd = _drop_oscs(freqs, psd, cens, bws)
 
@@ -112,6 +114,7 @@ def fsl_rlm_oscs(freqs, psd):
     sl_rlm = fit_rlm.params[1]
 
     return sl_rlm
+
 
 def abs_err(val, fit):
     """Absolute error of fit."""
@@ -123,24 +126,39 @@ def sqd_err(val, fit):
 
     return (val - fit)**2
 
-################################################################################
-################################################################################
+####################################################################################################
+####################################################################################################
 
-def _foof_fit(freqs, psd):
-    """Fit FOOF."""
+# def _foof_fit(freqs, psd):
+#     """Fit FOOF."""
+
+#     freqs = np.squeeze(freqs)
+
+#     if FOOF_VER == 'old':
+#         foof = FOOF(min_p=0.2, res=np.mean(np.diff(freqs)),
+#                     fmin=freqs.min(), fmax=freqs.max())
+#         foof.model(freqs, psd)
+
+#     if FOOF_VER == 'bayes':
+#         foof = FOOF(freqs, res=np.mean(np.diff(freqs)), min_p=0.2)
+#         foof.fit(psd)
+
+#     return foof.chi_, foof.centers_, foof.powers_, foof.stdevs_
+
+
+def _fooof_fit(freqs, psd, f_range):
+    """Fit FOOOF."""
 
     freqs = np.squeeze(freqs)
 
-    if FOOF_VER == 'old':
-        foof = FOOF(min_p=0.2, res=np.mean(np.diff(freqs)),
-                    fmin=freqs.min(), fmax=freqs.max())
-        foof.model(freqs, psd)
+    print(freqs.shape)
+    print(psd.shape)
 
-    if FOOF_VER == 'bayes':
-        foof = FOOF(freqs, res=np.mean(np.diff(freqs)), min_p=0.2)
-        foof.fit(psd)
+    fm = FOOOF(verbose=False)
+    fm.fit(freqs, psd, f_range)
 
-    return foof.chi_, foof.centers_, foof.powers_, foof.stdevs_
+    return fm.background_params_[1], fm._gaussian_params[:, 0], fm._gaussian_params[:, 1], fm._gaussian_params[:, 2],
+
 
 def _drop_oscs(freqs, psd, cens, bws):
     """Drop osc bands from PSD."""
@@ -149,8 +167,8 @@ def _drop_oscs(freqs, psd, cens, bws):
     for cen, bw in zip(cens, bws):
 
         # Note: hack for old FOOF BW issue
-        if bw > 5: continue
+        #if bw > 5: continue
 
-        psd, freqs = exclude_psd(psd, freqs, [cen-m*bw, cen+m*bw])
+        freqs, psd = exclude_psd(freqs, psd, [cen-m*bw, cen+m*bw])
 
     return freqs, psd
