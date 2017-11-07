@@ -34,3 +34,16 @@ def plt_psd_2(freqs_1, dat_1, freqs_2, dat_2, log_f=True, log_p=True):
     plt.figure()
     plt_psd_1(freqs_1, dat_1, log_f, log_p)
     plt_psd_1(freqs_2, dat_2, log_f, log_p)
+
+
+def plt_psd_shade(freqs, dat, cens, bws, m):
+    """Plot a PSD with oscillatory regions faded."""
+
+    # Plot the PSD
+    plt.figure()
+    plt_psd_1(freqs, dat, log_f=False)
+
+    # Add shading to see where oscillations are and what will be excluded
+    for cen, bw in zip(cens, bws):
+        plt.axvspan(cen, cen, color='g')
+        plt.axvspan(cen-(m*bw), cen+(m*bw), color='r', alpha=0.2, lw=0)
