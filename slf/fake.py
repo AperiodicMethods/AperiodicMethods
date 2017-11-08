@@ -1,34 +1,49 @@
-"""   """
-
-from __future__ import print_function
+"""Fitting synthethic data."""
 
 import numpy as np
-from slf.fit import *
+from scipy.stats import ranksums
 
-from foof import syn
+from slf.fit import *
 
 #########################################################################################
 #########################################################################################
 
 class SynFits():
-    """  """
+    """Class object for slope fitting synthetic data with multiple methods."""
 
     def __init__(self):
-        """   """
+        """Initialize object."""
 
         self.fit_funcs = dict()
         self.errs = dict()
 
 
+    def __add__(self, other):
+        """Overload addition, to add errors fit across different datasets."""
+
+        out = SynFits()
+        out.get_fit_funcs()
+
+        for key, vals in self.errs.items():
+            out.errs[key] = np.append(self.errs[key], other.errs[key])
+
+        return out
+
+
     def get_fit_funcs(self):
         """Initialize fit functions to use."""
 
-        self.fit_funcs = {'RLM': fsl_rlm,
+        self.fit_funcs = {'OLS': fsl_ols,
+                          'RLM': fsl_rlm,
                           'RLM-EA': fsl_rlm_alph,
                           'RLM-EO': fsl_rlm_oscs,
                           'RAN': fsl_ransac,
                           'RAN-EA': fsl_ransac_alph,
-                          'RAN-EO': fsl_ransac_oscs}
+                          'RAN-EO': fsl_ransac_oscs,
+                          'EXP': fsl_exp,
+                          'EXP-EA': fsl_exp_alph,
+                          'EXP-EO': fsl_exp_oscs,
+                          'FOOOF': fsl_fooof}
 
 
     def get_err_dict(self, n_psds):
@@ -52,42 +67,53 @@ class SynFits():
 
 
     def comp_errs(self):
-        """   """
+        """Compare error distributions between methods."""
 
-        pass
+        comps = np.zeros([len(self.errs), len(self.errs)])
+
+        for ii, ki in enumerate(self.errs.keys()):
+            for ij, kj in enumerate(self.errs.keys()):
+                s, p = ranksums(self.errs[ki], self.errs[kj])
+                comps[ii, ij] = p
+
+        return comps
 
 
-    def calc_mean_errs(self):
-        """Calculate mean errors per method."""
+    def calc_avg_errs(self, avg='median'):
+        """Calculate average errors per method."""
 
-        mean_errs = []
-        for k, v in self.errs.items():
-            mean_errs.append((np.median(v), k))
-            #mean_errs.append((np.mean(v), k))
-        mean_errs.sort()
+        avg_errs = []
+        for key, vals in self.errs.items():
+            if avg == 'median':
+                avg_errs.append((np.median(vals), key))
+            elif avg == 'mean':
+                avg_errs.append((np.mean(vals), key))
+            else:
+                raise ValueError('Average type not understood')
+        avg_errs.sort()
 
-        return mean_errs
+        return avg_errs
+
+
+    def calc_perc_good(self, thresh=0.025):
+        """Calculate percentage of errors below some threshold."""
+
+        perc_good = []
+        for key, vals in self.errs.items():
+            perc_good.append((sum(vals < 0.025) / len(vals), key))
+        perc_good.sort()
+        perc_good.reverse()
+
+        return perc_good
 
 #########################################################################################
 #########################################################################################
 
-def mk_psds(n_psds, slv):
-    """Generate synthetic PSDs."""
-
-    fs, psds = syn.synthesize(n_psds, fn=syn.mfonef,
-                              mf=[10], mf_sig=[1], mk=[0.2], chi=slv,
-                              f0=3, fmax=40, res=0.5, noi=0.05)
-
-    return fs, psds
-
-
-def print_errs(mean_errs):
+def print_res(dat):
     """Print out the mean errors per method."""
 
-    print('\n')
-    for me in mean_errs:
-        print(me[1], '\t\t', me[0])
-    print('\n')
+    for it in dat:
+        print('   {:8} \t\t {:1.5f}'.format(it[1], it[0]))
 
 #########################################################################################
 #########################################################################################
