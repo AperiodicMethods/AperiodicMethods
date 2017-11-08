@@ -100,7 +100,7 @@ class SynFits():
 
         perc_good = []
         for key, vals in self.errs.items():
-            perc_good.append((sum(vals < 0.025) / len(vals), key))
+            perc_good.append((sum(vals < thresh) / len(vals), key))
         perc_good.sort()
         perc_good.reverse()
 
