@@ -1,34 +1,40 @@
 """   """
 
-from __future__ import print_function
+from slf import syn
+from slf.fake import SynFits, print_errs
 
-import numpy as np
+#########################################################################################
+#########################################################################################
 
-from slf.fit import *
-from slf.fake import *
-from foof import syn
+# PSD SETTINGS
+N_PSDS = 2
+F_RANGE = [3, 40]
+
+# Simulation Settings
+NOISE_VALS = [0, 0.01, 0.05, 0.1, 0.15, 0.2]
+SLOPE_VALS = [0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
 
 #########################################################################################
 #########################################################################################
 
 def main():
-    """   """
 
-    syns = SynFits()
-    syns.get_fit_funcs()
+    for slv in SLOPE_VALS:
+        for nslv in NOISE_VALS:
 
-    #
-    n_psds = 2
-    slv = 1
+            # Initialize syn-fitter object
+            syns = SynFits()
+            syns.get_fit_funcs()
 
-    fs, psds = mk_psds(n_psds, slv)
+            # Generate the PSDs
+            freqs, psds = syn.sim_n_psds(N_PSDS, F_RANGE, slv, syn.gen_osc_def(), nslv)
 
-    #
-    syns.fit_slopes(slv, fs, psds)
-    mes = syns.calc_mean_errs()
+            # Fit slopes
+            syns.fit_slopes(slv, freqs, psds)
 
-    print_errs(mes)
-
+            #
+            avgs = syns.calc_avg_errs()
+            print_errs(avgs)
 
 if __name__ == '__main__':
     main()
