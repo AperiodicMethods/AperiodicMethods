@@ -36,6 +36,17 @@ def violin_errors(err_dists):
     df = pd.DataFrame(err_dists)
     plt.figure(figsize=[16, 6])
     ax = sns.violinplot(data=df, cut=0)
+    plt.title('Error Distributions Across Slope Fitting Methods')
+
+    # Restrict y-limits
+    plt.ylim([-0.25, 8.5]);
+
+    # Set font sizes
+    ax.title.set_fontsize(32)
+    for item in (ax.get_xticklabels() + ax.get_yticklabels()):
+        item.set_fontsize(18)
+
+    return ax
 
 ####################################################################################################
 ####################################################################################################
