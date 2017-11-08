@@ -124,7 +124,7 @@ def fsl_exp(freqs, psd):
 def fsl_exp_alph(freqs, psd):
     """   """
 
-    freqs, psd = exclude_psd(freqs, psd, [7, 14])
+    freqs, psd = exclude_psd(freqs, psd, [7, 14], make_2D=False)
 
     fit_exp, _ = curve_fit(expf, freqs, np.log10(psd), p0=[1, 1])
     sl_exp_alph = -fit_exp[1]
@@ -133,17 +133,29 @@ def fsl_exp_alph(freqs, psd):
 
 
 @CheckDims1D
-def fsl_exp_excl(freqs, psd):
+def fsl_exp_oscs(freqs, psd):
     """   """
 
     _, cens, _, bws = _fooof_fit(freqs, psd)
 
     freqs, psd = _drop_oscs(freqs, psd, cens, bws)
+    freqs = np.squeeze(freqs)
+    psd = np.squeeze(psd)
 
     fit_exp, _ = curve_fit(expf, freqs, np.log10(psd), p0=[1, 1])
     sl_exp_excl = -fit_exp[1]
 
     return sl_exp_excl
+
+
+@CheckDims1D
+def fsl_fooof(freqs, psd):
+    """   """
+
+    f_res = _fooof_fit(freqs, psd)
+    sl_fooof = -f_res[0]
+
+    return sl_fooof
 
 
 def abs_err(val, fit):
@@ -164,13 +176,17 @@ def sqd_err(val, fit):
 def _fooof_fit(freqs, psd):
     """Fit FOOOF."""
 
-    freqs = np.squeeze(freqs)
-    psd = np.squeeze(psd)
-
+    #
     fm = FOOOF(bandwidth_limits=[1, 8], verbose=False)
     fm.fit(freqs, psd, [freqs.min(), freqs.max()])
 
-    return fm.background_params_[1], fm._gaussian_params[:, 0], fm._gaussian_params[:, 1], fm._gaussian_params[:, 2],
+    #
+    if len(fm._gaussian_params > 0):
+        cens, pows, bws = fm._gaussian_params[:, 0], fm._gaussian_params[:, 1], fm._gaussian_params[:, 2]
+    else:
+        cens, pows, bws = np.array([]), np.array([]), np.array([])
+
+    return fm.background_params_[1], cens, pows, bws
 
 
 def _drop_oscs(freqs, psd, cens, bws):
@@ -178,7 +194,6 @@ def _drop_oscs(freqs, psd, cens, bws):
 
     m = 2.0
     for cen, bw in zip(cens, bws):
-
         freqs, psd = exclude_psd(freqs, psd, [cen-m*bw, cen+m*bw])
 
     return freqs, psd
