@@ -16,6 +16,8 @@ class SLFDB(object):
         Path to all data.
     subjs_path : str
         Path to EEG subjects data.
+    syns_path : str
+    	Path to synthetic-fitting data.
     """
 
     def __init__(self, gen_paths=True):
@@ -28,6 +30,7 @@ class SLFDB(object):
         self.data_path = str()
         self.subjs_path = str()
         self.psd_path = str()
+        self.syns_path = str()
 
         # Generate project paths
         if gen_paths:
@@ -40,6 +43,7 @@ class SLFDB(object):
         self.data_path = os.path.join(self.project_path, '2-Data')
         self.subjs_path = os.path.join(self.data_path, 'EEG', 'Subjs')
         self.psd_path = os.path.join(self.data_path, 'psds')
+        self.syns_path = os.path.join(self.data_path, 'syns')
 
 
     def check_subjs(self):
@@ -48,6 +52,14 @@ class SLFDB(object):
         subjs = _clean_files(os.listdir(self.subjs_path))
 
         return subjs
+
+
+    def check_syns(self):
+    	"""Check which synthetic-fitting files are avaiable in the database."""
+
+    	syn_files = _clean_files(os.listdir(self.syns_path))
+
+    	return syn_files
 
 
     def get_subj_files(self, subj_number):
@@ -96,6 +108,6 @@ class SLFDB(object):
 ####################################################################################################
 
 def _clean_files(files):
-    """   """
+    """Clean a list of files, removing any hidden files."""
 
     return list(filter(lambda x: x[0] != '.', files))
