@@ -39,12 +39,12 @@ def extract_psd(freqs, psd, f_low, f_high):
     # Drop frequencies above f_high
     f_high_mask = freqs_ext <= f_high
     freqs_ext = freqs_ext[f_high_mask]
-    psd_ext = _check(psd_ext[f_high_mask])
+    psd_ext = _check2D(psd_ext[f_high_mask])
 
     return freqs_ext, psd_ext
 
 
-def exclude_psd(freqs, psd, exclude):
+def exclude_psd(freqs, psd, exclude, make_2D=True):
     """Drop an exclusion range of frequencies.
 
     Parameters
@@ -67,8 +67,12 @@ def exclude_psd(freqs, psd, exclude):
     f_mask = np.array([(a or b) for a, b in zip(freqs < exclude[0],
                                                 freqs > exclude[1])])
 
-    freqs_out = _check(freqs[f_mask])
-    psd_out = _check(psd[f_mask])
+    if make_2D:
+        freqs_out = _check2D(freqs[f_mask])
+        psd_out = _check2D(psd[f_mask])
+    else:
+        freqs_out = _check1D(freqs[f_mask])
+        psd_out = _check1D(psd[f_mask])
 
     return freqs_out, psd_out
 
