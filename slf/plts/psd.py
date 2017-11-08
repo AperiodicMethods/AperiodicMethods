@@ -36,6 +36,14 @@ def plt_psd_2(freqs_1, dat_1, freqs_2, dat_2, log_f=True, log_p=True):
     plt_psd_1(freqs_2, dat_2, log_f, log_p)
 
 
+def plt_psd_both(freqs, psd):
+    """Plot a PSD in subplots, one with linear space, the other log space."""
+
+    f, ax = plt.subplots(1, 2, figsize=[12, 6])
+    ax[0].plot(freqs, psd)
+    ax[1].plot(np.log10(freqs), np.log10(psd))
+
+
 def plt_psd_shade(freqs, dat, cens, bws, m):
     """Plot a PSD with oscillatory regions faded."""
 
