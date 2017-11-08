@@ -24,7 +24,7 @@ class SynFits():
         out = SynFits()
         out.get_fit_funcs()
 
-        for key, vals in self.errs.items():
+        for key, vals in other.errs.items():
             out.errs[key] = np.append(self.errs[key], other.errs[key])
 
         return out
@@ -85,9 +85,9 @@ class SynFits():
         avg_errs = []
         for key, vals in self.errs.items():
             if avg == 'median':
-                avg_errs.append((np.median(vals), key))
+                avg_errs.append((np.nanmedian(vals), key))
             elif avg == 'mean':
-                avg_errs.append((np.mean(vals), key))
+                avg_errs.append((np.nanmean(vals), key))
             else:
                 raise ValueError('Average type not understood')
         avg_errs.sort()
