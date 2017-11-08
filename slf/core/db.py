@@ -29,8 +29,9 @@ class SLFDB(object):
         # Initialize paths
         self.data_path = str()
         self.subjs_path = str()
-        self.psd_path = str()
         self.syns_path = str()
+        self.psd_path = str()
+        self.fooof_path = str()
 
         # Generate project paths
         if gen_paths:
@@ -42,8 +43,9 @@ class SLFDB(object):
 
         self.data_path = os.path.join(self.project_path, '2-Data')
         self.subjs_path = os.path.join(self.data_path, 'EEG', 'Subjs')
-        self.psd_path = os.path.join(self.data_path, 'psds')
         self.syns_path = os.path.join(self.data_path, 'syns')
+        self.psd_path = os.path.join(self.data_path, 'psds')
+        self.fooof_path = os.path.join(self.data_path, 'fooof')
 
 
     def check_subjs(self):
@@ -60,6 +62,22 @@ class SLFDB(object):
     	syn_files = _clean_files(os.listdir(self.syns_path))
 
     	return syn_files
+
+
+    def check_psd(self):
+        """Get the available PSD files."""
+
+        psd_files = _clean_files(os.listdir(self.psd_path))
+
+        return psd_files
+
+
+    def check_fooof(self):
+        """Check which synthetic-fitting files are avaiable in the database."""
+
+        fooof_files = _clean_files(os.listdir(self.fooof_path))
+
+        return fooof_files
 
 
     def get_subj_files(self, subj_number):
@@ -81,20 +99,20 @@ class SLFDB(object):
         return eeg, evs, chs
 
 
-    def get_psd_files(self):
-        """Get the available PSD files."""
-
-        psd_files = _clean_files(os.listdir(self.psd_path))
-
-        return psd_files
-
-
     def get_psd_subjs(self):
         """Get a list of subject number for whom PSDs are calculated."""
 
-        psd_files = self.get_psd_files()
+        psd_files = self.check_psd()
 
         return [fi.split('_')[0] for fi in psd_files]
+
+
+    def get_fooof_subjs(self):
+        """Get a list of subject number for whom FOOOF results are calculated."""
+
+        fooof_files = self.check_fooof()
+
+        return [fi.split('_')[0] for fi in fooof_files]
 
 
     def gen_dat_path(self, subj_number, dat_file):
