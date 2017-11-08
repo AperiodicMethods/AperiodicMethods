@@ -5,11 +5,16 @@ import csv
 import numpy as np
 import mne
 
+from slf.eeg import fit_fooof_lst, fit_fooof_3d, get_slopes
 from slf.core.db import SLFDB
+from slf.core.io import save_pickle
 
+####################################################################################################
+####################################################################################################
 
-SKIP_SUBJS = ['A00054488', 'A00054866', 'A00056716', 'A00056733']
-
+# ???
+#SKIP_SUBJS = ['A00054488', 'A00054866', 'A00056716', 'A00056733']
+SKIP_SUBJS = []
 
 ####################################################################################################
 ####################################################################################################
@@ -19,7 +24,7 @@ def main():
     # Get project database objects, and list of available subjects
     db = SLFDB()
     subjs = db.check_subjs()
-    done = db.get_psd_subjs()
+    done = db.get_fooof_subjs()
 
     for cur_subj in subjs:
 
@@ -33,7 +38,7 @@ def main():
             print('\n\n\nSUBJECT ALREADY RUN: ', str(cur_subj), '\n\n\n')
             continue
 
-        # Print sats
+        # Print status
         print('\n\n\nRUNNING SUBJECT: ', str(cur_subj), '\n\n\n')
 
         # Get subject data files
@@ -61,30 +66,22 @@ def main():
         dat_f_name = db.gen_dat_path(cur_subj, dat_f[f_ind])
         eve_f_name = db.gen_dat_path(cur_subj, ev_f[f_ind])
 
+        # Set the sampling rate
+        s_freq = 500
+
         # Load data file
         dat = np.loadtxt(dat_f_name, delimiter=',')
 
-        # Read default montage
-        montage = mne.channels.read_montage('GSN-HydroCel-129')
-        keep_chans = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20,
-                              21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
-                              38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50, 51, 52, 53, 54, 55, 57,
-                              58, 59, 60, 61, 62, 64, 65, 66, 67, 69, 70, 71, 72, 74, 75, 76, 77,
-                              78, 79, 80, 82, 83, 84, 85, 86, 87, 89, 90, 91, 92, 93, 95, 96, 97,
-                              98, 100, 101, 102, 103, 104, 105, 106, 108, 109, 110, 111, 112, 114,
-                              115, 116, 117, 118, 120, 121, 122, 123, 124, 129])
+        # Read in list of channel names that are kept in reduced 111 montage
+        with open('../data/chans111.csv', 'r') as csv_file:
+            reader = csv.reader(csv_file)
+            ch_labels = list(reader)[0]
 
-        # Fix zero based indexing (screw off matlab)
-        keep_chans = keep_chans - 1
-
-        # Get channel names to keep
-        kept_chans = list(np.array(montage.ch_names)[keep_chans])
-
-        # Settings for loading data
-        s_freq = 500
+        # Read montage, reduced to 111 channel selection
+        montage = mne.channels.read_montage('GSN-HydroCel-129', ch_names=ch_labels)
 
         # Create the info structure needed by MNE
-        info = mne.create_info(kept_chans, s_freq, 'eeg')
+        info = mne.create_info(ch_labels, s_freq, 'eeg', montage)
 
         # Create the MNE Raw data object
         raw = mne.io.RawArray(dat, info)
@@ -110,7 +107,7 @@ def main():
                 if row == []:
                     continue
 
-                # Skip the header row, since there is one FOR EVERY DAMN EVENT. SERIOUSLY?
+                # Skip the header row, since there is one for every event...
                 if row[0] == 'type':
                     continue
 
@@ -128,39 +125,77 @@ def main():
         raw.info['bads'] = list(np.array(raw.ch_names[:111])[flat_chans])
         print('Bad channels: ', raw.info['bads'])
 
+        # Interpolate bad channels
+        raw.interpolate_bads()
+
+        # Set average reference
+        raw.set_eeg_reference()
+        raw.apply_proj()
+
         # Get good eeg channel indices
         eeg_chans = mne.pick_types(raw.info, meg=False, eeg=True)
 
         # Epoch resting eeg data events
-        eo_epochs = mne.Epochs(raw, events=dat_evs, event_id={'EO': 20},
-                               tmin=5, tmax=15, baseline=None, picks=eeg_chans,
-                               add_eeg_ref=False, preload=True)
-        ec_epochs = mne.Epochs(raw, events=dat_evs, event_id={'EC': 30},
-                               tmin=5, tmax= 35, baseline=None, picks=eeg_chans,
-                               add_eeg_ref=False, preload=True)
+        eo_epochs = mne.Epochs(raw, events=dat_evs, event_id={'EO': 20}, tmin=2, tmax=18,
+                               baseline=None, picks=eeg_chans, preload=True)
+        ec_epochs = mne.Epochs(raw, events=dat_evs, event_id={'EC': 30}, tmin=5, tmax= 35,
+                               baseline=None, picks=eeg_chans, preload=True)
 
         # Calculate PSDs - EO Data
-        eo_psds, eo_freqs = mne.time_frequency.psd_welch(eo_epochs, fmin=1.,
-                                                         fmax=40., n_fft=1000)
+        eo_psds, eo_freqs = mne.time_frequency.psd_welch(eo_epochs, fmin=2., fmax=40., n_fft=1000,
+                                                         n_overlap=250, verbose=False)
 
         # Average PSDs for each channel across each rest block
         eo_avg_psds = np.mean(eo_psds, axis=0)
 
         # Calculate PSDs - EC Data
-        ec_psds, ec_freqs = mne.time_frequency.psd_welch(ec_epochs, fmin=3.,
-                                                         fmax=40., n_fft=1000)
+        ec_psds, ec_freqs = mne.time_frequency.psd_welch(ec_epochs, fmin=2., fmax=40., n_fft=1000,
+                                                         n_overlap=250, verbose=False)
 
         # Average PSDs for each channel across each rest block
         ec_avg_psds = np.mean(ec_psds, axis=0)
 
         # Save out PSDs
-        np.savez(os.path.join(db.psd_path, str(cur_subj) + '_ec_psds.npz'),
+        np.savez(os.path.join(db.psd_path, str(cur_subj) + '_ec_avg_psds.npz'),
                  ec_freqs, ec_avg_psds, np.array(ec_epochs.ch_names))
-        np.savez(os.path.join(db.psd_path, str(cur_subj) + '_eo_psds.npz'),
+        np.savez(os.path.join(db.psd_path, str(cur_subj) + '_eo_avg_psds.npz'),
                  eo_freqs, eo_avg_psds, np.array(eo_epochs.ch_names))
+        np.savez(os.path.join(db.psd_path, str(cur_subj) + '_ec_psds.npz'),
+                 ec_freqs, ec_psds, np.array(ec_epochs.ch_names))
+        np.savez(os.path.join(db.psd_path, str(cur_subj) + '_eo_psds.npz'),
+                 eo_freqs, eo_psds, np.array(eo_epochs.ch_names))
 
         # Print status
-        print('\n\n\nSAVED DATA FOR SUBJ: ', str(cur_subj), '\n\n\n')
+        print('\n\n\nPSD DATA SAVED FOR SUBJ: ', str(cur_subj), '\n\n\n')
+        print('\n\n\nFOOOFING DATA FOR SUBJ: ', str(cur_subj), '\n\n\n')
+
+        # Fit FOOOF to PSDs averaged across rest epochs
+        fres_eo_avg = fit_fooof_lst(eo_freqs, eo_avg_psds)
+        sls_eo_avg = get_slopes(fres_eo_avg)
+        fres_ec_avg = fit_fooof_lst(ec_freqs, ec_avg_psds)
+        sls_ec_avg = get_slopes(fres_ec_avg)
+
+        # Fit FOOOF to PSDs from each epoch
+        fres_eo = fit_fooof_3d(eo_freqs, eo_psds)
+        sls_eo = [get_slopes(lst) for lst in fres_eo]
+        fres_ec = fit_fooof_3d(ec_freqs, ec_psds)
+        sls_ec = [get_slopes(lst) for lst in fres_ec]
+
+        # Collect data together
+        subj_dat = {
+            'ID' : cur_subj,
+            'sls_eo_avg' : sls_eo_avg,
+            'sls_ec_avg' : sls_ec_avg,
+            'sls_eo' : sls_eo,
+            'sls_ec' : sls_ec
+        }
+
+        # Save out FOOOF data
+        f_name = str(cur_subj) + '_fooof.p'
+        save_pickle(subj_dat, f_name, db.fooof_path)
+
+        # Print status
+        print('\n\n\nFOOOF DATA SAVED AND FINISHED WITH SUBJ: ', str(cur_subj), '\n\n\n')
 
 
 if __name__ == "__main__":
