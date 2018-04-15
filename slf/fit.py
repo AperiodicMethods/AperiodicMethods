@@ -36,6 +36,7 @@ def fsl_ransac(freqs, psd):
 
     ransac_model = RANSACRegressor(random_state=42)
     ransac_model.fit(np.log10(freqs), np.log10(psd))
+
     sl_ran = ransac_model.estimator_.coef_[0][0]
 
     return sl_ran
