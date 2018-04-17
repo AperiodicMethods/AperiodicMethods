@@ -73,7 +73,7 @@ class SLFDB(object):
 
 
     def check_fooof(self):
-        """Check which synthetic-fitting files are avaiable in the database."""
+        """Check which synthetic-fitting files are available in the database."""
 
         fooof_files = _clean_files(os.listdir(self.fooof_path))
 

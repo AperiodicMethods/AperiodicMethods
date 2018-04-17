@@ -11,7 +11,7 @@ from scipy.optimize import curve_fit
 from sklearn.linear_model import RANSACRegressor
 
 from fooof import FOOOF
-from fooof.funcs import loglorentzian_nk_function as expf
+from fooof.core.funcs import expo_nk_function as expf
 
 from slf.core.utils import exclude_psd, CheckDims1D, CheckDims2D
 
@@ -177,11 +177,9 @@ def sqd_err(val, fit):
 def _fooof_fit(freqs, psd):
     """Fit FOOOF."""
 
-    #
-    fm = FOOOF(bandwidth_limits=[1, 8], verbose=False)
+    fm = FOOOF(peak_width_limits=[1, 8], verbose=False)
     fm.fit(freqs, psd, [freqs.min(), freqs.max()])
 
-    #
     if len(fm._gaussian_params > 0):
         cens, pows, bws = fm._gaussian_params[:, 0], fm._gaussian_params[:, 1], fm._gaussian_params[:, 2]
     else:

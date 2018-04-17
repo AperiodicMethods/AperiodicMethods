@@ -1,5 +1,4 @@
 """
-
 Some code adapted from code written by Erik Peterson (https://github.com/parenthetical-e)
 """
 
@@ -7,7 +6,7 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stat
 
-from fooof.funcs import loglorentzian_function, loglorentzian_nk_function, gaussian_function
+from fooof.core.funcs import expo_function, expo_nk_function, gaussian_function
 
 ####################################################################################################
 ####################################################################################################
@@ -53,7 +52,7 @@ def sim_psd(f_range, sl_val, osc_params, noi_lev, f_res=0.5):
     freqs = np.arange(f_range[0], f_range[1]+f_res, f_res)
 
     # Generate background process
-    bg = np.power(10, loglorentzian_nk_function(freqs, *[0, sl_val]))
+    bg = np.power(10, expo_nk_function(freqs, *[0, sl_val]))
 
     # Generate oscillations, if specified
     if len(osc_params) > 0:
@@ -105,7 +104,7 @@ def sim_n_psds(n_psds, f_range, sl_val, osc_params, noi_lev, f_res=0.5):
 
 
 def gen_osc_def(n_oscs=None):
-    """Generate a plausbile oscillation distribution for synthetic a synthetic PSD.
+    """Generate a plausbile oscillation distribution for a synthetic PSD.
 
     Parameters
     ----------
