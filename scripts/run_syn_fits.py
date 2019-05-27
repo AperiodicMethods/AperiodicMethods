@@ -1,46 +1,45 @@
-"""Run script for fitting slope across synthetic PSDs, testing multiple methods."""
+"""Run script for fitting simualted across, testing multiple methods."""
 
-from slf import syn
-from slf.fake import SynFits
-from slf.core.db import SLFDB
-from slf.core.io import save_pickle
+from apm import syn
+from apm.fake import SynFits
+from apm.core.db import APMDB
+from apm.core.io import save_pickle
 
-#########################################################################################
-#########################################################################################
+###################################################################################################
+###################################################################################################
 
-# PSD SETTINGS
-N_PSDS = 100
+# Spectrum Settings
+N_SPECTRA = 100
 F_RANGE = [3, 40]
 
 # Simulation Settings
 NOISE_VALS = [0.0, 0.01, 0.05, 0.1, 0.15, 0.2]
-SLOPE_VALS = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
+EXP_VALS = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
 
-#########################################################################################
-#########################################################################################
+###################################################################################################
+###################################################################################################
 
 def main():
 
-    db = SLFDB()
+    db = APMDB()
 
-    for slv in SLOPE_VALS:
-        for nslv in NOISE_VALS:
+    for exp in EXP_VALS:
+        for noise in NOISE_VALS:
 
-            # Print status
-            print('Running sims for slope val {}, noise-val {}'.format(slv, nslv))
+            print('Running sims for exponent val {}, noise-val {}'.format(slv, nslv))
 
             # Initialize syn-fitter object
             syns = SynFits()
             syns.get_fit_funcs()
 
-            # Generate the PSDs
-            freqs, psds = syn.sim_n_psds(N_PSDS, F_RANGE, slv, syn.gen_osc_def(), nslv)
+            # Generate the power spectra
+            freqs, psds = syn.sim_n_psds(N_SPECTRA, F_RANGE, exp, syn.gen_osc_def(), noise)
 
-            # Fit slopes
-            syns.fit_slopes(slv, freqs, psds)
+            # Fit spectra
+            syns.fit_spectra(exp, freqs, psds)
 
             # Save out fit data
-            save_name = 'SynFits_slv' + str(slv) + '_N' + str(nslv) + '.p'
+            save_name = 'SynFits_slv' + str(exp) + '_N' + str(noise) + '.p'
             save_pickle(syns.errs, save_name, db.syns_path)
 
 if __name__ == '__main__':
