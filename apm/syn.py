@@ -1,6 +1,4 @@
-"""
-Some code adapted from code written by Erik Peterson (https://github.com/parenthetical-e)
-"""
+"""Code for synthesizing PSDs."""
 
 import numpy as np
 import pandas as pd
@@ -8,14 +6,14 @@ import scipy.stats as stat
 
 from fooof.core.funcs import expo_function, expo_nk_function, gaussian_function
 
-####################################################################################################
-####################################################################################################
+###################################################################################################
+###################################################################################################
 
 # CEN_FREQS = np.load('freqs.npy')
 # PROBS = np.load('probs.npy')
 
-####################################################################################################
-####################################################################################################
+###################################################################################################
+###################################################################################################
 
 def sim_psd(f_range, sl_val, osc_params, noi_lev, f_res=0.5):
     """Simulate a PSD. Outputs a PSD in linear space.
@@ -123,7 +121,7 @@ def gen_osc_def(n_oscs=None):
     """
 
     #
-    if not n_oscs:
+    if n_oscs is None:
         n_oscs = np.random.choice([0, 1, 2], p=[1/3, 1/3, 1/3])
 
     # Initialize list of oscillation definitions

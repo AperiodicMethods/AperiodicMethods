@@ -1,15 +1,16 @@
-"""Fitting synthethic data."""
+"""Fitting simulated power spectra."""
 
 import numpy as np
 from scipy.stats import ranksums
 
-from slf.fit import *
+from apm.fit import *
+from apm.utils import *
 
-#########################################################################################
-#########################################################################################
+###################################################################################################
+###################################################################################################
 
 class SynFits():
-    """Class object for slope fitting synthetic data with multiple methods."""
+    """Class object for fitting power spectra using multiple methods."""
 
     def __init__(self):
         """Initialize object."""
@@ -33,17 +34,17 @@ class SynFits():
     def get_fit_funcs(self):
         """Initialize fit functions to use."""
 
-        self.fit_funcs = {'OLS': fsl_ols,
-                          'RLM': fsl_rlm,
-                          'RLM-EA': fsl_rlm_alph,
-                          'RLM-EO': fsl_rlm_oscs,
-                          'RAN': fsl_ransac,
-                          'RAN-EA': fsl_ransac_alph,
-                          'RAN-EO': fsl_ransac_oscs,
-                          'EXP': fsl_exp,
-                          'EXP-EA': fsl_exp_alph,
-                          'EXP-EO': fsl_exp_oscs,
-                          'FOOOF': fsl_fooof}
+        self.fit_funcs = {'OLS': fit_ols,
+                          'RLM': fit_rlm,
+                          'RLM-EA': fit_rlm_alph,
+                          'RLM-EO': fit_rlm_oscs,
+                          'RAN': fit_ransac,
+                          'RAN-EA': fit_ransac_alph,
+                          'RAN-EO': fit_ransac_oscs,
+                          'EXP': fit_exp,
+                          'EXP-EA': fit_exp_alph,
+                          'EXP-EO': fit_exp_oscs,
+                          'FOOOF': fit_fooof}
 
 
     def get_err_dict(self, n_psds):
@@ -54,8 +55,8 @@ class SynFits():
             self.errs[key] = np.zeros(n_psds)
 
 
-    def fit_slopes(self, slv, fs, psds):
-        """Fit PSD slopes with available methods."""
+    def fit_spectra(self, slv, fs, psds):
+        """Fit spectra with available methods."""
 
         _, n_psds = psds.shape
         self.get_err_dict(n_psds)
@@ -114,6 +115,3 @@ def print_res(dat):
 
     for it in dat:
         print('   {:8} \t\t {:1.5f}'.format(it[1], it[0]))
-
-#########################################################################################
-#########################################################################################

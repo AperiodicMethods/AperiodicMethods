@@ -1,13 +1,13 @@
-"""Plots for the distributions of errors from slope fitting methods."""
+"""Plots for the distributions of errors from spectrum fitting methods."""
 
 import pandas as pd
 import matplotlib.pyplot as plt
 
-####################################################################################################
-####################################################################################################
+###################################################################################################
+###################################################################################################
 
 def boxplot_errors(err_dists):
-    """Plot a boxplot of distributions of errors for each slope fit method.
+    """Plot a boxplot of distributions of errors for each spectrum fit method.
 
     Parameters
     ----------
@@ -22,7 +22,7 @@ def boxplot_errors(err_dists):
 
 
 def violin_errors(err_dists):
-    """Plot a violin plot of distributions of errors for each slope fit method.
+    """Plot a violin plot of distributions of errors for each spectrum fit method.
 
     Parameters
     ----------
@@ -36,7 +36,7 @@ def violin_errors(err_dists):
     df = pd.DataFrame(err_dists)
     plt.figure(figsize=[16, 6])
     ax = sns.violinplot(data=df, cut=0)
-    plt.title('Error Distributions Across Slope Fitting Methods')
+    plt.title('Error Distributions Across Spectrum Fitting Methods')
 
     # Restrict y-limits
     plt.ylim([-0.25, 8.5]);
