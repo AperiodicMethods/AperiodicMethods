@@ -32,6 +32,35 @@ def fit_ols(freqs, spectrum):
 
 
 @CheckDims2D
+def fit_ols_alph(freqs, spectrum):
+    """Fit spectrum with OlS, excluding pre-defined alpha band."""
+
+    freqs, spectrum = exclude_spectrum(freqs, spectrum, [7, 14])
+
+    fx = sm.add_constant(np.log10(freqs))
+
+    ols_model = sm.OLS(np.log10(spectrum), fx).fit()
+    result = ols_model.params[1]
+
+    return result
+
+
+@CheckDims2D
+def fit_ols_oscs(freqs, spectrum):
+    """Fit spectrum with OlS, ignoring FOOOF derived oscillation bands."""
+
+    _, cens, _, bws = _fooof_fit(freqs, spectrum)
+    freqs, spectrum = _drop_oscs(freqs, spectrum, cens, bws)
+
+    fx = sm.add_constant(np.log10(freqs))
+
+    ols_model = sm.OLS(np.log10(spectrum), fx).fit()
+    result = ols_model.params[1]
+
+    return result
+
+
+@CheckDims2D
 def fit_ransac(freqs, spectrum):
     """Fit spectrum with RANSAC, across whole range."""
 
@@ -61,7 +90,6 @@ def fit_ransac_oscs(freqs, spectrum):
     """Fit spectrum with RANSAC, ignoring FOOOF derived oscillation bands."""
 
     _, cens, _, bws = _fooof_fit(freqs, spectrum)
-
     freqs, spectrum = _drop_oscs(freqs, spectrum, cens, bws)
 
     ransac_model = RANSACRegressor(random_state=42)
@@ -102,7 +130,6 @@ def fit_rlm_oscs(freqs, spectrum):
     """Fit spectrum with RLM, ignoring FOOOF derived oscillation bands."""
 
     _, cens, _, bws = _fooof_fit(freqs, spectrum)
-
     freqs, spectrum = _drop_oscs(freqs, spectrum, cens, bws)
 
     fx = sm.add_constant(np.log10(freqs))
