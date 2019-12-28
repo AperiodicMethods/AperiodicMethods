@@ -3,55 +3,84 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from fooof.plts import plot_spectrum, plot_spectra, plot_spectrum_shading, plot_spectra_shading
+
+from apm.plts.settings import FIGSIZE1, FIGSIZE2
+
 ###################################################################################################
 ###################################################################################################
 
-def plt_psd_1(freqs, dat, log_f=True, log_p=True, label=None):
-    """Plot a single PSD."""
+def get_ax():
+    """Helper function to get an axis of a specific size for plotting."""
 
-    min_f = 2; max_f = 40
-    min_p = 0.01; max_p = 400
-
-    if log_f:
-        freqs = np.log10(freqs)
-        min_f = np.log10(min_f)
-        max_f = np.log10(max_f)
-
-    if log_p:
-        dat = np.log10(dat)
-        min_p = np.log10(min_p)
-        max_p = np.log10(max_p)
-
-    plt.plot(freqs, dat, lw=2)
-
-    plt.xlim([min_f, max_f])
-    plt.ylim([min_p, max_p])
+    return plt.subplots(figsize=FIGSIZE1)[1]
 
 
-def plt_psd_2(freqs_1, dat_1, freqs_2, dat_2, log_f=True, log_p=True):
-    """Plot two PSD's together."""
+def plot_psds(freqs, psds, log_freqs=False):
+    """Plot one or many power spectra.
 
-    plt.figure()
-    plt_psd_1(freqs_1, dat_1, log_f, log_p)
-    plt_psd_1(freqs_2, dat_2, log_f, log_p)
+    Parameters
+    ----------
+    freqs : 1d array or list of 1d array
+        Frequency values to plot, on the x-axis.
+    psds : 1d array or list of 1d array
+        Power values to plot, on the y-axis.
+    log_freqs : bool, optional, default: False
+        Whether to plot the frequency axis in log space.
+
+    Notes
+    -----
+    This plots power values in log10 spacing.
+    """
+
+    ax = get_ax()
+
+    if not isinstance(psds, list):
+        plot_spectrum(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax)
+    else:
+        plot_spectra(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax)
+
+    ax.grid(False)
 
 
-def plt_psd_both(freqs, psd):
-    """Plot a PSD in subplots, one with linear space, the other log space."""
+def plot_psds_shades(freqs, psds, shades, log_freqs=False):
+    """Plot one or many power spectra, with shades.
 
-    f, ax = plt.subplots(1, 2, figsize=[12, 6])
-    ax[0].plot(freqs, psd)
-    ax[1].plot(np.log10(freqs), np.log10(psd))
+    Parameters
+    ----------
+    freqs : 1d array or list of 1d array
+        Frequency values to plot, on the x-axis.
+    psds : 1d array or list of 1d array
+        Power values to plot, on the y-axis.
+    shades : list of [float, float] or list of list of [float, float]
+        Shaded region(s) to add to plot, defined as [lower_bound, upper_bound].
+    log_freqs : bool, optional, default: False
+        Whether to plot the frequency axis in log space.
+
+    Notes
+    -----
+    This plots power values in log10 spacing.
+    """
+
+    ax = get_ax()
+
+    if not isinstance(psds, list):
+        plot_spectrum_shading(freqs, psds, shades, add_center=True,
+                              log_freqs=log_freqs, log_powers=True, ax=ax)
+    else:
+        plot_spectra_shading(freqs, psds, shades, add_center=True,
+                             log_freqs=log_freqs, log_powers=True, ax=ax)
+
+    ax.grid(False)
 
 
-def plt_psd_shade(freqs, dat, cens, bws, m):
-    """Plot a PSD with oscillatory regions faded."""
+def plot_psds_two(freqs1, psd1, freqs2, psd2):
+    """Plot side-by-side power spectra."""
 
-    # Plot the PSD
-    plt.figure()
-    plt_psd_1(freqs, dat, log_f=False)
+    fig, axes = plt.subplots(1, 2, figsize=FIGSIZE2)
 
-    # Add shading to see where oscillations are and what will be excluded
-    for cen, bw in zip(cens, bws):
-        plt.axvspan(cen, cen, color='g')
-        plt.axvspan(cen-(m*bw), cen+(m*bw), color='r', alpha=0.2, lw=0)
+    plot_spectrum(freqs1, psd1, ax=axes[0])
+    plot_spectrum(freqs2, psd2, ax=axes[1])
+
+    for ax in axes: ax.grid(False)
+    plt.subplots_adjust(wspace=0.3)
