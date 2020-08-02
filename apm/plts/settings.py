@@ -7,3 +7,6 @@ FIGSIZE2 = (12, 5)
 # Colors for 'aperiodic' & 'combined' lines
 AP_COL = '#0043ad'
 COMB_COL = '#1c8c00'
+
+# Save setting
+SAVE_EXT = '.pdf'

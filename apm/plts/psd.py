@@ -3,18 +3,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from fooof.plts import plot_spectrum, plot_spectra, plot_spectrum_shading, plot_spectra_shading
+from fooof.plts.spectra import (plot_spectrum, plot_spectra,
+                                plot_spectrum_shading, plot_spectra_shading)
 
+from apm.plts.utils import get_ax
 from apm.plts.settings import FIGSIZE1, FIGSIZE2
 
 ###################################################################################################
 ###################################################################################################
-
-def get_ax():
-    """Helper function to get an axis of a specific size for plotting."""
-
-    return plt.subplots(figsize=FIGSIZE1)[1]
-
 
 def plot_psds(freqs, psds, log_freqs=False):
     """Plot one or many power spectra.
