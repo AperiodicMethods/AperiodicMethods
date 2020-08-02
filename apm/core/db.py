@@ -14,21 +14,26 @@ class APMDB(object):
         Base path for the project.
     data_path : str
         Path to all data.
-    syns_path : str
-    	Path to synthetic-fitting data.
+    sims_path : str
+    	Path to simulated data.
+    psds_path : str
+        Path to power spectra.
+    fooof_path : str
+        Path to FOOOF files.
     """
 
-    def __init__(self, gen_paths=True):
+    def __init__(self, base_path='../', gen_paths=True):
         """Initialize APMDB object."""
 
         # Set base path for project
-        self.project_path = ("/Users/tom/Documents/Research/1-Projects/1-Current/AperiodicMethods/")
+        self.base_path = base_path
 
         # Initialize paths
         self.data_path = str()
-        self.syns_path = str()
-        self.psd_path = str()
+        self.sims_path = str()
+        self.psds_path = str()
         self.fooof_path = str()
+        self.figs_path = str()
 
         # Generate project paths
         if gen_paths:
@@ -38,16 +43,17 @@ class APMDB(object):
     def gen_paths(self):
         """Generate paths."""
 
-        self.data_path = os.path.join(self.project_path, '2-Data')
-        self.syns_path = os.path.join(self.data_path, 'syns')
-        self.psd_path = os.path.join(self.data_path, 'psds')
+        self.data_path = os.path.join(self.base_path, 'data')
+        self.figs_path = os.path.join(self.base_path, 'figures')
+        self.sims_path = os.path.join(self.data_path, 'sims')
+        self.psds_path = os.path.join(self.data_path, 'psds')
         self.fooof_path = os.path.join(self.data_path, 'fooof')
 
 
     def check_files(self, file_type):
         """Check what files are available.
 
-        file_type: {'syns', 'psd', 'fooof'}
+        file_type: {'sims', 'psd', 'fooof'}
         """
 
         return clean_files(os.listdir(getattr(self, file_type + '_path')))
@@ -55,10 +61,15 @@ class APMDB(object):
     def get_files(self, file_type):
         """Get available files.
 
-        file_type: {'syns', 'psd', 'fooof'}
+        file_type: {'simss', 'psd', 'fooof'}
         """
 
         return [fi.split('_')[0] for fi in self.check_files(file_type)]
+
+    def make_fig_name(self, file_name, file_type='pdf'):
+        """Return the file path for a figure with a given name."""
+
+        return os.path.join(self.figs_path, file_name + '.' + file_type)
 
 ###################################################################################################
 ###################################################################################################

@@ -9,7 +9,7 @@ from apm.utils import *
 ###################################################################################################
 ###################################################################################################
 
-class SynFits():
+class SimFits():
     """Class object for fitting power spectra using multiple methods."""
 
     def __init__(self):
@@ -22,7 +22,7 @@ class SynFits():
     def __add__(self, other):
         """Overload addition, to add errors fit across different datasets."""
 
-        out = SynFits()
+        out = SimFits()
         out.get_fit_funcs()
 
         for key, vals in other.errs.items():
@@ -35,6 +35,8 @@ class SynFits():
         """Initialize fit functions to use."""
 
         self.fit_funcs = {'OLS': fit_ols,
+                          'OLS-EA': fit_ols_alph,
+                          'OLS-EO': fit_ols_oscs,
                           'RLM': fit_rlm,
                           'RLM-EA': fit_rlm_alph,
                           'RLM-EO': fit_rlm_oscs,
@@ -55,16 +57,19 @@ class SynFits():
             self.errs[key] = np.zeros(n_psds)
 
 
-    def fit_spectra(self, slv, fs, psds):
+    def fit_spectra(self, exp, fs, psds):
         """Fit spectra with available methods."""
 
         _, n_psds = psds.shape
         self.get_err_dict(n_psds)
 
-        for k, fn in self.fit_funcs.items():
-            for i in range(n_psds):
-                #self.errs[k][i] = sqd_err(-slv, fn(fs, psds[:, i]))
-                self.errs[k][i] = abs_err(-slv, fn(fs, psds[:, i]))
+        for ki, fn in self.fit_funcs.items():
+            for ind in range(n_psds):
+                try:
+                    #self.errs[ki][ind] = sqd_err(-exp, fn(fs, psds[:, ind]))
+                    self.errs[ki][ind] = abs_err(-exp, fn(fs, psds[:, ind]))
+                except:
+                    self.errs[ki][ind] = 0
 
 
     def comp_errs(self):
@@ -107,11 +112,11 @@ class SynFits():
 
         return perc_good
 
-#########################################################################################
-#########################################################################################
+###################################################################################################
+###################################################################################################
 
-def print_res(dat):
+def print_res(data):
     """Print out the mean errors per method."""
 
-    for it in dat:
+    for it in data:
         print('   {:8} \t\t {:1.5f}'.format(it[1], it[0]))

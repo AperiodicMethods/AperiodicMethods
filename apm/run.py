@@ -1,5 +1,7 @@
 """Code for running simulation experiments."""
 
+from copy import deepcopy
+
 import numpy as np
 
 ###################################################################################################
@@ -12,9 +14,9 @@ upd_comb_exp = lambda params, val : params['components']['sim_powerlaw'].update(
 
 
 UPDATES = {
-    'update_exponent' : upd_exp,
-    'update_frequency' : upd_freq,
-    'update_power' : upd_pow,
+    'update_exp' : upd_exp,
+    'update_freq' : upd_freq,
+    'update_pow' : upd_pow,
     'update_comb_exp' : upd_comb_exp
 }
 
@@ -34,7 +36,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_instances=10,
 
     update = UPDATES[update] if isinstance(update, str) else update
 
-    for cur_sim_params in update_vals(sim_params.copy(), values, update):
+    for cur_sim_params in update_vals(deepcopy(sim_params), values, update):
 
         inst_outs = []
         for ind in range(n_instances):
@@ -42,6 +44,6 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_instances=10,
             sig = sim_func(**cur_sim_params)
             inst_outs.append(measure_func(sig, **measure_params))
 
-        outs.append(np.mean(inst_outs))
+        outs.append(np.mean(inst_outs, 0))
 
     return outs
