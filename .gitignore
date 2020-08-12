@@ -6,3 +6,7 @@
 
 # Ignore mac directory files
 .DS_Store*
+
+# Ignore figure & data files
+figures/*
+data/*
