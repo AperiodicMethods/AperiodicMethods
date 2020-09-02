@@ -29,6 +29,7 @@ def plot_colorbar(cmap, vmin, vmax, label, figsize=(2, 6), orientation='vertical
     fig.subplots_adjust(right=0.45)
 
     plt.tight_layout()
+
     save_figure(save_fig, file_name, file_path)
 
     if not show:
@@ -55,6 +56,10 @@ def save_figure(save_fig, file_name, file_path):
     if save_fig:
         plt.tight_layout()
         file_name = file_name + SAVE_EXT
+
+        if not os.path.isdir(os.path.join(APMDB().figs_path, file_path)):
+            os.mkdir(os.path.join(APMDB().figs_path, file_path))
+
         plt.savefig(os.path.join(APMDB().figs_path, file_path, file_name))
 
 

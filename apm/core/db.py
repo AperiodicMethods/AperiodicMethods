@@ -1,11 +1,12 @@
 """Database related organization and utilities for aperiodic methods project."""
 
 import os
+from pathlib import Path
 
 ###################################################################################################
 ###################################################################################################
 
-class APMDB(object):
+class APMDB:
     """Class to hold database information for aperiodic methods project.
 
     Attributes
@@ -22,7 +23,7 @@ class APMDB(object):
         Path to FOOOF files.
     """
 
-    def __init__(self, base_path='../', gen_paths=True):
+    def __init__(self, base_path=Path(__file__).parents[2], gen_paths=True):
         """Initialize APMDB object."""
 
         # Set base path for project
@@ -49,6 +50,12 @@ class APMDB(object):
         self.psds_path = os.path.join(self.data_path, 'psds')
         self.fooof_path = os.path.join(self.data_path, 'fooof')
 
+        self._mkpath(self.data_path)
+        self._mkpath(self.figs_path)
+        self._mkpath(self.sims_path)
+        self._mkpath(self.psds_path)
+        self._mkpath(self.fooof_path)
+
 
     def check_files(self, file_type):
         """Check what files are available.
@@ -70,6 +77,13 @@ class APMDB(object):
         """Return the file path for a figure with a given name."""
 
         return os.path.join(self.figs_path, file_name + '.' + file_type)
+
+
+    def _mkpath(self, gen_path):
+        """Created paths that don't exists."""
+
+        if not os.path.isdir(gen_path):
+            os.mkdir(gen_path)
 
 ###################################################################################################
 ###################################################################################################

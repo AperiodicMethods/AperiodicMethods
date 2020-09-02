@@ -1,5 +1,6 @@
 """Code for synthesizing PSDs."""
 
+import os
 import numpy as np
 import pandas as pd
 import scipy.stats as stat
@@ -9,8 +10,9 @@ from fooof.core.funcs import expo_function, expo_nk_function, gaussian_function
 ###################################################################################################
 ###################################################################################################
 
-# CEN_FREQS = np.load('freqs.npy')
-# PROBS = np.load('probs.npy')
+DATA = os.path.dirname(__file__) + '/data'
+CEN_FREQS = np.load(DATA + '/freqs.npy')
+PROBS = np.load(DATA + '/probs.npy')
 
 ###################################################################################################
 ###################################################################################################
@@ -120,7 +122,6 @@ def gen_osc_def(n_oscs=None):
         Oscillation definitions.
     """
 
-    #
     if n_oscs is None:
         n_oscs = np.random.choice([0, 1, 2], p=[1/3, 1/3, 1/3])
 
