@@ -4,5 +4,7 @@ scipy
 matplotlib
 seaborn
 scikit-learn
+statsmodels
+tqdm
 fooof >= 1.0.0
-neurodsp >= 2.2.0
+neurodsp @ git+https://github.com/neurodsp-tools/neurodsp.git@master
