@@ -1,6 +1,7 @@
 """Database related organization and utilities for aperiodic methods project."""
 
 import os
+from pathlib import Path
 
 ###################################################################################################
 ###################################################################################################
@@ -22,8 +23,11 @@ class APMDB(object):
         Path to FOOOF files.
     """
 
-    def __init__(self, base_path='../', gen_paths=True):
+    def __init__(self, base_path=None, gen_paths=True):
         """Initialize APMDB object."""
+
+        if not base_path:
+            base_path = Path(__file__).parents[2]
 
         # Set base path for project
         self.base_path = base_path
@@ -39,7 +43,6 @@ class APMDB(object):
         if gen_paths:
             self.gen_paths()
 
-
     def gen_paths(self):
         """Generate paths."""
 
@@ -49,6 +52,11 @@ class APMDB(object):
         self.psds_path = os.path.join(self.data_path, 'psds')
         self.fooof_path = os.path.join(self.data_path, 'fooof')
 
+        self._mkpath(self.data_path)
+        self._mkpath(self.figs_path)
+        self._mkpath(self.sims_path)
+        self._mkpath(self.psds_path)
+        self._mkpath(self.fooof_path)
 
     def check_files(self, file_type):
         """Check what files are available.
@@ -61,7 +69,7 @@ class APMDB(object):
     def get_files(self, file_type):
         """Get available files.
 
-        file_type: {'simss', 'psd', 'fooof'}
+        file_type: {'sims', 'psd', 'fooof'}
         """
 
         return [fi.split('_')[0] for fi in self.check_files(file_type)]
@@ -70,6 +78,12 @@ class APMDB(object):
         """Return the file path for a figure with a given name."""
 
         return os.path.join(self.figs_path, file_name + '.' + file_type)
+
+    def _mkpath(self, gen_path):
+        """Created paths that don't exists."""
+
+        if not os.path.isdir(gen_path):
+            os.mkdir(gen_path)
 
 ###################################################################################################
 ###################################################################################################

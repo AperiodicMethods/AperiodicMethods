@@ -101,6 +101,17 @@ class SimFits():
         return avg_errs
 
 
+    def calc_std_errs(self):
+        """Calculate standard deviation of error per method."""
+
+        avg_stds = []
+        for key, vals in self.errs.items():
+            avg_stds.append((np.std(vals), key))
+        avg_stds.sort()
+
+        return avg_stds
+
+
     def calc_perc_good(self, thresh=0.025):
         """Calculate percentage of errors below some threshold."""
 
