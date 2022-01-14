@@ -1,59 +1,55 @@
 # Aperiodic Methods
 
-Project repository for the `AperiodicMethods` project, exploring methods for measuring aperiodic activity in neural data.
+`AperiodicMethods` project repository: characterizing methods for measuring aperiodic neural activity.
+
+[![Website](https://img.shields.io/badge/site-aperiodicmethods.github.io-informational.svg)](https://aperiodicmethods.github.io)
 
 ## Overview
 
-Neuro-electrophysiological data is includes aperiodic components, or 1/f-like activity.
+Neuro-electrophysiological data contains, or 1/f-like, aperiodic activity.
 
 There are many possible ways to measure such activity. This project explores and compares those methods.
 
 Goal(s):
-- To test various methods for estimating aperiodic activity, including
-    - Spectral fitting approaches for measure aperiodic properties in the frequency domain
-    - Time series methods for estimating signal complexity and 1/f properties
+- To test various methods for estimating aperiodic activity
 - To determine, empirically, how different methods relate to each other
 - To evaluate which methods are the most accurate, given simulated data
+- To demonstrate these methods on example empirical data
 
-## Project Guide
+The methods examined in this project include:
+- Spectral fitting approaches for measure aperiodic properties in the frequency domain
+- Decomposition techniques, including the IRASA method, for decomposing components from time series
+- Auto-correlation measures for investigating the history dependence of time series
+- Fluctuation analyses, including the Hurst exponent and detrended fluctuation analysis
+- Methods for estimating signal complexity and fractal properties in time series
+- Information theory measures for measuring various entropy measures in time series
 
-You can follow along with this project by stepping through the whole thing, as outlined in the `notebooks`.
+You can explore this project by looking through the `notebooks`, and/or explore the hosted version on the
+[website](https://aperiodicmethods.github.io/).
 
-If you want to re-run the whole project, keep in mind that some parts are done by stand-alone scripts, available in the `scripts` folder. These scripts are described by the analysis outline in the notebooks.
+## Reference
 
-## Dependencies
+A preprint for this project is upcoming.
+
+## Requirements
 
 This project was written in Python 3 and requires Python >= 3.7 to run.
 
-If you want to re-run this project, you will need some external dependencies.
-
-Dependencies include 3rd party scientific Python packages:
-- [numpy](https://github.com/numpy/numpy)
-- [pandas](https://github.com/pandas-dev/pandas)
-- [scipy](https://github.com/scipy/scipy)
-- [scikit-learn](https://github.com/scikit-learn/scikit-learn)
-- [matplotlib](https://github.com/matplotlib/matplotlib)
-- [seaborn](https://github.com/mwaskom/seaborn)
-
-You can get and manage these dependencies using the [Anaconda](https://www.anaconda.com/distribution/) distribution, which we recommend.
+This project requires external dependencies, including standard scientific packages.
 
 In addition, this project requires the following dependencies:
+- [neurodsp](https://github.com/neurodsp-tools/neurodsp), used for simulating time series and applying methods
+- [fooof](https://github.com/fooof-tools/fooof), used for simulating power spectra and applying spectral fits
+- [antropy](https://github.com/raphaelvallat/antropy), used for entropy and complexity measures
+- [lisc](https://github.com/lisc-tools/lisc), used for the literature search
 
- - [fooof](https://github.com/fooof-tools/fooof) >= 1.0.0
- - [neurodsp](https://github.com/neurodsp-tools/neurodsp) >= 2.0.0
-
-You can install the extra required dependencies by running:
-
-```
-pip install fooof, neurodsp
-```
+The full set of requirements is listed in the `requirements.txt` file.
 
 ## Repository Layout
 
 This project repository is set up in the following way:
 
 - `apm/` is a custom module that implements the 'aperiodic methods' for the project
-- `data/` contains the simulated data used in the project
-- `figures/` holds all figures produced throughout the project
+- `data/` is used for simulated data used in the project
+- `figures/` is used for figures that are produced throughout the project
 - `notebooks/` is a collection of Jupyter notebooks that step through the project
-- `scripts/` contains stand alone scripts that run parts of the project
