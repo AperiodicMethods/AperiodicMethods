@@ -1,20 +1,30 @@
-"""Define settings for simulations."""
-
-import pkg_resources
+"""Default settings file."""
 
 import numpy as np
 
 ###################################################################################################
 ###################################################################################################
 
-N_PEAK_OPTS = [0, 1, 2]
-N_PEAK_PROBS = [1/3, 1/3, 1/3]
+# General simulation settings
+N_SECONDS = 30
+FS = 1000
 
-CF_OPTS = np.load(pkg_resources.resource_filename(__name__, 'data/freqs.npy'))
-CF_PROBS = np.load(pkg_resources.resource_filename(__name__, 'data/probs.npy'))
+EXP = -2
+FREQ = 10
 
-PW_OPTS = [0.05, 0.10, 0.15, 0.20]
-PW_PROBS = [0.25, 0.25, 0.25, 0.25]
+COMP_VARS = [1, 0.25]
 
-BW_OPTS = [1, 1.5, 2]
-BW_PROBS = [1/3, 1/3, 1/3]
+# Collect together simulation parameters
+SIM_PARAMS_AP = {'n_seconds' : N_SECONDS, 'fs' : FS}
+SIM_PARAMS_COMB = {'n_seconds' : N_SECONDS, 'fs' : FS,
+                   'components' : {'sim_powerlaw' : {'exponent' : EXP},
+                                   'sim_oscillation' : {'freq' : FREQ}},
+                   'component_variances' : COMP_VARS}
+
+# Set the number of instances to run
+N_SIMS = 50
+
+# Set the range of exponents to explore
+EXPS = np.arange(-3, 0.5, 0.5)
+FREQS = np.arange(1, 50, 2)
+POWS = np.arange(0, 2, 0.1)
