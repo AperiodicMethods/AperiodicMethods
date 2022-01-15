@@ -33,26 +33,25 @@ def update_vals(sim_params, values, update):
         yield sim_params
 
 
-def run_sims(sim_func, sim_params, measure_func, measure_params, n_instances=10,
-             values=np.arange(-3, 0.25, 0.25), update='update_exp'):
-    """Compute a set of measures across simulations.
+def run_sims(sim_func, sim_params, measure_func, measure_params, values, update, n_sims=10):
+    """Compute a measure of interest across a set of simulations.
 
     Parameters
     ----------
     sim_func : callable
-        A simulation function to create the simulations from.
+        A function to create the simulations from.
     sim_params : dict
         Input arguments for `sim_func`.
     measure_func : callable
         A measure function to apply to the simulatied data.
     measure_params : dict
         Input arguments for `measure_func`.
-    n_instances : int, optional, default: 10
-        The number of times to run simulations and measure calculations.
-    values : list or 1d array, optional, default: np.arange(-3, 0.25, 0.25)
+    values : list or 1d array
         A parameter to step across and re-run measure calculations for.
-    update : {'update_exp', 'update_freq', 'update_pow', 'update_comb_exp'}
+    update : {'update_exp', 'update_freq', 'update_pow', 'update_comb_exp'} or callable
         Specifies which parameter to update in simulation parameters.
+    n_sims : int, optional, default: 10
+        The number of iterations to simulatie and calculate measures, per value.
 
     Returns
     -------
@@ -61,7 +60,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_instances=10,
 
     Notes
     -----
-    The mean measure across `n_instances` of simulations if computed and returned.
+    The mean measure across `n_sims` of simulations if computed and returned.
     """
 
     outs = []
@@ -71,7 +70,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_instances=10,
     for cur_sim_params in update_vals(deepcopy(sim_params), values, update):
 
         inst_outs = []
-        for ind in range(n_instances):
+        for ind in range(n_sims):
 
             sig = sim_func(**cur_sim_params)
             inst_outs.append(measure_func(sig, **measure_params))
@@ -81,8 +80,8 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_instances=10,
     return outs
 
 
-def run_sims_parralel(sim_func, sim_params, measure_func, measure_params, n_instances=10,
-                      values=np.arange(-3, 0.25, 0.25), update='update_exp', n_jobs=-1):
+def run_sims_parralel(sim_func, sim_params, measure_func, measure_params,
+                      values, update, n_sims=10, n_jobs=-1):
     """Compute a set of measures across simulations - in parallel."""
 
     n_jobs = cpu_count() if n_jobs == -1 else n_jobs
@@ -92,8 +91,8 @@ def run_sims_parralel(sim_func, sim_params, measure_func, measure_params, n_inst
     sim_params = update_vals(deepcopy(sim_params), values, update)
     sim_params = [deepcopy(next(sim_params)) for vi in values]
 
-    # Duplicate sims to equal length of n_instances
-    sim_params = [pii for pi in range(len(sim_params)) for pii in [sim_params[pi]] * n_instances]
+    # Duplicate sims to equal length of n_sims
+    sim_params = [pii for pi in range(len(sim_params)) for pii in [sim_params[pi]] * n_sims]
 
     with Pool(processes=n_jobs) as pool:
 
@@ -103,17 +102,17 @@ def run_sims_parralel(sim_func, sim_params, measure_func, measure_params, n_inst
         measures = list(tqdm(mapping, desc="Running Simulations",
                              total=len(sim_params), dynamic_ncols=True))
 
-    # Rehape array and take mean across n_instances
+    # Rehape array and take mean across n_sims
     measures = np.array(measures)
-    remainder = int(measures.size / (len(values) * n_instances))
+    remainder = int(measures.size / (len(values) * n_sims))
 
     if remainder == 1:
         # Cases when measure_func returns a single value
-        measures = np.reshape(measures, (len(values), n_instances))
+        measures = np.reshape(measures, (len(values), n_sims))
     else:
         # Cases where measure_func returns >1 value
         try:
-            measures = np.reshape(measures, (len(values), n_instances, remainder))
+            measures = np.reshape(measures, (len(values), n_sims, remainder))
         except:
             raise ValueError('The measure function returns an array with varying shape.')
 
@@ -126,3 +125,26 @@ def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
     """Wrap simulation and measure functions together."""
 
     return measure_func(sim_func(**sim_params), **measure_params)
+
+
+def run_comparisons(sim_func, sim_params, measure_funcs, measure_params, values, update, n_sims=10):
+    """Compute multiple measures of interest across a the same set of simulations."""
+
+    n_measures = len(measure_funcs)
+    outs = [deepcopy([]) for ii in range(n_measures)]
+
+    update = UPDATES[update] if isinstance(update, str) else update
+
+    for cur_sim_params in update_vals(deepcopy(sim_params), values, update):
+
+        inst_outs = [deepcopy(np.zeros(n_sims)) for ii in range(n_measures)]
+        for s_ind in range(n_sims):
+
+            sig = sim_func(**cur_sim_params)
+            for m_ind, (measure, params) in enumerate(zip(measure_funcs, measure_params)):
+                inst_outs[m_ind][s_ind] = measure(sig, **params)
+
+        for n_ind in range(n_measures):
+            outs[n_ind].append(np.mean(inst_outs[n_ind], 0))
+
+    return outs
