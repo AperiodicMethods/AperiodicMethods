@@ -80,3 +80,15 @@ def plot_psds_two(freqs1, psd1, freqs2, psd2):
 
     for ax in axes: ax.grid(False)
     plt.subplots_adjust(wspace=0.3)
+
+
+def custom_psd_style(ax, **kwargs):
+    """Define custom styling for the PSD plots."""
+
+    ax.set_xticks([], minor=True)
+    ax.set_yticks([], minor=True)
+
+    ax.axes.get_xaxis().set_ticks([])
+    ax.axes.get_yaxis().set_ticks([])
+
+    plt.tight_layout()

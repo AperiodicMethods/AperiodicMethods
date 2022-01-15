@@ -1,4 +1,4 @@
-"""Plots for the distributions of errors from spectrum fitting methods."""
+"""Plots for the distributions of errors across methods."""
 
 import pandas as pd
 import seaborn as sns
@@ -7,31 +7,31 @@ import matplotlib.pyplot as plt
 ###################################################################################################
 ###################################################################################################
 
-def boxplot_errors(err_dists):
+def boxplot_errors(errors):
     """Plot a boxplot of distributions of errors for each spectrum fit method.
 
     Parameters
     ----------
-    err_dists : dict
-        Dictionary of error distributions, from SimFits object.
+    errors : dict
+        Dictionary of errors per method.
     """
 
     fig = plt.figure(figsize=[10, 5])
-    plt.boxplot([err_dists[meth] for meth in err_dists.keys()],
-                labels=err_dists.keys(), showfliers=False);
+    plt.boxplot([errors[meth] for meth in errors.keys()],
+                labels=errors.keys(), showfliers=False);
 
 
-def violin_errors(err_dists, ylim=None):
+def violin_errors(errors, ylim=None):
     """Plot a violin plot of distributions of errors for each spectrum fit method.
 
     Parameters
     ----------
-    err_dists : dict
-        Dictionary of error distributions, from SimFits object.
+    errors : dict
+        Dictionary of errors per method.
     """
 
     # Violin plot of the error distributions
-    df = pd.DataFrame(err_dists)
+    df = pd.DataFrame(errors)
 
     plt.figure(figsize=[8, 2])
     ax = sns.violinplot(data=df, cut=0)

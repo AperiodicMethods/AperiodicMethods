@@ -69,8 +69,8 @@ def get_ax():
     return plt.subplots(figsize=FIGSIZE1)[1]
 
 
-def color_red_or_green(val):
+def color_red_or_green(value, threshold=0.001):
     """Use colour code to visualize significant differences."""
 
-    color = 'green' if val < 0.001 else 'red'
+    color = 'green' if value < threshold else 'red'
     return 'color: %s' % color

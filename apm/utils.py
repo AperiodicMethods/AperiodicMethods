@@ -32,3 +32,16 @@ def exclude_spectrum(freqs, spectrum, exclude, make_2D=True):
         spectrum_out = _check1D(spectrum[f_mask])
 
     return freqs_out, spectrum_out
+
+
+def print_results(data):
+    """Print out the mean errors per method.
+
+    Parameters
+    ----------
+    data : list of tuple
+        List with each element containing (float, string).
+    """
+
+    for it in data:
+        print('   {:8} \t\t {:1.5f}'.format(it[1], it[0]))
