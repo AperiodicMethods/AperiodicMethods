@@ -1,7 +1,10 @@
-"""Wrapper functions that wrap measure functions to assist with running them across simulations."""
+"""Wrapper functions for measure functions for running them across simulations."""
 
 from antropy import hjorth_params
 
+from fooof import FOOOF
+
+from neurodsp.spectral import compute_spectrum
 from neurodsp.aperiodic.dfa import compute_fluctuations
 from neurodsp.aperiodic.autocorr import compute_autocorr
 from neurodsp.aperiodic.irasa import compute_irasa, fit_irasa
@@ -42,5 +45,14 @@ def hjorth_complexity_wrapper(sig):
 def irasa_wrapper(sig, **kwargs):
     """Wrapper function for fitting IRASA and returning fit exponent."""
 
-    freqs, psd_ap, psd_pe = compute_irasa(sig, **irasa_params)
+    freqs, psd_ap, psd_pe = compute_irasa(sig, **kwargs)
     return fit_irasa(freqs, psd_ap)[1]
+
+
+def specparam_wrapper(sig, **kwargs):
+    """Wrapper function for applying spec-param (starting from a time series)."""
+
+    freqs, powers = compute_spectrum(sig, kwargs.pop('fs'), f_range=kwargs.pop('f_range', None))
+    fm = FOOOF(**kwargs, verbose=False)
+    fm.fit(freqs, powers)
+    return fm.get_params('aperiodic', 'exponent')
