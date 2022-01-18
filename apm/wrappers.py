@@ -1,5 +1,7 @@
 """Wrapper functions for measure functions for running them across simulations."""
 
+import numpy as np
+
 from antropy import hjorth_params
 
 from fooof import FOOOF
@@ -19,15 +21,23 @@ def autocorr_wrapper(sig, **kwargs):
 
 
 def hurst_wrapper(sig, **kwargs):
-    """Wrapper function for computing and getting Hurst exponent."""
+    """Wrapper function for computing the Hurst exponent."""
 
     return compute_fluctuations(sig, method='rs', **kwargs)[2]
 
 
 def dfa_wrapper(sig, **kwargs):
-    """Wrapper function for computing and returing DFA measure."""
+    """Wrapper function for computing DFA."""
 
     return compute_fluctuations(sig, method='dfa', **kwargs)[2]
+
+
+def hjorth_activity_wrapper(sig):
+    """Wrapper function for computing Hjorth activity.
+    Note: 'Hjorth activity' is the variance of the signal.
+    """
+
+    return np.var(sig)
 
 
 def hjorth_mobility_wrapper(sig):
@@ -40,6 +50,14 @@ def hjorth_complexity_wrapper(sig):
     """Wrapper function for computing Hjorth complexity."""
 
     return hjorth_params(sig)[1]
+
+
+def lempelziv_wrapper(sig, **kwargs):
+    """Wrapper function for computing Lempel-Ziv complexity.
+    Note: LZ complexity is computed on a binarized version of the signal."""
+
+    bin_sig = np.array(sig > np.median(sig)).astype(int)
+    return lziv_complexity(bin_sig, **kwargs)
 
 
 def irasa_wrapper(sig, **kwargs):
