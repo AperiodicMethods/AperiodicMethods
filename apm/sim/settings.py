@@ -33,4 +33,4 @@ N_SIMS = 50
 # Set the range of exponents to explore
 EXPS = np.arange(-3, 0.5, 0.5)
 FREQS = np.arange(1, 50, 2)
-POWS = np.arange(0, 2, 0.1)
+POWERS = np.arange(0, 2, 0.1)

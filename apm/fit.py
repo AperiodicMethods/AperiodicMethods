@@ -19,6 +19,11 @@ from apm.core.utils import CheckDims1D, CheckDims2D
 ###################################################################################################
 ###################################################################################################
 
+ALPHA_RANGE = [7, 14]
+
+###################################################################################################
+###################################################################################################
+
 @CheckDims2D
 def fit_ols(freqs, spectrum):
     """Fit spectrum with OlS, across whole range."""
@@ -35,7 +40,7 @@ def fit_ols(freqs, spectrum):
 def fit_ols_alph(freqs, spectrum):
     """Fit spectrum with OlS, excluding pre-defined alpha band."""
 
-    freqs, spectrum = exclude_spectrum(freqs, spectrum, [7, 14])
+    freqs, spectrum = exclude_spectrum(freqs, spectrum, ALPHA_RANGE)
 
     fx = sm.add_constant(np.log10(freqs))
 
@@ -76,7 +81,7 @@ def fit_ransac(freqs, spectrum):
 def fit_ransac_alph(freqs, spectrum):
     """Fit spectrum with RANSAC, excluding pre-defined alpha band."""
 
-    freqs, spectrum = exclude_spectrum(freqs, spectrum, [7, 14])
+    freqs, spectrum = exclude_spectrum(freqs, spectrum, ALPHA_RANGE)
 
     ransac_model = RANSACRegressor(random_state=42)
     ransac_model.fit(np.log10(freqs), np.log10(spectrum))
@@ -115,7 +120,7 @@ def fit_rlm(freqs, spectrum):
 def fit_rlm_alph(freqs, spectrum):
     """Fit spectrum with RLM, excluding pre-defined alpha band."""
 
-    freqs, spectrum = exclude_spectrum(freqs, spectrum, [7, 14])
+    freqs, spectrum = exclude_spectrum(freqs, spectrum, ALPHA_RANGE)
 
     fx = sm.add_constant(np.log10(freqs))
 
@@ -153,7 +158,7 @@ def fit_exp(freqs, spectrum):
 def fit_exp_alph(freqs, spectrum):
     """Fit spectrum with an exponential fit, excluding pre-defined alpha band."""
 
-    freqs, spectrum = exclude_spectrum(freqs, spectrum, [7, 14], make_2D=False)
+    freqs, spectrum = exclude_spectrum(freqs, spectrum, ALPHA_RANGE, make_2D=False)
 
     fit_exp, _ = curve_fit(expf, freqs, np.log10(spectrum), p0=[1, 1])
     result = -fit_exp[1]
@@ -166,8 +171,8 @@ def fit_exp_oscs(freqs, spectrum):
     """Fit spectrum with an exponential fit, ignoring FOOOF derived oscillation bands."""
 
     _, cens, _, bws = _fooof_fit(freqs, spectrum)
-
     freqs, spectrum = _drop_oscs(freqs, spectrum, cens, bws)
+
     freqs = np.squeeze(freqs)
     spectrum = np.squeeze(spectrum)
 
@@ -209,6 +214,6 @@ def _drop_oscs(freqs, spectrum, cfs, bws):
 
     m = 2.0
     for cf, bw in zip(cfs, bws):
-        freqs, spectrum = exclude_spectrum(freqs, spectrum, [cf-m*bw, cf+m*bw])
+        freqs, spectrum = exclude_spectrum(freqs, spectrum, [cf - m * bw, cf + m * bw])
 
     return freqs, spectrum
