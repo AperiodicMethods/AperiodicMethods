@@ -4,9 +4,12 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from neurodsp.plts.utils import savefig
+
 ###################################################################################################
 ###################################################################################################
 
+@savefig
 def boxplot_errors(errors):
     """Plot a boxplot of distributions of errors for each spectrum fit method.
 
@@ -21,6 +24,7 @@ def boxplot_errors(errors):
                 labels=errors.keys(), showfliers=False);
 
 
+@savefig
 def violin_errors(errors, ylim=None):
     """Plot a violin plot of distributions of errors for each spectrum fit method.
 

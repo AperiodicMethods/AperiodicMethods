@@ -7,33 +7,24 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
+from neurodsp.plts.utils import savefig
+
 from apm.core.db import APMDB
 from apm.plts.settings import SAVE_EXT, FIGSIZE1
 
 ###################################################################################################
 ###################################################################################################
 
-def plot_colorbar(cmap, vmin, vmax, label, figsize=(2, 6), orientation='vertical', show=True,
-                  save_fig=False, file_name=None, file_path=None):
-    """Create a colorbar."""
+def get_ax(ax):
+    """Check an axis object, define if null, and get current if None."""
 
-    norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+    if not ax:
+        if figsize is not None:
+            _, ax = plt.subplots(figsize=figsize)
+        else:
+            ax = plt.gca()
 
-    fig, ax = plt.subplots(figsize=figsize)
-    cbar = mpl.colorbar.ColorbarBase(ax, cmap=cmap, norm=norm, orientation=orientation)
-
-    cbar.set_label(label, fontsize=30)
-    cbar.ax.tick_params(labelsize=20)
-
-    fig.subplots_adjust(bottom=0.5)
-    fig.subplots_adjust(right=0.45)
-
-    plt.tight_layout()
-
-    save_figure(save_fig, file_name, file_path)
-
-    if not show:
-        plt.close()
+    return ax
 
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0):
@@ -50,27 +41,26 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0):
     return new_cmap
 
 
-def save_figure(save_fig, file_name, file_path):
-    """Save out a figure."""
-
-    if save_fig:
-        plt.tight_layout()
-        file_name = file_name + SAVE_EXT
-
-        if not os.path.isdir(os.path.join(APMDB().figs_path, file_path)):
-            os.mkdir(os.path.join(APMDB().figs_path, file_path))
-
-        plt.savefig(os.path.join(APMDB().figs_path, file_path, file_name))
-
-
-def get_ax():
-    """Helper function to get an axis of a specific size for plotting."""
-
-    return plt.subplots(figsize=FIGSIZE1)[1]
-
-
 def color_red_or_green(value, threshold=0.001):
     """Use colour code to visualize significant differences."""
 
     color = 'green' if value < threshold else 'red'
     return 'color: %s' % color
+
+
+@savefig
+def plot_colorbar(cmap, vmin, vmax, label, figsize=(2, 6), orientation='vertical'):
+    """Create a colorbar."""
+
+    norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+
+    fig, ax = plt.subplots(figsize=figsize)
+    cbar = mpl.colorbar.ColorbarBase(ax, cmap=cmap, norm=norm, orientation=orientation)
+
+    cbar.set_label(label, fontsize=30)
+    cbar.ax.tick_params(labelsize=20)
+
+    fig.subplots_adjust(bottom=0.5)
+    fig.subplots_adjust(right=0.45)
+
+    plt.tight_layout()
