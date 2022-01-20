@@ -15,7 +15,7 @@ from neurodsp.plts.utils import savefig
 from apm.plts.utils import get_ax
 from apm.plts.settings import FIGSIZE1, FIGSIZE2
 
-from .utils import get_ax, custom_psd_style
+from .utils import get_ax
 
 ###################################################################################################
 ###################################################################################################
@@ -38,7 +38,7 @@ def plot_psds(freqs, psds, log_freqs=False, ax=None):
     This plots power values in log10 spacing.
     """
 
-    ax = get_ax(FIGSIZE1)
+    ax = get_ax(FIGSIZE1, None)
 
     if not isinstance(psds, list):
         plot_spectrum(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax)
@@ -68,7 +68,7 @@ def plot_psds_shades(freqs, psds, shades, log_freqs=False):
     This plots power values in log10 spacing.
     """
 
-    ax = get_ax(FIGSIZE1)
+    ax = get_ax(FIGSIZE1, None)
 
     if not isinstance(psds, list):
         plot_spectrum_shading(freqs, psds, shades, add_center=True,

@@ -15,7 +15,7 @@ from apm.plts.settings import SAVE_EXT, FIGSIZE1
 ###################################################################################################
 ###################################################################################################
 
-def get_ax(ax):
+def get_ax(ax, figsize):
     """Check an axis object, define if null, and get current if None."""
 
     if not ax:
@@ -46,6 +46,26 @@ def color_red_or_green(value, threshold=0.001):
 
     color = 'green' if value < threshold else 'red'
     return 'color: %s' % color
+
+
+def add_text(text, position='tr', xtp=None, ytp=None, ax=None):
+    """Add text to a plot.
+    positions: 'tr' - 'top right', 'tl' - 'top left'
+    """
+
+    if not xtp:
+        if position == 'tl':
+            xtp, ytp = 0.05, 0.8755
+        if position == 'tr':
+            xtp, ytp = 0.775, 0.8755
+
+    plt.text(xtp, ytp, text, transform=ax.transAxes)
+
+
+def formr(r_val):
+    """Format a string representation of a correlation r-value."""
+
+    return 'r={:1.2f}'.format(r_val)
 
 
 @savefig
