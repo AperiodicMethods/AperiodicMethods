@@ -18,6 +18,7 @@ from fooof.core.funcs import expo_nk_function as expf
 
 from apm.utils import abs_err, exclude_spectrum
 from apm.core.utils import CheckDims1D, CheckDims2D
+from apm.methods.settings import ALPHA_RANGE
 
 ###################################################################################################
 ###################################################################################################
@@ -28,26 +29,26 @@ class SpectralFits():
     def __init__(self):
         """Initialize object."""
 
-        self.fit_funcs = {'OLS': fit_ols,
-                          'OLS-EA': fit_ols_alph,
-                          'OLS-EO': fit_ols_oscs,
-                          'RLM': fit_rlm,
-                          'RLM-EA': fit_rlm_alph,
-                          'RLM-EO': fit_rlm_oscs,
-                          'RAN': fit_ransac,
-                          'RAN-EA': fit_ransac_alph,
-                          'RAN-EO': fit_ransac_oscs,
-                          'EXP': fit_exp,
-                          'EXP-EA': fit_exp_alph,
-                          'EXP-EO': fit_exp_oscs,
-                          'FOOOF': fit_fooof}
+        self.fit_funcs = {'OLS' : fit_ols,
+                          'OLS-EA' : fit_ols_alph,
+                          'OLS-EO' : fit_ols_oscs,
+                          'RLM' : fit_rlm,
+                          'RLM-EA' : fit_rlm_alph,
+                          'RLM-EO' : fit_rlm_oscs,
+                          'RAN' : fit_ransac,
+                          'RAN-EA' : fit_ransac_alph,
+                          'RAN-EO' : fit_ransac_oscs,
+                          'EXP' : fit_exp,
+                          'EXP-EA' : fit_exp_alph,
+                          'EXP-EO' : fit_exp_oscs,
+                          'FOOOF' : fit_fooof}
         self.initialize_error_dict(0)
 
 
     def __add__(self, other):
         """Overload addition, to add errors fit across different datasets."""
 
-        out = SimFits()
+        out = SpectralFits()
 
         for key, vals in other.errors.items():
             out.errors[key] = np.append(self.errors[key], other.errors[key])
@@ -58,14 +59,28 @@ class SpectralFits():
     def __len__(self):
         """"Define length of the object as the number of computed errors."""
 
-        return len(self.errors[self.errors.keys()[0]])
+        return len(self.errors[self.labels[0]])
+
+
+    @property
+    def labels(self):
+        """Labels for all the available fit functions."""
+
+        return list(self.fit_funcs.keys())
+
+
+    @property
+    def n_methods(self):
+        """The number of methods available in the object."""
+
+        return len(self.labels)
 
 
     def initialize_error_dict(self, n_psds):
         """Create a dictionary to store fitting errors."""
 
         self.errors = dict()
-        for key in self.fit_funcs.keys():
+        for key in self.labels:
             self.errors[key] = np.zeros(n_psds)
 
 
@@ -88,10 +103,10 @@ class SpectralFits():
     def compare_errors(self):
         """Compare error distributions between methods."""
 
-        comps = np.zeros([len(self.errors), len(self.errors)])
+        comps = np.zeros([self.n_methods, self.n_methods])
 
-        for ii, ki in enumerate(self.errors.keys()):
-            for ij, kj in enumerate(self.errors.keys()):
+        for ii, ki in enumerate(self.labels):
+            for ij, kj in enumerate(self.labels):
                 s, p = ranksums(self.errors[ki], self.errors[kj])
                 comps[ii, ij] = p
 
@@ -318,7 +333,8 @@ def _fooof_fit(freqs, spectrum):
     fm.fit(freqs, spectrum, [freqs.min(), freqs.max()])
 
     if len(fm.gaussian_params_ > 0):
-        cfs, pws, bws = fm.gaussian_params_[:, 0], fm.gaussian_params_[:, 1], fm.gaussian_params_[:, 2]
+        cfs, pws, bws = \
+            fm.gaussian_params_[:, 0], fm.gaussian_params_[:, 1], fm.gaussian_params_[:, 2]
     else:
         cfs, pws, bws = np.array([]), np.array([]), np.array([])
 

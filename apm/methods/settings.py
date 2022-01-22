@@ -12,7 +12,7 @@ ALPHA_RANGE = [7, 14]
 
 # Define IRASA settings
 IR_F_RANGE = (1, 50)
-IRASA_PARAMS = {'fs' : FS, 'f_range' : F_RANGE}
+IRASA_PARAMS = {'fs' : FS, 'f_range' : IR_F_RANGE}
 
 ## AUTO-CORRELATION MEASURES
 

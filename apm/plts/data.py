@@ -38,7 +38,7 @@ def plot_psds(freqs, psds, log_freqs=False, ax=None):
     This plots power values in log10 spacing.
     """
 
-    ax = get_ax(FIGSIZE1, None)
+    ax = get_ax(None, FIGSIZE1)
 
     if not isinstance(psds, list):
         plot_spectrum(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax)
@@ -68,7 +68,7 @@ def plot_psds_shades(freqs, psds, shades, log_freqs=False):
     This plots power values in log10 spacing.
     """
 
-    ax = get_ax(FIGSIZE1, None)
+    ax = get_ax(None, FIGSIZE1)
 
     if not isinstance(psds, list):
         plot_spectrum_shading(freqs, psds, shades, add_center=True,
