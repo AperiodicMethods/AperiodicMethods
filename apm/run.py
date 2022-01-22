@@ -127,24 +127,26 @@ def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
     return measure_func(sim_func(**sim_params), **measure_params)
 
 
-def run_comparisons(sim_func, sim_params, measure_funcs, measure_params, values, update, n_sims=10):
-    """Compute multiple measures of interest across a the same set of simulations."""
+def run_comparisons(sim_func, sim_params, measures, samplers, n_sims, verbose=False):
+    """Compute multiple measures of interest across the same set of simulations."""
 
-    n_measures = len(measure_funcs)
-    outs = [deepcopy([]) for ii in range(n_measures)]
+    n_measures = len(measures)
+    outs = [deepcopy(np.zeros(n_sims)) for ii in range(n_measures)]
 
-    update = UPDATES[update] if isinstance(update, str) else update
+    cur_sim_params = deepcopy(sim_params)
 
-    for cur_sim_params in update_vals(deepcopy(sim_params), values, update):
+    for s_ind in range(n_sims):
 
-        inst_outs = [deepcopy(np.zeros(n_sims)) for ii in range(n_measures)]
-        for s_ind in range(n_sims):
+        for key, val in samplers.items():
+            UPDATES[key](cur_sim_params, next(val))
 
-            sig = sim_func(**cur_sim_params)
-            for m_ind, (measure, params) in enumerate(zip(measure_funcs, measure_params)):
-                inst_outs[m_ind][s_ind] = measure(sig, **params)
+        if verbose:
+            print(cur_sim_params)
 
-        for n_ind in range(n_measures):
-            outs[n_ind].append(np.mean(inst_outs[n_ind], 0))
+        sig = sim_func(**cur_sim_params)
+
+        #for m_ind, (measure, params) in enumerate(zip(measure_funcs, measure_params)):
+        for m_ind, (measure, params) in enumerate(measures.items()):
+            outs[m_ind][s_ind] = measure(sig, **params)
 
     return outs
