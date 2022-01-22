@@ -45,3 +45,21 @@ def print_results(data):
 
     for it in data:
         print('   {:8} \t\t {:1.5f}'.format(it[1], it[0]))
+
+
+def format_corr(r_val, p_val, cis):
+    """Format correlation results for printing."""
+
+    return 'r={:+1.3f}  CI[{:+1.3f}, {:+1.3f}],  p={:1.3f}'.format(r_val, *cis, p_val)
+
+
+def sampler(values, probs=None):
+    """Create a generator to sample from a parameter range."""
+
+    # Check that length of options is same as length of probs, if provided
+    if np.any(probs):
+        if len(inds) != len(probs):
+            raise ValueError("The number of options must match the number of probabilities.")
+
+    while True:
+        yield np.random.choice(values, p=probs)
