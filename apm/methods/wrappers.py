@@ -2,8 +2,7 @@
 
 import numpy as np
 
-from antropy import hjorth_params
-from antropy import lziv_complexity
+from antropy import hjorth_params, lziv_complexity
 
 from fooof import FOOOF
 
