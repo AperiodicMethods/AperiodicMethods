@@ -2,11 +2,11 @@
 
 Welcome to the Aperiodic Methods notebooks!
 
-The notebooks in this project are organized into the following topics:
+The notebooks in this project are organized as follows:
 
 ## 0) Overview & Background
 
-Overview and background of the project.
+This section covers an overview and the background for the project.
 
 #### 00-Overview
 
@@ -22,52 +22,72 @@ Introduces the simulations used throughout the project.
 
 ## 1) Methods Evaluations
 
-Evaluations of individual methods.
+This section evaluates individual methods, on simulated data.
 
-#### 10-SpectralFitting
+#### 10-Methods
 
-Methods that fit aperiodic components to power spectra.
+This notebook introduces how the method evaluation simulations are done.
 
-#### 11-IRASA
+#### 11-SpectralFitting
 
-The 'irregular resampling auto-spectral analysis' (IRASA) method for decomposing time series.
+This notebook examines methods that fit aperiodic components to power spectra.
 
-#### 12-AutoCorrelation
+#### 12-IRASA
 
-Words, words, words.
+This notebook examines the 'irregular resampling auto-spectral analysis' (IRASA) method for decomposing time series.
 
-#### 13-Fluctuations
+#### 13-AutoCorrelation
 
-Fluctuation based analyses, including the Hurst exponent, and detrended fluctuation analysis (DFA).
+This notebook examines auto-correlation measures.
 
-#### 14-Complexity
+#### 14-Fluctuations
 
-Complexity and fractal dimension measures that can be applied to time series.
+This notebook examines 'fluctuation' analyses, including the Hurst exponent, and detrended fluctuation analysis (DFA).
 
-#### 15-Information
+#### 15-Complexity
 
-Information theory measures, including entropy measures.
+This notebook examines complexity and fractal dimension measures that can be applied to time series.
+
+#### 16-Information
+
+This notebook examines information theory measures, including entropy measures.
 
 ## 2)Methods Comparisons
 
-Comparisons of methods on simulated data. [UPCOMING]
+This section compares between the different methods, on simulated data.
 
-#### 20-SpectralComparisons
+#### 20-MethodComparisons
 
-A comparison of methods that operate in the frequency domain.
+This notebook introduces how the method comparison simulations are done.
 
-#### 21-TimeSeriesComparisons
+#### 21-CompareExponents
 
-A comparison of methods that operate in the time domain.
+This notebook compares methods that can be used to measure the aperiodic exponent, including specparam and IRASA.
+
+#### 22-CompareExponentsToOther
+
+This notebook compares exponent estimation to methods that operate in the time domain, including the fluctuation, complexity, and information measures.
+
+#### 23-CompareOther
+
+This notebook compares between methods that operate in the time domain, including the fluctuation, complexity, and information measures.
 
 ## 3) Empirical Comparisons
 
 Comparisons of methods on empirical data.  [UPCOMING]
 
-#### 30-EEGData
+#### 30-DataComparisons
 
-A comparison of a subset of data on example EEG data.
+This notebook introduces how the real data are analyzed.
 
-#### 31-iEEGData
+#### 31-EEGData
 
-A comparison of a subset of data on example iEEG data.
+This notebook introduces real data analysis by analyzing a sample of resting state EEG data.
+
+#### 32-DevelopmentalEEGData
+
+This notebook analyses a larger dataset of developmental EEG data.
+
+#### 33-iEEGData
+
+This notebook examines a larger dataset of iEEG data.
