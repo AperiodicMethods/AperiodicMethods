@@ -43,7 +43,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, values, update,
     sim_params : dict
         Input arguments for `sim_func`.
     measure_func : callable
-        A measure function to apply to the simulatied data.
+        A measure function to apply to the simulated data.
     measure_params : dict
         Input arguments for `measure_func`.
     values : list or 1d array
@@ -51,7 +51,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, values, update,
     update : {'update_exp', 'update_freq', 'update_pow', 'update_comb_exp'} or callable
         Specifies which parameter to update in simulation parameters.
     n_sims : int, optional, default: 10
-        The number of iterations to simulatie and calculate measures, per value.
+        The number of iterations to simulate and calculate measures, per value.
 
     Returns
     -------
@@ -102,7 +102,7 @@ def run_sims_parralel(sim_func, sim_params, measure_func, measure_params,
         measures = list(tqdm(mapping, desc="Running Simulations",
                              total=len(sim_params), dynamic_ncols=True))
 
-    # Rehape array and take mean across n_sims
+    # Reshape array and take mean across n_sims
     measures = np.array(measures)
     remainder = int(measures.size / (len(values) * n_sims))
 
@@ -128,10 +128,37 @@ def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
 
 
 def run_comparisons(sim_func, sim_params, measures, samplers, n_sims, verbose=False):
-    """Compute multiple measures of interest across the same set of simulations."""
+    """Compute multiple measures of interest across the same set of simulations.
+
+    Parameters
+    ----------
+    sim_func : callable
+        A function to create simulated time series.
+    sim_params : dict
+        Input arguments for `sim_func`.
+    measures : dict
+        A measure function to apply to the simulated data.
+        The keys should be functions to apply to the data.
+        The values should be a dictionary of parameters to use for the method.
+    samplers : dict
+        Information for how to sample across parameters for the simulations.
+        The keys should be string labels of which parameter to update.
+        The values should be data ranges to sample for that parameter.
+    n_sims : int
+        The number of simulations to run.
+    verbose : bool, optional, default: False
+        Whether to print out simulation parameters.
+        Used for checking simulations / debugging.
+
+    Returns
+    -------
+    outs : dict
+        Computed results for each measure across the set of simulated data.
+    """
 
     n_measures = len(measures)
-    outs = [deepcopy(np.zeros(n_sims)) for ii in range(n_measures)]
+
+    outs = {func.__name__ : deepcopy(np.zeros(n_sims)) for func in measures.keys()}
 
     cur_sim_params = deepcopy(sim_params)
 
@@ -145,8 +172,7 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims, verbose=Fa
 
         sig = sim_func(**cur_sim_params)
 
-        #for m_ind, (measure, params) in enumerate(zip(measure_funcs, measure_params)):
-        for m_ind, (measure, params) in enumerate(measures.items()):
-            outs[m_ind][s_ind] = measure(sig, **params)
+        for measure, params in measures.items():
+            outs[measure.__name__][s_ind] = measure(sig, **params)
 
     return outs
