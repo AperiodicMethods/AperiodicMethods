@@ -14,25 +14,25 @@ from neurodsp.aperiodic.irasa import compute_irasa, fit_irasa
 ###################################################################################################
 ###################################################################################################
 
-def autocorr_wrapper(sig, **kwargs):
+def autocorr(sig, **kwargs):
     """Wrapper funtion for computing autocorrelation."""
 
     return compute_autocorr(sig, **kwargs)[1]
 
 
-def hurst_wrapper(sig, **kwargs):
+def hurst(sig, **kwargs):
     """Wrapper function for computing the Hurst exponent."""
 
     return compute_fluctuations(sig, method='rs', **kwargs)[2]
 
 
-def dfa_wrapper(sig, **kwargs):
+def dfa(sig, **kwargs):
     """Wrapper function for computing DFA."""
 
     return compute_fluctuations(sig, method='dfa', **kwargs)[2]
 
 
-def hjorth_activity_wrapper(sig):
+def hjorth_activity(sig):
     """Wrapper function for computing Hjorth activity.
     Note: 'Hjorth activity' is the variance of the signal.
     """
@@ -40,19 +40,19 @@ def hjorth_activity_wrapper(sig):
     return np.var(sig)
 
 
-def hjorth_mobility_wrapper(sig):
+def hjorth_mobility(sig):
     """Wrapper function for computing Hjorth mobility."""
 
     return hjorth_params(sig)[0]
 
 
-def hjorth_complexity_wrapper(sig):
+def hjorth_complexity(sig):
     """Wrapper function for computing Hjorth complexity."""
 
     return hjorth_params(sig)[1]
 
 
-def lempelziv_wrapper(sig, **kwargs):
+def lempelziv(sig, **kwargs):
     """Wrapper function for computing Lempel-Ziv complexity.
     Note: LZ complexity is computed on a binarized version of the signal."""
 
@@ -60,14 +60,14 @@ def lempelziv_wrapper(sig, **kwargs):
     return lziv_complexity(bin_sig, **kwargs)
 
 
-def irasa_wrapper(sig, **kwargs):
+def irasa(sig, **kwargs):
     """Wrapper function for fitting IRASA and returning fit exponent."""
 
     freqs, psd_ap, psd_pe = compute_irasa(sig, **kwargs)
     return fit_irasa(freqs, psd_ap)[1]
 
 
-def specparam_wrapper(sig, **kwargs):
+def specparam(sig, **kwargs):
     """Wrapper function for applying spec-param (starting from a time series)."""
 
     freqs, powers = compute_spectrum(sig, kwargs.pop('fs'), f_range=kwargs.pop('f_range', None))
