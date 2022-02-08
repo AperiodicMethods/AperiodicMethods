@@ -17,10 +17,10 @@ sns.set_context('talk')
 @savefig
 def plot_dots(x_vals=None, y_vals=None, xlabel=None, ylabel=None,
               add_corr=True, corr_func=spearmanr, tposition='tr',
-              figsize=None, ax=None, **plt_kwargs):
+              ax=None, **plt_kwargs):
     """Plot data as dots."""
 
-    ax = get_ax(ax, figsize)
+    ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', None))
 
     # Create the plot
     if x_vals is not None:
@@ -37,11 +37,10 @@ def plot_dots(x_vals=None, y_vals=None, xlabel=None, ylabel=None,
 
 
 @savefig
-def plot_lines(x_vals=None, y_vals=None, xlabel=None, ylabel=None,
-               figsize=None, ax=None, **plt_kwargs):
+def plot_lines(x_vals=None, y_vals=None, xlabel=None, ylabel=None, ax=None, **plt_kwargs):
     """Plot data as line(s)."""
 
-    ax = get_ax(ax, figsize)
+    ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', None))
 
     # Set default line arguments
     if 'lw' not in plt_kwargs: plt_kwargs.update({'lw':  3.5})

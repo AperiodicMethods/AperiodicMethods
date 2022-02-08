@@ -21,7 +21,7 @@ from .utils import get_ax
 ###################################################################################################
 
 @savefig
-def plot_psds(freqs, psds, log_freqs=False, ax=None):
+def plot_psds(freqs, psds, log_freqs=False, ax=None, **plt_kwargs):
     """Plot one or many power spectra.
 
     Parameters
@@ -38,18 +38,18 @@ def plot_psds(freqs, psds, log_freqs=False, ax=None):
     This plots power values in log10 spacing.
     """
 
-    ax = get_ax(None, FIGSIZE1)
+    ax = get_ax(None, figsize=plt_kwargs.pop('figsize', FIGSIZE1))
 
     if not isinstance(psds, list):
-        plot_spectrum(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax)
+        plot_spectrum(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax, **plt_kwargs)
     else:
-        plot_spectra(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax)
+        plot_spectra(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax, **plt_kwargs)
 
     ax.grid(False)
 
 
 @savefig
-def plot_psds_shades(freqs, psds, shades, log_freqs=False):
+def plot_psds_shades(freqs, psds, shades, log_freqs=False, ax=None, **plt_kwargs):
     """Plot one or many power spectra, with shades.
 
     Parameters
@@ -68,26 +68,28 @@ def plot_psds_shades(freqs, psds, shades, log_freqs=False):
     This plots power values in log10 spacing.
     """
 
-    ax = get_ax(None, FIGSIZE1)
+    ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', FIGSIZE1))
 
     if not isinstance(psds, list):
         plot_spectrum_shading(freqs, psds, shades, add_center=True,
-                              log_freqs=log_freqs, log_powers=True, ax=ax)
+                              log_freqs=log_freqs, log_powers=True,
+                              ax=ax, **plt_kwargs)
     else:
         plot_spectra_shading(freqs, psds, shades, add_center=True,
-                             log_freqs=log_freqs, log_powers=True, ax=ax)
+                             log_freqs=log_freqs, log_powers=True,
+                             ax=ax, **plt_kwargs)
 
     ax.grid(False)
 
 
 @savefig
-def plot_psds_two(freqs1, psd1, freqs2, psd2):
+def plot_psds_two(freqs1, psd1, freqs2, psd2, **plt_kwargs):
     """Plot side-by-side power spectra."""
 
-    fig, axes = plt.subplots(1, 2, figsize=FIGSIZE2)
+    fig, axes = plt.subplots(1, 2, figsize=plt_kwargs.pop('figsize', FIGSIZE2))
 
-    plot_spectrum(freqs1, psd1, ax=axes[0])
-    plot_spectrum(freqs2, psd2, ax=axes[1])
+    plot_spectrum(freqs1, psd1, ax=axes[0], **plt_kwargs)
+    plot_spectrum(freqs2, psd2, ax=axes[1], **plt_kwargs)
 
     for ax in axes: ax.grid(False)
     plt.subplots_adjust(wspace=0.3)
@@ -97,14 +99,15 @@ def plot_psds_two(freqs1, psd1, freqs2, psd2):
 def plot_timeseries_and_psd(times, sig, fs, **plt_kwargs):
     """Plot a timeseries with it's associated power spectrum."""
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=plt_kwargs.pop('figsize', None))
     ax1 = fig.add_axes([0.0, 0.6, 1.3, 0.5])
     ax2 = fig.add_axes([1.5, 0.6, 0.6, 0.5])
 
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore")
 
-        plot_time_series(times, sig, xlim=[0, 2], **plt_kwargs, ax=ax1)
+        plot_time_series(times, sig, xlim=plt_kwargs.pop('xlim', [0, 2]),
+                         **plt_kwargs, ax=ax1)
 
         freqs, psd = trim_spectrum(*compute_spectrum(sig, fs, nperseg=500), [1, 75])
         plot_power_spectra(freqs, psd, ax=ax2)
