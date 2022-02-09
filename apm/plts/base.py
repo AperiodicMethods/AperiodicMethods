@@ -37,7 +37,8 @@ def plot_dots(x_vals=None, y_vals=None, add_corr=True, corr_func=spearmanr, tpos
 
 @savefig
 def plot_lines(x_vals=None, y_vals=None, shade_vals=None,
-               xlabel=None, ylabel=None, ax=None, **plt_kwargs):
+               xlabel=None, ylabel=None, xlim=None, ylim=None,
+               ax=None, **plt_kwargs):
     """Plot data as line(s)."""
 
     ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', None))
@@ -50,9 +51,13 @@ def plot_lines(x_vals=None, y_vals=None, shade_vals=None,
         ax.plot(x_vals, y_vals, **plt_kwargs)
 
     if shade_vals is not None:
-        ax.fill_between(x_vals, y_vals-shade_vals, y_vals+shade_vals, alpha=0.25)
+        ax.fill_between(x_vals, y_vals-shade_vals, y_vals+shade_vals,
+                        color=plt_kwargs.pop('color', None), alpha=0.2)
 
     if xlabel: ax.set_xlabel(xlabel)
     if ylabel: ax.set_ylabel(ylabel)
+
+    if xlim: ax.set_xlim(xlim)
+    if ylim: ax.set_ylim(ylim)
 
     if ax.get_legend_handles_labels()[0]: plt.legend()
