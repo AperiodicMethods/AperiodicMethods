@@ -156,7 +156,7 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims, verbose=Fa
     sim_params : dict
         Input arguments for `sim_func`.
     measures : dict
-        A measure function to apply to the simulated data.
+        Functions to apply to the simulated data.
         The keys should be functions to apply to the data.
         The values should be a dictionary of parameters to use for the method.
     samplers : dict
@@ -195,3 +195,34 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims, verbose=Fa
             outs[measure.__name__][s_ind] = measure(sig, **params)
 
     return outs
+
+
+def run_measures(data, measures):
+    """Compute multiple measures of interest across empirical recordings.
+
+    Parameters
+    ----------
+    data : 2d array
+        Data to run measures on, organized as [channels, timepoints].
+    measures : dict
+        Functions to apply to the data.
+        The keys should be functions to apply to the data.
+        The values should be a dictionary of parameters to use for the method.
+
+    Returns
+    -------
+    outputs : dict
+        Output measures.
+        The keys are labels for each applied method.
+        The values are the computed measures for each method.
+    """
+
+    # Initialize outputs
+    outputs = {func.__name__ : np.zeros(data.shape[0]) for func in measures.keys()}
+
+    # Calculate measures on data
+    for ind, sig in enumerate(data):
+        for measure, params in measures.items():
+            outputs[measure.__name__][ind] = measure(sig, **params)
+
+    return outputs
