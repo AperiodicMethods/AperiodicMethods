@@ -33,7 +33,8 @@ def update_vals(sim_params, values, update):
         yield sim_params
 
 
-def run_sims(sim_func, sim_params, measure_func, measure_params, values, update, n_sims=10):
+def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
+             n_sims=10, avg_func=np.mean, var_func=None):
     """Compute a measure of interest across a set of simulations.
 
     Parameters
@@ -46,12 +47,17 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, values, update,
         A measure function to apply to the simulated data.
     measure_params : dict
         Input arguments for `measure_func`.
-    values : list or 1d array
-        A parameter to step across and re-run measure calculations for.
     update : {'update_exp', 'update_freq', 'update_pow', 'update_comb_exp'} or callable
         Specifies which parameter to update in simulation parameters.
+    values : list or 1d array
+        A parameter to step across and re-run measure calculations for.
     n_sims : int, optional, default: 10
         The number of iterations to simulate and calculate measures, per value.
+    avg_func : callable, optional, default: np.mean
+        The function to calculate the average for a particular parameter value.
+    var_func : callable, optional
+        The function to calculate the variability for a particular parameter value.
+        If None, variability is not computed.
 
     Returns
     -------
@@ -60,29 +66,38 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, values, update,
 
     Notes
     -----
-    The mean measure across `n_sims` of simulations if computed and returned.
+    - For each parameter value, the average measure across `n_sims`
+      of simulations is computed and returned.
     """
-
-    outs = []
 
     update = UPDATES[update] if isinstance(update, str) else update
 
-    for cur_sim_params in update_vals(deepcopy(sim_params), values, update):
+    avg = [None] * len(values)
+    var = np.zeros(len(values))
+    for sp_ind, cur_sim_params in enumerate(update_vals(deepcopy(sim_params), values, update)):
 
-        inst_outs = []
-        for ind in range(n_sims):
+        inst_outs = [None] * n_sims
+        for s_ind in range(n_sims):
+            inst_outs[s_ind] = measure_func(sim_func(**cur_sim_params), **measure_params)
 
-            sig = sim_func(**cur_sim_params)
-            inst_outs.append(measure_func(sig, **measure_params))
+        avg[sp_ind] = avg_func(inst_outs, 0)
+        if var_func is not None:
+            var[sp_ind] = var_func(inst_outs, 0)
 
-        outs.append(np.mean(inst_outs, 0))
+    if var_func is not None:
+        return avg, var
+    else:
+        return avg
 
-    return outs
 
+def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update, values,
+                      n_sims=10, avg_func=np.mean, var_func=None, n_jobs=-1):
+    """Compute a set of measures across simulations, in parallel.
 
-def run_sims_parralel(sim_func, sim_params, measure_func, measure_params,
-                      values, update, n_sims=10, n_jobs=-1):
-    """Compute a set of measures across simulations - in parallel."""
+    Notes
+    -----
+    This function has the same call signature as `run_sims`, with the addition of `n_jobs`.
+    """
 
     n_jobs = cpu_count() if n_jobs == -1 else n_jobs
 
@@ -116,9 +131,13 @@ def run_sims_parralel(sim_func, sim_params, measure_func, measure_params,
         except:
             raise ValueError('The measure function returns an array with varying shape.')
 
-    measures = np.mean(measures, axis=1)
+    averages = avg_func(measures, axis=1)
 
-    return measures
+    if var_func is not None:
+        variability = var_func(measures, axis=1)
+        return averages, variability
+    else:
+        return averages
 
 
 def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
