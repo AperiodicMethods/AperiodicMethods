@@ -91,7 +91,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
 
 
 def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update, values,
-                      n_sims=10, avg_func=np.mean, var_func=None, n_jobs=-1):
+                      n_sims=10, avg_func=np.mean, var_func=None, n_jobs=-1, pbar=False):
     """Compute a set of measures across simulations, in parallel.
 
     Notes
@@ -115,7 +115,7 @@ def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update
                                     measure_params=measure_params), sim_params)
 
         measures = list(tqdm(mapping, desc="Running Simulations",
-                             total=len(sim_params), dynamic_ncols=True))
+                             total=len(sim_params), dynamic_ncols=True, disable=not pbar))
 
     # Reshape array and take mean across n_sims
     measures = np.array(measures)
