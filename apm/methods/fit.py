@@ -41,7 +41,7 @@ class SpectralFits():
                           'EXP' : fit_exp,
                           'EXP-EA' : fit_exp_alph,
                           'EXP-EO' : fit_exp_oscs,
-                          'FOOOF' : fit_fooof}
+                          'SPECPARAM' : fit_specparam}
         self.initialize_error_dict(0)
 
 
@@ -97,7 +97,7 @@ class SpectralFits():
                     try:
                         self.errors[ki][ind] = abs_err(-exp, fn(freqs, powers[ind, :]))
                     except:
-                        self.errors[ki][ind] = 0
+                        self.errors[ki][ind] = np.nan
 
 
     def compare_errors(self):
@@ -134,7 +134,7 @@ class SpectralFits():
 
         std_errors = []
         for key, vals in self.errors.items():
-            std_errors.append((np.std(vals), key))
+            std_errors.append((np.nanstd(vals), key))
         std_errors.sort()
 
         return std_errors
@@ -159,10 +159,7 @@ class SpectralFits():
 def fit_ols(freqs, spectrum):
     """Fit spectrum with OlS, across whole range."""
 
-    fx = sm.add_constant(np.log10(freqs))
-
-    ols_model = sm.OLS(np.log10(spectrum), fx).fit()
-    result = ols_model.params[1]
+    result = _ols_fit(freqs, spectrum)
 
     return result
 
@@ -173,25 +170,19 @@ def fit_ols_alph(freqs, spectrum):
 
     freqs, spectrum = exclude_spectrum(freqs, spectrum, ALPHA_RANGE)
 
-    fx = sm.add_constant(np.log10(freqs))
-
-    ols_model = sm.OLS(np.log10(spectrum), fx).fit()
-    result = ols_model.params[1]
+    result = _ols_fit(freqs, spectrum)
 
     return result
 
 
 @CheckDims2D
 def fit_ols_oscs(freqs, spectrum):
-    """Fit spectrum with OlS, ignoring FOOOF derived oscillation bands."""
+    """Fit spectrum with OlS, ignoring specparam derived oscillation bands."""
 
-    _, cens, _, bws = _fooof_fit(freqs, spectrum)
+    _, cens, _, bws = _specparam_fit(freqs, spectrum)
     freqs, spectrum = _drop_oscs(freqs, spectrum, cens, bws)
 
-    fx = sm.add_constant(np.log10(freqs))
-
-    ols_model = sm.OLS(np.log10(spectrum), fx).fit()
-    result = ols_model.params[1]
+    result = _ols_fit(freqs, spectrum)
 
     return result
 
@@ -200,10 +191,7 @@ def fit_ols_oscs(freqs, spectrum):
 def fit_ransac(freqs, spectrum):
     """Fit spectrum with RANSAC, across whole range."""
 
-    ransac_model = RANSACRegressor(random_state=42)
-    ransac_model.fit(np.log10(freqs), np.log10(spectrum))
-
-    result = ransac_model.estimator_.coef_[0][0]
+    result = _ransac_fit(freqs, spectrum)
 
     return result
 
@@ -214,23 +202,19 @@ def fit_ransac_alph(freqs, spectrum):
 
     freqs, spectrum = exclude_spectrum(freqs, spectrum, ALPHA_RANGE)
 
-    ransac_model = RANSACRegressor(random_state=42)
-    ransac_model.fit(np.log10(freqs), np.log10(spectrum))
-    result = ransac_model.estimator_.coef_[0][0]
+    result = _ransac_fit(freqs, spectrum)
 
     return result
 
 
 @CheckDims2D
 def fit_ransac_oscs(freqs, spectrum):
-    """Fit spectrum with RANSAC, ignoring FOOOF derived oscillation bands."""
+    """Fit spectrum with RANSAC, ignoring specparam derived oscillation bands."""
 
-    _, cens, _, bws = _fooof_fit(freqs, spectrum)
+    _, cens, _, bws = _specparam_fit(freqs, spectrum)
     freqs, spectrum = _drop_oscs(freqs, spectrum, cens, bws)
 
-    ransac_model = RANSACRegressor(random_state=42)
-    ransac_model.fit(np.log10(freqs), np.log10(spectrum))
-    result = ransac_model.estimator_.coef_[0][0]
+    result = _ransac_fit(freqs, spectrum)
 
     return result
 
@@ -239,10 +223,7 @@ def fit_ransac_oscs(freqs, spectrum):
 def fit_rlm(freqs, spectrum):
     """Fit spectrum with RLM, across whole range."""
 
-    fx = sm.add_constant(np.log10(freqs))
-
-    fit_rlm = sm.RLM(np.log10(spectrum), fx).fit()
-    result = fit_rlm.params[1]
+    result = _rlm_fit(freqs, spectrum)
 
     return result
 
@@ -253,24 +234,19 @@ def fit_rlm_alph(freqs, spectrum):
 
     freqs, spectrum = exclude_spectrum(freqs, spectrum, ALPHA_RANGE)
 
-    fx = sm.add_constant(np.log10(freqs))
-
-    fit_rlm = sm.RLM(np.log10(spectrum), fx).fit()
-    result = fit_rlm.params[1]
+    result = _rlm_fit(freqs, spectrum)
 
     return result
 
 
 @CheckDims2D
 def fit_rlm_oscs(freqs, spectrum):
-    """Fit spectrum with RLM, ignoring FOOOF derived oscillation bands."""
+    """Fit spectrum with RLM, ignoring specparam derived oscillation bands."""
 
-    _, cens, _, bws = _fooof_fit(freqs, spectrum)
+    _, cens, _, bws = _specparam_fit(freqs, spectrum)
     freqs, spectrum = _drop_oscs(freqs, spectrum, cens, bws)
 
-    fx = sm.add_constant(np.log10(freqs))
-    fit_rlm = sm.RLM(np.log10(spectrum), fx).fit()
-    result = fit_rlm.params[1]
+    result = _rlm_fit(freqs, spectrum)
 
     return result
 
@@ -279,8 +255,7 @@ def fit_rlm_oscs(freqs, spectrum):
 def fit_exp(freqs, spectrum):
     """Fit spectrum with an exponential fit."""
 
-    fit_exp, _ = curve_fit(expf, freqs, np.log10(spectrum), p0=[1, 1])
-    result = -fit_exp[1]
+    result = _exp_fit(freqs, spectrum)
 
     return result
 
@@ -291,33 +266,31 @@ def fit_exp_alph(freqs, spectrum):
 
     freqs, spectrum = exclude_spectrum(freqs, spectrum, ALPHA_RANGE, make_2D=False)
 
-    fit_exp, _ = curve_fit(expf, freqs, np.log10(spectrum), p0=[1, 1])
-    result = -fit_exp[1]
+    result = _exp_fit(freqs, spectrum)
 
     return result
 
 
 @CheckDims1D
 def fit_exp_oscs(freqs, spectrum):
-    """Fit spectrum with an exponential fit, ignoring FOOOF derived oscillation bands."""
+    """Fit spectrum with an exponential fit, ignoring specparam derived oscillation bands."""
 
-    _, cens, _, bws = _fooof_fit(freqs, spectrum)
+    _, cens, _, bws = _specparam_fit(freqs, spectrum)
     freqs, spectrum = _drop_oscs(freqs, spectrum, cens, bws)
 
     freqs = np.squeeze(freqs)
     spectrum = np.squeeze(spectrum)
 
-    fit_exp, _ = curve_fit(expf, freqs, np.log10(spectrum), p0=[1, 1])
-    result = -fit_exp[1]
+    result = _exp_fit(freqs, spectrum)
 
     return result
 
 
 @CheckDims1D
-def fit_fooof(freqs, spectrum):
-    """Fit FOOOF."""
+def fit_specparam(freqs, spectrum):
+    """Fit spectral parameterization."""
 
-    f_res = _fooof_fit(freqs, spectrum)
+    f_res = _specparam_fit(freqs, spectrum)
     result = -f_res[0]
 
     return result
@@ -325,11 +298,51 @@ def fit_fooof(freqs, spectrum):
 ###################################################################################################
 ###################################################################################################
 
-@CheckDims1D
-def _fooof_fit(freqs, spectrum):
-    """Fit FOOOF."""
+def _ols_fit(freqs, spectrum):
+    """Helper function for fitting OLS."""
 
-    fm = FOOOF(peak_width_limits=[1, 8], verbose=False)
+    fx = sm.add_constant(np.log10(freqs))
+
+    ols_model = sm.OLS(np.log10(spectrum), fx).fit()
+    result = ols_model.params[1]
+
+    return result
+
+
+def _rlm_fit(freqs, spectrum):
+    """Helper function for fitting RLM."""
+
+    fx = sm.add_constant(np.log10(freqs))
+    fit_rlm = sm.RLM(np.log10(spectrum), fx).fit()
+    result = fit_rlm.params[1]
+
+    return result
+
+
+def _ransac_fit(freqs, spectrum):
+    """"Helper function for fitting RANSAC."""
+
+    ransac_model = RANSACRegressor(random_state=42)
+    ransac_model.fit(np.log10(freqs), np.log10(spectrum))
+    result = ransac_model.estimator_.coef_[0][0]
+
+    return result
+
+
+def _exp_fit(freqs, spectrum):
+    """Helper function for fitting exponential."""
+
+    fit_exp, _ = curve_fit(expf, freqs, np.log10(spectrum), p0=[1, 1])
+    result = -fit_exp[1]
+
+    return result
+
+
+@CheckDims1D
+def _specparam_fit(freqs, spectrum):
+    """Helper function for fitting spectral parameterization."""
+
+    fm = FOOOF(peak_width_limits=[1, 8], max_n_peaks=6, verbose=False)
     fm.fit(freqs, spectrum, [freqs.min(), freqs.max()])
 
     if len(fm.gaussian_params_ > 0):
