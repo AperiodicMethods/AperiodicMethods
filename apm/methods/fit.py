@@ -140,16 +140,21 @@ class SpectralFits():
         return std_errors
 
 
-    def compute_threshold(self, thresh=0.025):
-        """Compute percentage of errors below a given threshold."""
+    def compute_threshold(self, thresh=0.025, direction='below'):
+        """Compute percentage of errors below a given threshold.
+        direction: 'below', 'above'
+        """
 
-        perc_good = []
+        percent = []
         for key, vals in self.errors.items():
-            perc_good.append((sum(vals < thresh) / len(vals), key))
-        perc_good.sort()
-        perc_good.reverse()
+            if direction == 'below':
+                percent.append((sum(vals < thresh) / len(vals) * 100, key))
+            elif direction == 'above':
+                percent.append((sum(vals > thresh) / len(vals) * 100, key))
+        percent.sort()
+        percent.reverse()
 
-        return perc_good
+        return percent
 
 
 ###################################################################################################
