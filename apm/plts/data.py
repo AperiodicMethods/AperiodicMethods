@@ -2,85 +2,18 @@
 
 import warnings
 
-import numpy as np
 import matplotlib.pyplot as plt
 
 from fooof.utils import trim_spectrum
-from fooof.plts.spectra import (plot_spectrum, plot_spectra,
-                                plot_spectrum_shading, plot_spectra_shading)
+from fooof.plts.spectra import plot_spectra
 from neurodsp.spectral import compute_spectrum
 from neurodsp.plts import plot_time_series, plot_power_spectra
 from neurodsp.plts.utils import savefig
 
-from apm.plts.utils import get_ax
-from apm.plts.settings import FIGSIZE1, FIGSIZE2
-
-from .utils import get_ax
+from apm.plts.settings import FIGSIZE2
 
 ###################################################################################################
 ###################################################################################################
-
-@savefig
-def plot_psds(freqs, psds, log_freqs=False, ax=None, **plt_kwargs):
-    """Plot one or many power spectra.
-
-    Parameters
-    ----------
-    freqs : 1d array or list of 1d array
-        Frequency values to plot, on the x-axis.
-    psds : 1d array or list of 1d array
-        Power values to plot, on the y-axis.
-    log_freqs : bool, optional, default: False
-        Whether to plot the frequency axis in log space.
-
-    Notes
-    -----
-    This plots power values in log10 spacing.
-    """
-
-    ax = get_ax(None, figsize=plt_kwargs.pop('figsize', FIGSIZE1))
-
-    if not isinstance(psds, list):
-        plot_spectrum(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax, **plt_kwargs)
-    else:
-        plot_spectra(freqs, psds, log_freqs=log_freqs, log_powers=True, ax=ax, **plt_kwargs)
-
-    ax.grid(False)
-
-
-@savefig
-def plot_psds_shades(freqs, psds, shades, log_freqs=False, ax=None, **plt_kwargs):
-    """Plot one or many power spectra, with shades.
-
-    Parameters
-    ----------
-    freqs : 1d array or list of 1d array
-        Frequency values to plot, on the x-axis.
-    psds : 1d array or list of 1d array
-        Power values to plot, on the y-axis.
-    shades : list of [float, float] or list of list of [float, float]
-        Shaded region(s) to add to plot, defined as [lower_bound, upper_bound].
-    log_freqs : bool, optional, default: False
-        Whether to plot the frequency axis in log space.
-
-    Notes
-    -----
-    This plots power values in log10 spacing.
-    """
-
-    ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', FIGSIZE1))
-
-    if not isinstance(psds, list):
-        plot_spectrum_shading(freqs, psds, shades, add_center=True,
-                              log_freqs=log_freqs, log_powers=True,
-                              ax=ax, **plt_kwargs)
-    else:
-        plot_spectra_shading(freqs, psds, shades, add_center=True,
-                             log_freqs=log_freqs, log_powers=True,
-                             ax=ax, **plt_kwargs)
-
-    ax.grid(False)
-
 
 @savefig
 def plot_psds_two(freqs1, psd1, freqs2, psd2, **plt_kwargs):
@@ -88,8 +21,8 @@ def plot_psds_two(freqs1, psd1, freqs2, psd2, **plt_kwargs):
 
     fig, axes = plt.subplots(1, 2, figsize=plt_kwargs.pop('figsize', FIGSIZE2))
 
-    plot_spectrum(freqs1, psd1, ax=axes[0], **plt_kwargs)
-    plot_spectrum(freqs2, psd2, ax=axes[1], **plt_kwargs)
+    plot_spectra(freqs1, psd1, ax=axes[0], **plt_kwargs)
+    plot_spectra(freqs2, psd2, ax=axes[1], **plt_kwargs)
 
     for ax in axes: ax.grid(False)
     plt.subplots_adjust(wspace=0.3)
