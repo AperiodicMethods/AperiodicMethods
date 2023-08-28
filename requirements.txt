@@ -3,8 +3,12 @@ pandas
 scipy
 matplotlib
 seaborn
+statsmodels
 scikit-learn
-fooof >= 1.0.0
+tqdm
+mne
+fooof >= 1.1.0
 neurodsp >= 2.2.0
 antropy
-lisc
+lisc >= 0.2.1
+bootstrap @ git+https://github.com/TomDonoghue/bootstrap@main
