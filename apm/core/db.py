@@ -32,31 +32,32 @@ class APMDB(object):
         # Set base path for project
         self.base_path = base_path
 
-        # Initialize paths
-        self.data_path = str()
-        self.sims_path = str()
-        self.psds_path = str()
-        self.fooof_path = str()
-        self.figs_path = str()
-
         # Generate project paths
         if gen_paths:
             self.gen_paths()
 
+
     def gen_paths(self):
         """Generate paths."""
 
-        self.data_path = os.path.join(self.base_path, 'data')
-        self.figs_path = os.path.join(self.base_path, 'figures')
-        self.sims_path = os.path.join(self.data_path, 'sims')
-        self.psds_path = os.path.join(self.data_path, 'psds')
-        self.fooof_path = os.path.join(self.data_path, 'fooof')
+        # Level 1 paths
+        self.data_path = self.base_path / 'data'
+        self.figs_path = self.base_path / 'figures'
 
+        # Data path subfolders
+        self.sims_path = self.data_path / 'sims'
+        self.psds_path = self.data_path / 'psds'
+        self.fooof_path = self.data_path / 'fooof'
+        self.literature_path = self.data_path / 'literature'
+
+        # Initialize paths if not already created
         self._mkpath(self.data_path)
         self._mkpath(self.figs_path)
         self._mkpath(self.sims_path)
         self._mkpath(self.psds_path)
         self._mkpath(self.fooof_path)
+        self._mkpath(self.literature_path)
+
 
     def check_files(self, file_type):
         """Check what files are available.
@@ -66,6 +67,7 @@ class APMDB(object):
 
         return clean_files(os.listdir(getattr(self, file_type + '_path')))
 
+
     def get_files(self, file_type):
         """Get available files.
 
@@ -74,10 +76,12 @@ class APMDB(object):
 
         return [fi.split('_')[0] for fi in self.check_files(file_type)]
 
+
     def make_fig_name(self, file_name, file_type='pdf'):
         """Return the file path for a figure with a given name."""
 
         return os.path.join(self.figs_path, file_name + '.' + file_type)
+
 
     def _mkpath(self, gen_path):
         """Created paths that don't exists."""
