@@ -3,6 +3,8 @@
 import os
 from pathlib import Path
 
+from apm.core.io import get_files, clean_files
+
 ###################################################################################################
 ###################################################################################################
 
@@ -59,22 +61,13 @@ class APMDB(object):
         self._mkpath(self.literature_path)
 
 
-    def check_files(self, file_type):
-        """Check what files are available.
+    def get_files(self, directory, **kwargs):
+        """Get a list of available files in the specified directory.
 
-        file_type: {'sims', 'psd', 'fooof'}
+        directory: {'data', 'figures', 'sims', 'psds', 'fooof', 'literature'}
         """
 
-        return clean_files(os.listdir(getattr(self, file_type + '_path')))
-
-
-    def get_files(self, file_type):
-        """Get available files.
-
-        file_type: {'sims', 'psd', 'fooof'}
-        """
-
-        return [fi.split('_')[0] for fi in self.check_files(file_type)]
+        return get_files(getattr(self, file_type + '_path'))
 
 
     def make_fig_name(self, file_name, file_type='pdf'):
@@ -84,15 +77,7 @@ class APMDB(object):
 
 
     def _mkpath(self, gen_path):
-        """Created paths that don't exists."""
+        """Create paths that don't exists."""
 
         if not os.path.isdir(gen_path):
             os.mkdir(gen_path)
-
-###################################################################################################
-###################################################################################################
-
-def clean_files(files):
-    """Clean a list of files, removing any hidden files."""
-
-    return list(filter(lambda x: x[0] != '.', files))
