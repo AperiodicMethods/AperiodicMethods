@@ -14,11 +14,35 @@ from neurodsp.aperiodic.irasa import compute_irasa, fit_irasa
 ###################################################################################################
 ###################################################################################################
 
+## AUTOCORRELATION MEASURES
+
 def autocorr(sig, **kwargs):
     """Wrapper funtion for computing autocorrelation."""
 
     return compute_autocorr(sig, **kwargs)[1]
 
+
+def autocorr_decay_time(sig, fs, level=0, **kwargs):
+    """Wrapper function for computing the autocorrelation & decay time together."""
+
+    return compute_decay_time(*compute_autocorr(sig, **kwargs), fs, level)
+
+
+def compute_decay_time(times, acs, fs, level=0):
+    """Compute autocorrelation decay time, from precomputed autocorrelation.
+    Note: this could be added to NDSP?
+    """
+
+    val_checks = acs < level
+
+    if np.any(val_checks):
+        result = times[np.argmax(val_checks)] / fs
+    else:
+        result = np.nan
+
+    return result
+
+## FLUCTUATION MEASURES
 
 def hurst(sig, **kwargs):
     """Wrapper function for computing the Hurst exponent."""
@@ -31,6 +55,8 @@ def dfa(sig, **kwargs):
 
     return compute_fluctuations(sig, method='dfa', **kwargs)[2]
 
+
+## COMPLEXITY MEASURES
 
 def hjorth_activity(sig):
     """Wrapper function for computing Hjorth activity.
@@ -59,6 +85,7 @@ def lempelziv(sig, **kwargs):
     bin_sig = np.array(sig > np.median(sig)).astype(int)
     return lziv_complexity(bin_sig, **kwargs)
 
+## SPECTRAL MEASURES
 
 def irasa(sig, **kwargs):
     """Wrapper function for fitting IRASA and returning fit exponent."""
