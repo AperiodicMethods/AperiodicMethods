@@ -18,6 +18,8 @@ IRASA_PARAMS = {'fs' : FS, 'f_range' : IR_F_RANGE}
 
 # Settings for autocorrelations
 AC_PARAMS = {'max_lag' : 250, 'lag_step' : 1}
+AC_PARAMS_DECAY = {'max_lag' : 1500, 'lag_step' : 2}
+DECAY_LEVEL = 0.5
 
 ## FLUCTUATION METHODS
 

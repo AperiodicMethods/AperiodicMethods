@@ -3,6 +3,7 @@
 import numpy as np
 
 from antropy import hjorth_params, lziv_complexity
+from neurokit2.complexity import fractal_sevcik
 
 from fooof import FOOOF
 
@@ -84,6 +85,12 @@ def lempelziv(sig, **kwargs):
 
     bin_sig = np.array(sig > np.median(sig)).astype(int)
     return lziv_complexity(bin_sig, **kwargs)
+
+## FRACTAL DIMENSION MEASURES
+
+def sevcik_fd(sig, **kwargs):
+
+    return fractal_sevcik(sig)[0]
 
 ## SPECTRAL MEASURES
 
