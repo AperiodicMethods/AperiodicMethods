@@ -28,6 +28,7 @@ def plot_psds_two(freqs1, psd1, freqs2, psd2, **plt_kwargs):
     plt.subplots_adjust(wspace=0.3)
 
 
+# NOTE: use from NDSP when merged in there
 @savefig
 def plot_timeseries_and_psd(times, sig, fs, **plt_kwargs):
     """Plot a timeseries with it's associated power spectrum."""

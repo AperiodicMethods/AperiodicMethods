@@ -1,29 +1,27 @@
-"""Core plot functions."""
+"""Base plot functions."""
 
 import matplotlib.pyplot as plt
 
 from neurodsp.plts.utils import savefig
+from neurodsp.plts.style import style_plot
 
 from scipy.stats import spearmanr
 
 from .utils import get_ax, add_text, formr
 
-import seaborn as sns
-sns.set_context('talk')
-
 ###################################################################################################
 ###################################################################################################
 
 @savefig
+@style_plot
 def plot_dots(x_vals=None, y_vals=None, add_corr=True, corr_func=spearmanr, tposition='tr',
               xlabel=None, ylabel=None, ax=None, **plt_kwargs):
     """Plot data as dots."""
 
     ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', None))
 
-    # Create the plot
     if x_vals is not None:
-        ax.plot(x_vals, y_vals, '.', **plt_kwargs)
+        ax.scatter(x_vals, y_vals, **plt_kwargs)
 
     if xlabel: ax.set_xlabel(xlabel)
     if ylabel: ax.set_ylabel(ylabel)
@@ -36,6 +34,7 @@ def plot_dots(x_vals=None, y_vals=None, add_corr=True, corr_func=spearmanr, tpos
 
 
 @savefig
+@style_plot
 def plot_lines(x_vals=None, y_vals=None, shade_vals=None,
                xlabel=None, ylabel=None, xlim=None, ylim=None,
                ax=None, **plt_kwargs):
@@ -43,10 +42,8 @@ def plot_lines(x_vals=None, y_vals=None, shade_vals=None,
 
     ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', None))
 
-    # Set default line arguments
     if 'lw' not in plt_kwargs: plt_kwargs.update({'lw':  3.5})
 
-    # Create the plot
     if x_vals is not None:
         ax.plot(x_vals, y_vals, **plt_kwargs)
 

@@ -6,6 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from neurodsp.plts.utils import savefig
+from neurodsp.plts.style import style_plot
 
 from .utils import get_ax
 
@@ -13,6 +14,7 @@ from .utils import get_ax
 ###################################################################################################
 
 @savefig
+@style_plot
 def plot_boxplot_errors(errors, **plt_kwargs):
     """Plot a boxplot of distributions of errors for each spectrum fit method.
 
@@ -29,6 +31,7 @@ def plot_boxplot_errors(errors, **plt_kwargs):
 
 
 @savefig
+@style_plot
 def plot_violin_errors(errors, ylim=None, **plt_kwargs):
     """Plot a violin plot of distributions of errors for each spectrum fit method.
 
@@ -55,6 +58,7 @@ def plot_violin_errors(errors, ylim=None, **plt_kwargs):
 
 
 @savefig
+@style_plot
 def plot_corr_matrix(corrs, **plt_kwargs):
     """Plot a correlation matrix, computed from the output of df.corr()."""
 

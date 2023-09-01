@@ -5,19 +5,23 @@ import matplotlib.pyplot as plt
 from neurodsp.plts.utils import savefig
 
 from apm.plts.base import plot_lines
-from apm.plts.settings import AP_COL, COMB_COL, FREQ_COLOR, POW_COLOR
+from apm.plts.settings import AP_COLOR, COMB_COLOR, FREQ_COLOR, POW_COLOR
 from apm.sim.settings import EXPS, FREQS, POWERS
 
 ###################################################################################################
 ###################################################################################################
 
 @savefig
-def plot_ap_sims(sims_exp, sims_exp_var, sims_comb, sims_comb_var, ylabel=None):
+def plot_ap_sims(sims_exp, sims_exp_var, sims_comb, sims_comb_var, ylabel=None, expected=None):
     """Plot simulations across aperiodic parameters."""
 
     _, ax = plt.subplots(figsize=(6, 5))
-    plot_lines(EXPS, sims_exp, sims_exp_var, color=AP_COL, label='Aperiodic', ax=ax)
-    plot_lines(EXPS, sims_comb, sims_comb_var, color=COMB_COL, label='Combined', ax=ax)
+
+    if expected is not None:
+        plot_lines(EXPS, expected, color='k', linestyle='--', label='Expected')
+
+    plot_lines(EXPS, sims_exp, sims_exp_var, color=AP_COLOR, label='Aperiodic', ax=ax)
+    plot_lines(EXPS, sims_comb, sims_comb_var, color=COMB_COLOR, label='Combined', ax=ax)
     plot_lines(xlabel='Aperiodic Exponent', ylabel=ylabel, ax=ax)
     plt.legend(fontsize=14)
 
