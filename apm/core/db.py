@@ -67,7 +67,7 @@ class APMDB(object):
         directory: {'data', 'figures', 'sims', 'psds', 'fooof', 'literature'}
         """
 
-        return get_files(getattr(self, file_type + '_path'))
+        return get_files(getattr(self, directory + '_path'))
 
 
     def make_fig_name(self, file_name, file_type='pdf'):
