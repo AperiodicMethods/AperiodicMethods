@@ -3,7 +3,7 @@
 import numpy as np
 
 from antropy import hjorth_params, lziv_complexity
-from neurokit2.complexity import fractal_sevcik
+from neurokit2.complexity import fractal_sevcik, complexity_wpe, entropy_multiscale
 
 from fooof import FOOOF
 
@@ -91,6 +91,30 @@ def lempelziv(sig, **kwargs):
 def sevcik_fd(sig, **kwargs):
 
     return fractal_sevcik(sig)[0]
+
+## ENTROPY MEASURES
+
+def wperm_entropy(sig, **kwargs):
+
+    return complexity_wpe(sig, **kwargs)[0]
+
+## MULTISCALE ENTROPY MEASURES
+
+def multi_app_entropy(sig, **kwargs):
+
+    return entropy_multiscale(sig, method='MSApEn', **kwargs)[0]
+
+def multi_sample_entropy(sig, **kwargs):
+
+    return entropy_multiscale(sig, method='MSEn', **kwargs)[0]
+
+def multi_perm_entropy(sig, **kwargs):
+
+    return entropy_multiscale(sig, method='MSPEn', **kwargs)[0]
+
+def multi_wperm_entropy(sig, **kwargs):
+
+    return entropy_multiscale(sig, method='MSWPEn', **kwargs)[0]
 
 ## SPECTRAL MEASURES
 

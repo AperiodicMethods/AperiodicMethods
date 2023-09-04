@@ -47,11 +47,24 @@ LZ_PARAMS = {'normalize' : False}
 
 ## ENTROPY MEASURES
 
+# Approximate Entropy
+AP_ENT_PARAMS = {'order' : 2}
 # Sample Entropy
 SA_ENT_PARAMS = {'order' : 2}
 # Permutation Entropy
 PE_ENT_PARAMS = {'order' : 3, 'delay' : 1}
-# Approximate Entropy
-AP_ENT_PARAMS = {'order' : 2}
+# Weighted Permutation Entropy
+WPE_ENT_PARAMS = {'order' : 3, 'delay' : 1}
 # Spectral Entropy
 SP_ENT_PARAMS = {'sf' : FS, 'method' : 'fft'}
+
+## MULTISCALE ENTROPY MEASURES
+
+# Multiscale Approximate Entropy
+MULTI_AP_ENT_PARAMS = {}
+# Multiscale Sample Entropy
+MULTI_SA_ENT_PARAMS = {}
+# Multiscale Permutation Entropy
+MULTI_PE_ENT_PARAMS = {}
+# Multiscale Weighted Permutation Entropy
+MULTI_WPE_ENT_PARAMS = {}
