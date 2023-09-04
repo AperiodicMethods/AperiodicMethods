@@ -7,6 +7,9 @@ from functools import partial
 from tqdm.notebook import tqdm
 
 import numpy as np
+import pandas as pd
+
+from apm.utils import unpack_param_dict
 
 ###################################################################################################
 ###################################################################################################
@@ -70,8 +73,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
 
     Notes
     -----
-    - For each parameter value, the average measure across `n_sims`
-      of simulations is computed and returned.
+    For each parameter value, the average across `n_sims` simulations is computed and returned.
     """
 
     update = UPDATES[update] if isinstance(update, str) else update
@@ -150,7 +152,8 @@ def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
     return measure_func(sim_func(**sim_params), **measure_params)
 
 
-def run_comparisons(sim_func, sim_params, measures, samplers, n_sims, verbose=False):
+def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
+                    return_sim_params=False, verbose=False):
     """Compute multiple measures of interest across the same set of simulations.
 
     Parameters
@@ -169,21 +172,29 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims, verbose=Fa
         The values should be data ranges to sample for that parameter.
     n_sims : int
         The number of simulations to run.
+    return_sim_params : bool, default: False
+        Whether to collect and return the parameters of all the generated simulations.
     verbose : bool, optional, default: False
         Whether to print out simulation parameters.
         Used for checking simulations / debugging.
 
     Returns
     -------
-    outs : dict
+    results : dict
         Computed results for each measure across the set of simulated data.
+    all_sim_params : pd.DataFrame
+        A collected of the simulation parameters.
+        Only returned if `return_sim_params` is True.
     """
 
     n_measures = len(measures)
 
-    outs = {func.__name__ : deepcopy(np.zeros(n_sims)) for func in measures.keys()}
+    results = {func.__name__ : deepcopy(np.zeros(n_sims)) for func in measures.keys()}
 
     cur_sim_params = deepcopy(sim_params)
+
+    if return_sim_params:
+        all_sim_params = []
 
     for s_ind in range(n_sims):
 
@@ -192,13 +203,18 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims, verbose=Fa
 
         if verbose:
             print(cur_sim_params)
+        if return_sim_params:
+            all_sim_params.append(deepcopy(unpack_param_dict(cur_sim_params)))
 
         sig = sim_func(**cur_sim_params)
 
         for measure, params in measures.items():
-            outs[measure.__name__][s_ind] = measure(sig, **params)
+            results[measure.__name__][s_ind] = measure(sig, **params)
 
-    return outs
+    if return_sim_params:
+        return results, pd.DataFrame(all_sim_params)
+    else:
+        return results
 
 
 def run_measures(data, measures):
