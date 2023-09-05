@@ -9,6 +9,8 @@ from tqdm.notebook import tqdm
 import numpy as np
 import pandas as pd
 
+from bootstrap import bootstrap_corr
+
 from apm.utils import unpack_param_dict
 
 ###################################################################################################
@@ -246,3 +248,48 @@ def run_measures(data, measures):
             outputs[measure.__name__][ind] = measure(sig, **params)
 
     return outputs
+
+
+def compute_all_corrs(outputs, select=None, corr_func=bootstrap_corr):
+    """Compute correlations across all sets of measures.
+
+    Parameters
+    ----------
+    outputs : dict
+        Measure results.
+        Each key should be a measure name.
+        Each set of values should be an array of measure results.
+    select : 1d array of bool, optional
+        A set of results to select for each measure to compute the correlation from.
+
+    Returns
+    -------
+    all_corrs : dict
+        Correlation results.
+        Each key is a measure name.
+        Each value is another dictionary, with the measure names and correlation results of all other measures.
+    """
+
+    methods = outputs.keys()
+
+    all_corrs = {method : {} for method in methods}
+
+    for m1 in methods:
+        for m2 in methods:
+
+            if m1 == m2:
+                continue
+            try:
+                all_corrs[m2][m1]
+            except KeyError:
+
+                if select is not None:
+                    d1, d2 = outputs[m1][select], outputs[m2][select]
+                else:
+                    d1, d2 = outputs[m1], outputs[m2]
+
+                corrs = corr_func(d1, d2)
+                all_corrs[m1][m2] = corrs
+                all_corrs[m2][m1] = corrs
+
+    return all_corrs
