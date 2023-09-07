@@ -41,6 +41,7 @@ In addition, this project requires the following dependencies:
 - [neurodsp](https://github.com/neurodsp-tools/neurodsp), used for simulating time series and applying methods
 - [fooof](https://github.com/fooof-tools/fooof), used for simulating power spectra and applying spectral fits
 - [antropy](https://github.com/raphaelvallat/antropy), used for entropy and complexity measures
+- [neurokit2](https://github.com/neuropsychology/NeuroKit), used for some additional complexity measures
 - [lisc](https://github.com/lisc-tools/lisc), used for the literature search
 
 The full set of requirements is listed in the `requirements.txt` file.

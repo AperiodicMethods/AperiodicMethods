@@ -10,5 +10,6 @@ mne
 fooof >= 1.1.0
 neurodsp >= 2.2.0
 antropy
+neurokit2
 lisc >= 0.2.1
 bootstrap @ git+https://github.com/TomDonoghue/bootstrap@main
