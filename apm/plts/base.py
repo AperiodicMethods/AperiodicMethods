@@ -22,10 +22,13 @@ def plot_dots(x_vals=None, y_vals=None, add_corr=True, corr_func=spearmanr, tpos
     if x_vals is not None:
         ax.scatter(x_vals, y_vals, **plt_kwargs)
 
-    if xlabel: ax.set_xlabel(xlabel)
-    if ylabel: ax.set_ylabel(ylabel)
+    if xlabel:
+        ax.set_xlabel(xlabel)
+    if ylabel:
+        ax.set_ylabel(ylabel)
 
-    if ax.get_legend_handles_labels()[0]: plt.legend()
+    if ax.get_legend_handles_labels()[0]:
+        plt.legend()
 
     if add_corr:
         r_val, p_val = corr_func(x_vals, y_vals)
@@ -41,7 +44,8 @@ def plot_lines(x_vals=None, y_vals=None, shade_vals=None,
 
     ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', None))
 
-    if 'lw' not in plt_kwargs: plt_kwargs.update({'lw':  3.5})
+    if 'lw' not in plt_kwargs:
+        plt_kwargs.update({'lw':  3.5})
 
     if x_vals is not None:
         ax.plot(x_vals, y_vals, **plt_kwargs)
@@ -50,10 +54,15 @@ def plot_lines(x_vals=None, y_vals=None, shade_vals=None,
         ax.fill_between(x_vals, y_vals-shade_vals, y_vals+shade_vals,
                         color=plt_kwargs.pop('color', None), alpha=0.2)
 
-    if xlabel: ax.set_xlabel(xlabel)
-    if ylabel: ax.set_ylabel(ylabel)
+    if xlabel:
+        ax.set_xlabel(xlabel)
+    if ylabel:
+        ax.set_ylabel(ylabel)
 
-    if xlim: ax.set_xlim(xlim)
-    if ylim: ax.set_ylim(ylim)
+    if xlim:
+        ax.set_xlim(xlim)
+    if ylim:
+        ax.set_ylim(ylim)
 
-    if ax.get_legend_handles_labels()[0]: plt.legend()
+    if ax.get_legend_handles_labels()[0]:
+        plt.legend()

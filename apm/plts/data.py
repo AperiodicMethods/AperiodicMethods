@@ -24,7 +24,8 @@ def plot_psds_two(freqs1, psd1, freqs2, psd2, **plt_kwargs):
     plot_spectra(freqs1, psd1, ax=axes[0], **plt_kwargs)
     plot_spectra(freqs2, psd2, ax=axes[1], **plt_kwargs)
 
-    for ax in axes: ax.grid(False)
+    for ax in axes:
+        ax.grid(False)
     plt.subplots_adjust(wspace=0.3)
 
 

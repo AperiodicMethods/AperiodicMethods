@@ -27,7 +27,7 @@ def plot_boxplot_errors(errors, **plt_kwargs):
     ax = get_ax(None, figsize=plt_kwargs.pop('figsize', [10, 5]))
 
     ax.boxplot([errors[meth] for meth in errors.keys()],
-                labels=errors.keys(), showfliers=False, **plt_kwargs);
+                labels=errors.keys(), showfliers=False, **plt_kwargs)
 
 
 @savefig
@@ -51,7 +51,7 @@ def plot_violin_errors(errors, ylim=None, **plt_kwargs):
 
     # Set font sizes
     ax.title.set_fontsize(32)
-    for item in (ax.get_xticklabels() + ax.get_yticklabels()):
+    for item in ax.get_xticklabels() + ax.get_yticklabels():
         item.set_fontsize(18)
 
     plt.tight_layout()

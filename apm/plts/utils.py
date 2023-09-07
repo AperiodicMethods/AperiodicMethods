@@ -1,16 +1,11 @@
 """Utilities for plots."""
 
-import os
-
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 from neurodsp.plts.utils import savefig
-
-from apm.core.db import APMDB
-from apm.plts.settings import SAVE_EXT, FIGSIZE1
 
 ###################################################################################################
 ###################################################################################################

@@ -98,6 +98,7 @@ def lyapunov(sig, **kwargs):
 ## FRACTAL DIMENSION MEASURES
 
 def sevcik_fd(sig, **kwargs):
+    """Wrapper function for computing Sevcik fractal dimension."""
 
     return fractal_sevcik(sig)[0]
 
@@ -105,6 +106,7 @@ def sevcik_fd(sig, **kwargs):
 ## ENTROPY MEASURES
 
 def wperm_entropy(sig, **kwargs):
+    """Wrapper function for computing weighted permutation entropy."""
 
     return complexity_wpe(sig, **kwargs)[0]
 
@@ -112,21 +114,25 @@ def wperm_entropy(sig, **kwargs):
 ## MULTISCALE ENTROPY MEASURES
 
 def multi_app_entropy(sig, **kwargs):
+    """Wrapper function for computing multiscale approximate entropy."""
 
     return entropy_multiscale(sig, method='MSApEn', **kwargs)[0]
 
 
 def multi_sample_entropy(sig, **kwargs):
+    """Wrapper function for computing multiscale sample entropy."""
 
     return entropy_multiscale(sig, method='MSEn', **kwargs)[0]
 
 
 def multi_perm_entropy(sig, **kwargs):
+    """Wrapper function for computing multiscale permutation entropy."""
 
     return entropy_multiscale(sig, method='MSPEn', **kwargs)[0]
 
 
 def multi_wperm_entropy(sig, **kwargs):
+    """Wrapper function for computing multiscale weighted permutation entropy."""
 
     return entropy_multiscale(sig, method='MSWPEn', **kwargs)[0]
 

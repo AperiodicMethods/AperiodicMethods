@@ -3,12 +3,12 @@
 import os
 from pathlib import Path
 
-from apm.core.io import get_files, clean_files
+from apm.core.io import get_files
 
 ###################################################################################################
 ###################################################################################################
 
-class APMDB(object):
+class APMDB():
     """Class to hold database information for aperiodic methods project.
 
     Attributes
@@ -67,7 +67,7 @@ class APMDB(object):
         directory: {'data', 'figures', 'sims', 'psds', 'fooof', 'literature'}
         """
 
-        return get_files(getattr(self, directory + '_path'))
+        return get_files(getattr(self, directory + '_path'), **kwargs)
 
 
     def make_fig_name(self, file_name, file_type='pdf'):

@@ -190,8 +190,6 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
         Only returned if `return_sim_params` is True.
     """
 
-    n_measures = len(measures)
-
     results = {func.__name__ : deepcopy(np.zeros(n_sims)) for func in measures.keys()}
 
     cur_sim_params = deepcopy(sim_params)
@@ -268,7 +266,7 @@ def compute_all_corrs(results, select=None, corr_func=bootstrap_corr):
     all_corrs : dict
         Correlation results.
         Each key is a measure name.
-        Each value is another dictionary, with the measure names and correlation results of all other measures.
+        Each value is another dictionary, with names & correlation results of all other measures.
     """
 
     methods = results.keys()
@@ -341,7 +339,7 @@ def compute_diffs_to_feature(results, feature, diff_func=bootstrap_diff):
     all_diffs : dict
         Difference results.
         Each key is a measure name.
-        Each value is another dictionary, with the measure names and difference results to all other measures.
+        Each value is another dictionary, with names & correlation results of all other measures.
     """
 
     methods = results.keys()

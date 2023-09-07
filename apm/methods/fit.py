@@ -107,8 +107,8 @@ class SpectralFits():
 
         for ii, ki in enumerate(self.labels):
             for ij, kj in enumerate(self.labels):
-                s, p = ranksums(self.errors[ki], self.errors[kj])
-                comps[ii, ij] = p
+                stat, p_val = ranksums(self.errors[ki], self.errors[kj])
+                comps[ii, ij] = p_val
 
         return comps
 
@@ -318,8 +318,8 @@ def _rlm_fit(freqs, spectrum):
     """Helper function for fitting RLM."""
 
     fx = sm.add_constant(np.log10(freqs))
-    fit_rlm = sm.RLM(np.log10(spectrum), fx).fit()
-    result = fit_rlm.params[1]
+    fit_rlm_out = sm.RLM(np.log10(spectrum), fx).fit()
+    result = fit_rlm_out.params[1]
 
     return result
 
@@ -337,8 +337,8 @@ def _ransac_fit(freqs, spectrum):
 def _exp_fit(freqs, spectrum):
     """Helper function for fitting exponential."""
 
-    fit_exp, _ = curve_fit(expf, freqs, np.log10(spectrum), p0=[1, 1])
-    result = -fit_exp[1]
+    fit_exp_out, _ = curve_fit(expf, freqs, np.log10(spectrum), p0=[1, 1])
+    result = -fit_exp_out[1]
 
     return result
 
