@@ -1,4 +1,4 @@
-"""Wrapper functions for measure functions for running them across simulations."""
+"""Wrapper functions to create a consistent API for running measures of aperiodic activity."""
 
 import numpy as np
 
@@ -143,9 +143,13 @@ def irasa(sig, **kwargs):
 
 
 def specparam(sig, **kwargs):
-    """Wrapper function for applying spec-param (starting from a time series)."""
+    """Wrapper function for applying specparam (starting from a time series)."""
 
     freqs, powers = compute_spectrum(sig, kwargs.pop('fs'), f_range=kwargs.pop('f_range', None))
-    fm = FOOOF(**kwargs, verbose=False)
+
+    if 'fm' in kwargs:
+        fm = kwargs.pop('fm')
+    else:
+        fm = FOOOF(**kwargs, verbose=False)
     fm.fit(freqs, powers)
     return fm.get_params('aperiodic', 'exponent')
