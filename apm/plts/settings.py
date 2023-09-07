@@ -18,6 +18,14 @@ POW_COLOR = '#28a103'
 BW_COLOR = '#0fd197'
 
 
+# Collect colors
+COLORS = {
+    'AP' : AP_COLOR,
+    'CM' : COMB_COLOR,
+    'CF' : FREQ_COLOR,
+    'PW' : POW_COLOR,
+    'BW' : BW_COLOR,
+}
 
 # Save setting
 SAVE_EXT = '.pdf'

@@ -13,7 +13,6 @@ from .utils import get_ax, add_text, formr
 ###################################################################################################
 
 @savefig
-@style_plot
 def plot_dots(x_vals=None, y_vals=None, add_corr=True, corr_func=spearmanr, tposition='tr',
               xlabel=None, ylabel=None, ax=None, **plt_kwargs):
     """Plot data as dots."""

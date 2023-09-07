@@ -56,9 +56,9 @@ def format_corr(r_val, p_val, cis):
 def sampler(values, probs=None):
     """Create a generator to sample from a parameter range."""
 
-    # Check that length of options is same as length of probs, if provided
+    # Check that length of values is same as length of probs, if provided
     if np.any(probs):
-        if len(inds) != len(probs):
+        if len(values) != len(probs):
             raise ValueError("The number of options must match the number of probabilities.")
 
     while True:

@@ -3,7 +3,8 @@
 import numpy as np
 
 from antropy import hjorth_params, lziv_complexity
-from neurokit2.complexity import fractal_sevcik, complexity_wpe, entropy_multiscale
+from neurokit2.complexity import (fractal_sevcik, complexity_lyapunov,
+                                  complexity_wpe, entropy_multiscale)
 
 from fooof import FOOOF
 
@@ -42,6 +43,7 @@ def compute_decay_time(times, acs, fs, level=0):
         result = np.nan
 
     return result
+
 
 ## FLUCTUATION MEASURES
 
@@ -86,11 +88,19 @@ def lempelziv(sig, **kwargs):
     bin_sig = np.array(sig > np.median(sig)).astype(int)
     return lziv_complexity(bin_sig, **kwargs)
 
+
+def lyapunov(sig, **kwargs):
+    """Wrapper function for computing Lyapunov exponent."""
+
+    return complexity_lyapunov(sig)[0]
+
+
 ## FRACTAL DIMENSION MEASURES
 
 def sevcik_fd(sig, **kwargs):
 
     return fractal_sevcik(sig)[0]
+
 
 ## ENTROPY MEASURES
 
@@ -98,19 +108,23 @@ def wperm_entropy(sig, **kwargs):
 
     return complexity_wpe(sig, **kwargs)[0]
 
+
 ## MULTISCALE ENTROPY MEASURES
 
 def multi_app_entropy(sig, **kwargs):
 
     return entropy_multiscale(sig, method='MSApEn', **kwargs)[0]
 
+
 def multi_sample_entropy(sig, **kwargs):
 
     return entropy_multiscale(sig, method='MSEn', **kwargs)[0]
 
+
 def multi_perm_entropy(sig, **kwargs):
 
     return entropy_multiscale(sig, method='MSPEn', **kwargs)[0]
+
 
 def multi_wperm_entropy(sig, **kwargs):
 
@@ -119,10 +133,13 @@ def multi_wperm_entropy(sig, **kwargs):
 ## SPECTRAL MEASURES
 
 def irasa(sig, **kwargs):
-    """Wrapper function for fitting IRASA and returning fit exponent."""
+    """Wrapper function for fitting IRASA and returning fit exponent.
+
+    Note: output value is sign-flipped, to match specparam format.
+    """
 
     freqs, psd_ap, psd_pe = compute_irasa(sig, **kwargs)
-    return fit_irasa(freqs, psd_ap)[1]
+    return -1 * fit_irasa(freqs, psd_ap)[1]
 
 
 def specparam(sig, **kwargs):

@@ -7,10 +7,9 @@ import numpy as np
 
 # General simulation settings
 N_SECONDS = 30
-FS = 1000
+FS = 500
 
 EXP = -1.5
-#F_RANGE = None
 F_RANGE = (0.5, None)
 FREQ = 10
 

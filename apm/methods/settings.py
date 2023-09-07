@@ -45,6 +45,9 @@ DFA_PARAMS = {
 # Lempel-Ziv complexity
 LZ_PARAMS = {'normalize' : False}
 
+# Lyapunov exponent
+LY_PARAMS = {}
+
 ## ENTROPY MEASURES
 
 # Approximate Entropy
