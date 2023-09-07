@@ -20,7 +20,11 @@ An examination of the prevalence of these methods in the literature.
 
 Introduces the simulations used throughout the project.
 
-## 1) Methods Evaluations
+#### 03-Outline
+
+Outlines the project with some examples.
+
+## 1) Method Evaluations
 
 This section evaluates individual methods, on simulated data.
 
@@ -46,13 +50,21 @@ This notebook examines 'fluctuation' analyses, including the Hurst exponent, and
 
 #### 15-Complexity
 
-This notebook examines complexity and fractal dimension measures that can be applied to time series.
+This notebook examines complexity measures that can be applied to time series.
 
-#### 16-Information
+#### 16-FractalDimension
+
+This notebook examines fractal dimension measures that can be applied to time series.
+
+#### 17-Information
 
 This notebook examines information theory measures, including entropy measures.
 
-## 2)Methods Comparisons
+#### 18-MultiscaleEntropy
+
+This notebook examines multiscale entropy measures.
+
+## 2) Method Comparisons
 
 This section compares between the different methods, on simulated data.
 
@@ -60,21 +72,21 @@ This section compares between the different methods, on simulated data.
 
 This notebook introduces how the method comparison simulations are done.
 
-#### 21-CompareExponents
+#### 21-ExponentComparisons
 
 This notebook compares methods that can be used to measure the aperiodic exponent, including specparam and IRASA.
 
-#### 22-CompareExponentsToOther
-
-This notebook compares exponent estimation to methods that operate in the time domain, including the fluctuation, complexity, and information measures.
-
-#### 23-CompareOther
+#### 22-TimeDomainComparisons
 
 This notebook compares between methods that operate in the time domain, including the fluctuation, complexity, and information measures.
 
+#### 22-ExponentvsTimeDomain
+
+This notebook compares exponent estimation to methods that operate in the time domain, including the fluctuation, complexity, and information measures.
+
 ## 3) Empirical Comparisons
 
-Comparisons of methods on empirical data.  [UPCOMING]
+Comparisons of methods on empirical data.
 
 #### 30-DataComparisons
 
@@ -90,4 +102,4 @@ This notebook analyses a larger dataset of developmental EEG data.
 
 #### 33-iEEGData
 
-This notebook examines a larger dataset of iEEG data.
+This notebook examines a dataset of iEEG data.
