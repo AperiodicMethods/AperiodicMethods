@@ -17,7 +17,7 @@ from fooof import FOOOF
 from fooof.core.funcs import expo_nk_function as expf
 
 from apm.utils import abs_err, exclude_spectrum
-from apm.core.utils import CheckDims1D, CheckDims2D
+from apm.utils.decorators import CheckDims1D, CheckDims2D
 from apm.methods.settings import ALPHA_RANGE
 
 ###################################################################################################
