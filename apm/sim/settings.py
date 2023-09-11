@@ -12,6 +12,8 @@ FS = 500
 EXP = -1.5
 F_RANGE = (0.5, None)
 FREQ = 10
+BW = 1.5
+HEIGHT = 1.5
 
 COMP_VARS = [1, 0.25]
 
@@ -25,6 +27,7 @@ SIM_PARAMS_BURST = {'n_seconds' : N_SECONDS, 'fs' : FS,
                     'components' : {'sim_powerlaw' : {'exponent' : EXP, 'f_range' : F_RANGE},
                                     'sim_bursty_oscillation' : {'freq' : FREQ}},
                     'component_variances' : COMP_VARS}
+SIM_PARAMS_PEAK = {'freq' : FREQ, 'bw' : BW, 'height' : HEIGHT}
 
 # Set the number of instances to run
 N_SIMS = 50
