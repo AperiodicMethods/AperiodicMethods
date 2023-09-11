@@ -16,7 +16,8 @@ from sklearn.linear_model import RANSACRegressor
 from fooof import FOOOF
 from fooof.core.funcs import expo_nk_function as expf
 
-from apm.utils import abs_err, exclude_spectrum
+from apm.analysis.error import abs_err
+from apm.utils.data import exclude_spectrum
 from apm.utils.decorators import CheckDims1D, CheckDims2D
 from apm.methods.settings import ALPHA_RANGE
 
