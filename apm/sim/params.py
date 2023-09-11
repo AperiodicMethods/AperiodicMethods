@@ -1,5 +1,7 @@
 """Utilities for managing and updating simulation parameters."""
 
+import numpy as np
+
 ###################################################################################################
 ###################################################################################################
 
@@ -59,13 +61,13 @@ def unpack_param_dict(params):
     return nparams
 
 
-# def sampler(values, probs=None):
-#     """Create a generator to sample from a parameter range."""
+def sampler(values, probs=None):
+    """Create a generator to sample from a parameter range."""
 
-#     # Check that length of values is same as length of probs, if provided
-#     if np.any(probs):
-#         if len(values) != len(probs):
-#             raise ValueError("The number of options must match the number of probabilities.")
+    # Check that length of values is same as length of probs, if provided
+    if np.any(probs):
+        if len(values) != len(probs):
+            raise ValueError("The number of options must match the number of probabilities.")
 
-#     while True:
-#         yield np.random.choice(values, p=probs)
+    while True:
+        yield np.random.choice(values, p=probs)
