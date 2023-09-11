@@ -27,3 +27,45 @@ def update_vals(sim_params, values, update):
     for val in values:
         update(sim_params, val)
         yield sim_params
+
+
+def unpack_param_dict(params):
+    """Unpack a dictionary of simulation parameters into a flattened dictionary.
+
+    Parameters
+    ----------
+    params : dict
+        Dictionary of simulation parameters.
+
+    Returns
+    -------
+    nparams : dict
+        Flattened dictionary of simulation parameters.
+
+    Note: could be added to NDSP?
+    """
+
+    nparams = {}
+    for key, value in params.items():
+        if key == 'components':
+            for key2 in params['components']:
+                nparams.update(params['components'][key2])
+        elif key == 'component_variances':
+            for var_label, var_val in zip(['var_ap', 'var_pe'], params['component_variances']):
+                nparams[var_label] = var_val
+        else:
+            nparams[key] = value
+
+    return nparams
+
+
+# def sampler(values, probs=None):
+#     """Create a generator to sample from a parameter range."""
+
+#     # Check that length of values is same as length of probs, if provided
+#     if np.any(probs):
+#         if len(values) != len(probs):
+#             raise ValueError("The number of options must match the number of probabilities.")
+
+#     while True:
+#         yield np.random.choice(values, p=probs)
