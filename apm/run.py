@@ -12,36 +12,11 @@ import pandas as pd
 
 from bootstrap import bootstrap_corr, bootstrap_diff
 
+from apm.sim.params import update_vals, UPDATES
 from apm.utils import unpack_param_dict
 
 ###################################################################################################
 ###################################################################################################
-
-# Update aperiodic parameters
-upd_exp = lambda params, val : params.update({'exponent' : val})
-
-# Update aperiodic parameters (in combined signals)
-upd_comb_exp = lambda params, val : params['components']['sim_powerlaw'].update({'exponent' : val})
-
-# Update periodic parameters (in combined signals)
-upd_freq = lambda params, val : params['components']['sim_oscillation'].update({'freq' : val})
-upd_pow = lambda params, val : params.update({'component_variances' : [1, val]})
-
-UPDATES = {
-    'update_exp' : upd_exp,
-    'update_comb_exp' : upd_comb_exp,
-    'update_freq' : upd_freq,
-    'update_pow' : upd_pow,
-}
-
-
-def update_vals(sim_params, values, update):
-    """Update simulation parameter values."""
-
-    for val in values:
-        update(sim_params, val)
-        yield sim_params
-
 
 def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
              n_sims=10, avg_func=np.mean, var_func=None):
