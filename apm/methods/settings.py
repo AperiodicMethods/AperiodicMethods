@@ -13,6 +13,7 @@ ALPHA_RANGE = [7, 14]
 # Define IRASA settings
 IR_F_RANGE = (1, 50)
 IRASA_PARAMS = {'fs' : FS, 'f_range' : IR_F_RANGE}
+IRASA_PARAMS_KNEE = {'fs' : FS, 'f_range' : IR_F_RANGE, 'fit_func' : 'fit_irasa_knee'}
 
 ## AUTO-CORRELATION MEASURES
 

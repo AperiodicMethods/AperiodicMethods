@@ -1,12 +1,16 @@
 """Wrapper functions to create a consistent API for running measures of aperiodic activity."""
 
+import warnings
+
 import numpy as np
+from scipy.optimize import curve_fit
 
 from antropy import hjorth_params, lziv_complexity
 from neurokit2.complexity import (fractal_sevcik, complexity_lyapunov,
                                   complexity_wpe, entropy_multiscale)
 
 from fooof import FOOOF
+from fooof.core.funcs import expo_function
 
 from neurodsp.spectral import compute_spectrum
 from neurodsp.aperiodic.dfa import compute_fluctuations
@@ -138,14 +142,45 @@ def multi_wperm_entropy(sig, **kwargs):
 
 ## SPECTRAL MEASURES
 
-def irasa(sig, **kwargs):
+### Fit functions for IRASA
+def fit_irasa_exp(freqs, psd_ap):
+    return fit_irasa(freqs, psd_ap)[1]
+
+def fit_irasa_knee(freqs, psd_ap):
+
+    # Force non-negative parameters
+    lower_bounds = (0, 0, 0)
+    upper_bounds = (np.inf, np.inf, np.inf)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        popt, _ = curve_fit(expo_function, freqs, np.log10(psd_ap),
+                            p0=(0, 0, 0), maxfev=5000)
+    offset, knee, exp = popt
+
+    return offset, knee, -exp
+
+def fit_irasa_knee_exp(freqs, psd_ap):
+    return fit_irasa_knee(freqs, psd_ap)[2]
+
+IRASA_FIT_FUNCS = {
+    'fit_irasa_exp' : fit_irasa_exp,
+    'fit_irasa_knee' : fit_irasa_knee_exp,
+}
+
+def irasa(sig, fit_func='fit_irasa_exp', flip_sign=True, **kwargs):
     """Wrapper function for fitting IRASA and returning fit exponent.
 
     Note: output value is sign-flipped, to match specparam format.
     """
 
     freqs, psd_ap, psd_pe = compute_irasa(sig, **kwargs)
-    return -1 * fit_irasa(freqs, psd_ap)[1]
+    exponent = IRASA_FIT_FUNCS[fit_func](freqs, psd_ap)
+
+    if flip_sign:
+        exponent = -1 * exponent
+
+    return exponent
 
 
 def specparam(sig, **kwargs):
