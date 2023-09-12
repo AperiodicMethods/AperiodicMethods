@@ -3,7 +3,7 @@
 import numpy as np
 
 ###################################################################################################
-###################################################################################################
+## Define update functions
 
 # Update aperiodic parameters - exponent
 upd_exp = lambda params, val : params.update({'exponent' : val})
@@ -18,14 +18,27 @@ upd_knee = lambda params, val : params.update({'tau_d' : val})
 upd_freq = lambda params, val : params['components']['sim_oscillation'].update({'freq' : val})
 upd_pow = lambda params, val : params.update({'component_variances' : [1, val]})
 
+# Update periodic parameters (in combined peak signals)
+upd_peak_freq = lambda params, val : params['components']['sim_peak_oscillation'].update({'freq' : val})
+upd_peak_hgt = lambda params, val : params['components']['sim_peak_oscillation'].update({'height' : val})
+upd_peak_bw = lambda params, val : params['components']['sim_peak_oscillation'].update({'bw' : val})
+
+###################################################################################################
+## Collect together all update function
+
 UPDATES = {
     'update_exp' : upd_exp,
     'update_comb_exp' : upd_comb_exp,
     'update_knee' : upd_knee,
     'update_freq' : upd_freq,
     'update_pow' : upd_pow,
+    'update_peak_freq' : upd_peak_freq,
+    'update_peak_hgt' : upd_peak_hgt,
+    'update_peak_bw' : upd_peak_bw,
 }
 
+###################################################################################################
+## Functions for updating / sampling paramters
 
 def update_vals(sim_params, values, update):
     """Update simulation parameter values."""
