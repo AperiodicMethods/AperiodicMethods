@@ -4,7 +4,8 @@ from neurodsp.utils import create_times
 from neurodsp.sim import (sim_powerlaw, sim_synaptic_current, sim_oscillation,
                           sim_combined, sim_peak_oscillation)
 
-from apm.sim.settings import (N_SECONDS, FS, EXP, FREQ,
+from apm.sim.sim import sim_combined_peak
+from apm.sim.settings import (N_SECONDS, FS, EXP, FREQ, #PEAK_PARAMS,
                               SIM_PARAMS_COMB, SIM_PARAMS_BURST, SIM_PARAMS_PEAK)
 
 ###################################################################################################
@@ -23,4 +24,7 @@ SIG_OSC = sim_oscillation(N_SECONDS, FS, FREQ)
 # Combined time series
 SIG_COMB = sim_combined(**SIM_PARAMS_COMB)
 SIG_BURST = sim_combined(**SIM_PARAMS_BURST)
-SIG_PEAK = sim_peak_oscillation(SIG_AP, FS, **SIM_PARAMS_PEAK)
+
+#SIG_PEAK = sim_peak_oscillation(SIG_AP, FS, **SIM_PARAMS_PEAK)
+#SIG_PEAK = sim_peak_oscillation(SIG_AP, FS, **PEAK_PARAMS['sim_peak_oscillation'])
+SIG_PEAK = sim_combined_peak(**SIM_PARAMS_PEAK)
