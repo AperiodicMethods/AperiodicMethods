@@ -6,14 +6,34 @@ from apm.sim.settings import FS
 ###################################################################################################
 
 ## SPECTRAL FITTING
+
+# Frequency range
+FIT_F_RANGE = (1, 50)
+FIT_F_RANGE_LONG = (1, 75)
 ALPHA_RANGE = [7, 14]
 
-## IRASA
+# SpecParam settings
+SPECPARAM_PARAMS = {
+    'fs' : FS,
+    'f_range' : FIT_F_RANGE,
+}
 
-# Define IRASA settings
-IR_F_RANGE = (1, 50)
-IRASA_PARAMS = {'fs' : FS, 'f_range' : IR_F_RANGE}
-IRASA_PARAMS_KNEE = {'fs' : FS, 'f_range' : IR_F_RANGE, 'fit_func' : 'fit_irasa_knee'}
+SPECPARAM_PARAMS_KNEE = {
+    'fs' : FS,
+    'f_range' : FIT_F_RANGE_LONG,
+    'aperiodic_mode' : 'knee',
+}
+
+# IRASA settings
+IRASA_PARAMS = {
+    'fs' : FS,
+    'f_range' : FIT_F_RANGE,
+}
+IRASA_PARAMS_KNEE = {
+    'fs' : FS,
+    'f_range' : FIT_F_RANGE_LONG,
+    'fit_func' : 'fit_irasa_knee'
+}
 
 ## AUTO-CORRELATION MEASURES
 
