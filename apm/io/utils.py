@@ -1,5 +1,7 @@
 """Utilities for I/O."""
 
+from pathlib import Path
+
 ###################################################################################################
 ###################################################################################################
 
@@ -27,7 +29,7 @@ def check_folder(file_name, folder):
 
     if isinstance(folder, (str, Path)):
         file_path = Path(folder) / file_name
-    elif directory is None:
+    elif folder is None:
         file_path = file_name
 
     return file_path

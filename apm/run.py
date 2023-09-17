@@ -1,21 +1,22 @@
 """Code for running simulation experiments."""
 
 from copy import deepcopy
-
-from multiprocessing import Pool, cpu_count
 from functools import partial
-from tqdm.notebook import tqdm
+from multiprocessing import Pool, cpu_count
 
 import numpy as np
 import pandas as pd
+from tqdm.notebook import tqdm
 
+from apm.io import load_pickle
+from apm.sim.sim import sig_yielder
 from apm.sim.params import UPDATES, update_vals, unpack_param_dict
 
 ###################################################################################################
 ###################################################################################################
 
 def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
-             n_sims=10, avg_func=np.mean, var_func=None):
+             n_sims=10, avg_func=np.mean, var_func=np.std):
     """Compute a measure of interest across a set of simulations.
 
     Parameters
@@ -36,9 +37,8 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
         The number of iterations to simulate and calculate measures, per value.
     avg_func : callable, optional, default: np.mean
         The function to calculate the average for a particular parameter value.
-    var_func : callable, optional
+    var_func : callable, optional, default: np.std
         The function to calculate the variability for a particular parameter value.
-        If None, variability is not computed.
 
     Returns
     -------
@@ -53,25 +53,42 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
     update = UPDATES[update] if isinstance(update, str) else update
 
     avg = [None] * len(values)
-    var = np.zeros(len(values))
+    var = [None] * len(values)
     for sp_ind, cur_sim_params in enumerate(update_vals(deepcopy(sim_params), values, update)):
 
         inst_outs = [None] * n_sims
-        for s_ind in range(n_sims):
-            inst_outs[s_ind] = measure_func(sim_func(**cur_sim_params), **measure_params)
+        for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
+            inst_outs[s_ind] = measure_func(sig, **measure_params)
 
         avg[sp_ind] = avg_func(inst_outs, 0)
-        if var_func is not None:
-            var[sp_ind] = var_func(inst_outs, 0)
+        var[sp_ind] = var_func(inst_outs, 0)
 
-    if var_func is not None:
-        return avg, var
-    else:
-        return avg
+    return np.array(avg), np.array(var)
+
+
+def run_sims_load(sims_file, measure_func, measure_params, avg_func=np.mean, var_func=np.std):
+    """Run measures across a set of simulations loaded from file."""
+
+    sigs = load_pickle(sims_file, None)
+    values = list(sigs.keys())
+    n_sims = sigs[values[0]].shape[0]
+
+    avg = [None] * len(values)
+    var = [None] * len(values)
+    for sp_ind, value in enumerate(values):
+
+        inst_outs = [None] * n_sims
+        for s_ind, sig in enumerate(sigs[value]):
+            inst_outs[s_ind] = measure_func(sig, **measure_params)
+
+        avg[sp_ind] = avg_func(inst_outs, 0)
+        var[sp_ind] = var_func(inst_outs, 0)
+
+    return np.array(avg), np.array(var)
 
 
 def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update, values,
-                      n_sims=10, avg_func=np.mean, var_func=None, n_jobs=-1, pbar=False):
+                      n_sims=10, avg_func=np.mean, var_func=np.std, n_jobs=-1, pbar=False):
     """Compute a set of measures across simulations, in parallel.
 
     Notes
@@ -112,12 +129,9 @@ def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update
             raise ValueError('The measure function returns an array with varying shape.')
 
     averages = avg_func(measures, axis=1)
+    variability = var_func(measures, axis=1)
 
-    if var_func is not None:
-        variability = var_func(measures, axis=1)
-        return averages, variability
-    else:
-        return averages
+    return averages, variability
 
 
 def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
@@ -168,7 +182,7 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
     if return_sim_params:
         all_sim_params = []
 
-    for s_ind in range(n_sims):
+    for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
 
         for key, val in samplers.items():
             UPDATES[key](cur_sim_params, next(val))
@@ -177,8 +191,6 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
             print(cur_sim_params)
         if return_sim_params:
             all_sim_params.append(deepcopy(unpack_param_dict(cur_sim_params)))
-
-        sig = sim_func(**cur_sim_params)
 
         for measure, params in measures.items():
             results[measure.__name__][s_ind] = measure(sig, **params)

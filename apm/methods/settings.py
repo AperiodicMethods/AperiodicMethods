@@ -63,11 +63,22 @@ DFA_PARAMS = {
 
 ## COMPLEXITY MEASURES
 
+# Hjorth measures
+HJM_PARAMS = {}
+HJC_PARAMS = {}
+
 # Lempel-Ziv complexity
 LZ_PARAMS = {'normalize' : False}
 
 # Lyapunov exponent
 LY_PARAMS = {}
+
+## FRACTAL MEASURES
+
+HFD_PARAMS = {}
+KFD_PARAMS = {}
+PFD_PARAMS = {}
+SFD_PARAMS = {}
 
 ## ENTROPY MEASURES
 
