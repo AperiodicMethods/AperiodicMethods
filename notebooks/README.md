@@ -36,31 +36,35 @@ This notebook introduces how the method evaluation simulations are done.
 
 This notebook examines methods that fit aperiodic components to power spectra.
 
-#### 12-IRASA
+#### 12-SpecParam
+
+This notebook examines the spectral parameterization ('specparam') method for parameterizing periodic and aperiodic components from neural power spectra.
+
+#### 13-IRASA
 
 This notebook examines the 'irregular resampling auto-spectral analysis' (IRASA) method for decomposing time series.
 
-#### 13-AutoCorrelation
+#### 14-AutoCorrelation
 
 This notebook examines auto-correlation measures.
 
-#### 14-Fluctuations
+#### 15-Fluctuations
 
 This notebook examines 'fluctuation' analyses, including the Hurst exponent, and detrended fluctuation analysis (DFA).
 
-#### 15-Complexity
+#### 16-Complexity
 
 This notebook examines complexity measures that can be applied to time series.
 
-#### 16-FractalDimension
+#### 17-FractalDimension
 
 This notebook examines fractal dimension measures that can be applied to time series.
 
-#### 17-Information
+#### 18-Information
 
 This notebook examines information theory measures, including entropy measures.
 
-#### 18-MultiscaleEntropy
+#### 19-MultiscaleEntropy
 
 This notebook examines multiscale entropy measures.
 
