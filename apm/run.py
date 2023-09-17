@@ -182,15 +182,18 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
     if return_sim_params:
         all_sim_params = []
 
-    for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
+    for key, val in samplers.items():
+        UPDATES[key](cur_sim_params, next(val))
 
-        for key, val in samplers.items():
-            UPDATES[key](cur_sim_params, next(val))
+    for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
 
         if verbose:
             print(cur_sim_params)
         if return_sim_params:
             all_sim_params.append(deepcopy(unpack_param_dict(cur_sim_params)))
+
+        for key, val in samplers.items():
+            UPDATES[key](cur_sim_params, next(val))
 
         for measure, params in measures.items():
             results[measure.__name__][s_ind] = measure(sig, **params)
