@@ -6,31 +6,35 @@ The notebooks in this project are organized as follows:
 
 ## 0) Overview & Background
 
-This section covers an overview and the background for the project.
+This section covers an overview and the background for the project, and covers Figures 1 & 2 of the paper.
 
 #### 00-Overview
 
-A general overview of the project, and a list of methods.
+A general introduction to and overview of the project
 
-#### 01-LiteratureSearch
+#### 01-Outline
+
+An outline of the types of methods included in the project.
+
+#### 02-LiteratureSearch
 
 An examination of the prevalence of these methods in the literature.
 
-#### 02-Simulations
+#### 03-Simulations
 
 Introduces the simulations used throughout the project.
 
-#### 03-Outline
+#### 04-SimulationTests
 
-Outlines the project with some examples.
+An introduction and overview of how the method evaluation simulations are done.
 
-## 1) Method Evaluations
+## 1) Spectral Domain Methods
 
-This section evaluates individual methods, on simulated data.
+This section introduces spectral domain methods, evaluating and comparing them on simulated data, and covers Figure 3 of the paper.
 
-#### 10-Methods
+#### 10-SpectralMethods
 
-This notebook introduces how the method evaluation simulations are done.
+Words, words, words.
 
 #### 11-SpectralFitting
 
@@ -44,66 +48,70 @@ This notebook examines the spectral parameterization ('specparam') method for pa
 
 This notebook examines the 'irregular resampling auto-spectral analysis' (IRASA) method for decomposing time series.
 
-#### 14-AutoCorrelation
-
-This notebook examines auto-correlation measures.
-
-#### 15-Fluctuations
-
-This notebook examines 'fluctuation' analyses, including the Hurst exponent, and detrended fluctuation analysis (DFA).
-
-#### 16-FractalDimension
-
-This notebook examines fractal dimension measures that can be applied to time series.
-
-#### 17-Complexity
-
-This notebook examines complexity measures that can be applied to time series.
-
-#### 18-Information
-
-This notebook examines information theory measures, including entropy measures.
-
-#### 19-MultiscaleEntropy
-
-This notebook examines multiscale entropy measures.
-
-## 2) Method Comparisons
-
-This section compares between the different methods, on simulated data.
-
-#### 20-MethodComparisons
-
-This notebook introduces how the method comparison simulations are done.
-
-#### 21-ExponentComparisons
+#### 14-ExponentComparisons
 
 This notebook compares methods that can be used to measure the aperiodic exponent, including specparam and IRASA.
 
-#### 22-TimeDomainComparisons
+## 2) Time Domain Methods
 
-This notebook compares between methods that operate in the time domain, including the fluctuation, complexity, and information measures.
+This section introduces time domain methods, evaluating them on simulated data, and covers Figure 4 of the paper.
 
-#### 22-ExponentvsTimeDomain
+#### 20-TimeDomainMethods
 
-This notebook compares exponent estimation to methods that operate in the time domain, including the fluctuation, complexity, and information measures.
+Words, words, words.
 
-## 3) Empirical Comparisons
+#### 21-AutoCorrelation
 
-Comparisons of methods on empirical data.
+This notebook examines auto-correlation measures.
 
-#### 30-DataComparisons
+#### 22-Fluctuations
+
+This notebook examines 'fluctuation' analyses, including the Hurst exponent, and detrended fluctuation analysis (DFA).
+
+#### 23-FractalDimension
+
+This notebook examines fractal dimension measures that can be applied to time series.
+
+#### 24-Complexity
+
+This notebook examines complexity measures that can be applied to time series.
+
+#### 25-Entropy
+
+This notebook examines information theory / entropy measures.
+
+#### 26-MultiscaleEntropy
+
+This notebook examines multiscale entropy measures.
+
+## 3) Method Comparisons
+
+This section compares between the different methods, comparing their results on simulated data, and covers Figure 5 of the paper.
+
+#### 30-MethodComparisons
+
+This notebook introduces how the method comparison simulations are done.
+
+#### 31-Comparisons
+
+This notebook compares methods across the same set of simulated data comparing within and between frequency and time domain methods.
+
+## 4) Empirical Comparisons
+
+This section applies and compares the methods on empirical data, and convers Figures 6 & 7 of the paper.
+
+#### 40-DataComparisons
 
 This notebook introduces how the real data are analyzed.
 
-#### 31-EEGData
+#### 41-EEGData
 
 This notebook introduces real data analysis by analyzing a sample of resting state EEG data.
 
-#### 32-DevelopmentalEEGData
+#### 42-DevelopmentalEEGData
 
 This notebook analyses a larger dataset of developmental EEG data.
 
-#### 33-iEEGData
+#### 43-iEEGData
 
 This notebook examines a dataset of iEEG data.
