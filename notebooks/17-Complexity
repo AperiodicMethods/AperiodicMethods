@@ -89,9 +89,9 @@
    "outputs": [],
    "source": [
     "# Settings for saving figures\n",
-    "SAVE_FIG = False\n",
+    "SAVE_FIG = True\n",
     "EXT = '.pdf'\n",
-    "FIGPATH = APMDB().figs_path / '16_complexity'"
+    "FIGPATH = APMDB().figs_path / '17_complexity'"
    ]
   },
   {
@@ -190,10 +190,10 @@
      "output_type": "stream",
      "text": [
       "Computed Hjorth mobility:\n",
-      "  powerlaw: \t 0.1549\n",
+      "  powerlaw: \t 0.1412\n",
       "  osc:      \t 0.1256\n",
-      "  combined: \t 0.3078\n",
-      "  knee:     \t 0.5909\n"
+      "  combined: \t 0.3097\n",
+      "  knee:     \t 0.6069\n"
      ]
     }
    ],
@@ -216,10 +216,10 @@
      "output_type": "stream",
      "text": [
       "Computed Hjorth complexity:\n",
-      "  powerlaw: \t 9.4849\n",
+      "  powerlaw: \t 10.3777\n",
       "  osc:      \t 1.0001\n",
-      "  combined: \t 4.7016\n",
-      "  knee:     \t 2.5062\n"
+      "  combined: \t 4.6718\n",
+      "  knee:     \t 2.4346\n"
      ]
     }
    ],
@@ -648,7 +648,7 @@
     {
      "data": {
       "text/plain": [
-       "239"
+       "196"
       ]
      },
      "execution_count": 25,
@@ -679,10 +679,10 @@
      "output_type": "stream",
      "text": [
       "Lempel-Ziv complexity:\n",
-      "  powerlaw: \t   239\n",
+      "  powerlaw: \t   196\n",
       "  osc:      \t     5\n",
-      "  combined: \t   458\n",
-      "  knee:     \t   743\n"
+      "  combined: \t   436\n",
+      "  knee:     \t   770\n"
      ]
     }
    ],
@@ -940,10 +940,10 @@
      "output_type": "stream",
      "text": [
       "Computed Lyapunov exponent:\n",
-      "  powerlaw: \t 0.0993\n",
+      "  powerlaw: \t 0.0995\n",
       "  osc:      \t -0.0000\n",
-      "  combined: \t 0.1156\n",
-      "  knee:     \t 0.0921\n"
+      "  combined: \t 0.1146\n",
+      "  knee:     \t 0.0910\n"
      ]
     }
    ],
@@ -1149,7 +1149,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 49,
+   "execution_count": 47,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1160,7 +1160,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 50,
+   "execution_count": 48,
    "metadata": {},
    "outputs": [
     {

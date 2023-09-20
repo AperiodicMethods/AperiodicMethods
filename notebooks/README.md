@@ -52,13 +52,13 @@ This notebook examines auto-correlation measures.
 
 This notebook examines 'fluctuation' analyses, including the Hurst exponent, and detrended fluctuation analysis (DFA).
 
-#### 16-Complexity
-
-This notebook examines complexity measures that can be applied to time series.
-
-#### 17-FractalDimension
+#### 16-FractalDimension
 
 This notebook examines fractal dimension measures that can be applied to time series.
+
+#### 17-Complexity
+
+This notebook examines complexity measures that can be applied to time series.
 
 #### 18-Information
 
