@@ -13,19 +13,15 @@ from .utils import get_ax, add_text, formr
 ###################################################################################################
 
 @savefig
-def plot_dots(x_vals=None, y_vals=None, add_corr=True, corr_func=spearmanr, tposition='tr',
-              xlabel=None, ylabel=None, ax=None, **plt_kwargs):
+@style_plot
+def plot_dots(x_vals=None, y_vals=None, add_corr=True, corr_func=spearmanr,
+              tposition='tr', ax=None, **plt_kwargs):
     """Plot data as dots."""
 
     ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', None))
 
     if x_vals is not None:
         ax.scatter(x_vals, y_vals, **plt_kwargs)
-
-    if xlabel:
-        ax.set_xlabel(xlabel)
-    if ylabel:
-        ax.set_ylabel(ylabel)
 
     if ax.get_legend_handles_labels()[0]:
         plt.legend()
@@ -37,9 +33,7 @@ def plot_dots(x_vals=None, y_vals=None, add_corr=True, corr_func=spearmanr, tpos
 
 @savefig
 @style_plot
-def plot_lines(x_vals=None, y_vals=None, shade_vals=None,
-               xlabel=None, ylabel=None, xlim=None, ylim=None,
-               ax=None, **plt_kwargs):
+def plot_lines(x_vals=None, y_vals=None, shade_vals=None, ax=None, **plt_kwargs):
     """Plot data as line(s)."""
 
     ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', None))
@@ -53,16 +47,6 @@ def plot_lines(x_vals=None, y_vals=None, shade_vals=None,
     if shade_vals is not None:
         ax.fill_between(x_vals, y_vals-shade_vals, y_vals+shade_vals,
                         color=plt_kwargs.pop('color', None), alpha=0.2)
-
-    if xlabel:
-        ax.set_xlabel(xlabel)
-    if ylabel:
-        ax.set_ylabel(ylabel)
-
-    if xlim:
-        ax.set_xlim(xlim)
-    if ylim:
-        ax.set_ylim(ylim)
 
     if ax.get_legend_handles_labels()[0]:
         plt.legend()
