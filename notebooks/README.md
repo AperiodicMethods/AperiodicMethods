@@ -92,9 +92,13 @@ This section compares between the different methods, comparing their results on 
 
 This notebook introduces how the method comparison simulations are done.
 
-#### 31-Comparisons
+#### 31-WithinComparisons
 
-This notebook compares methods across the same set of simulated data comparing within and between frequency and time domain methods.
+This notebook compares methods within the different method types, comparing, for example, different complexity measures to each other.
+
+#### 32-BetweenComparisons
+
+This notebook compares methods across different methods types, including testing different types of time domain methods to each other, and comparing time domain methods to frequency domain methods.
 
 ## 4) Empirical Comparisons
 
