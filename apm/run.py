@@ -199,7 +199,11 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
             results[measure.__name__][s_ind] = measure(sig, **params)
 
     if return_sim_params:
-        return results, pd.DataFrame(all_sim_params)
+        all_sim_params = pd.DataFrame(all_sim_params)
+        # If relevant, set a marker for yes / no if signal has an oscillation
+        if 'var_pe' in all_sim_params.columns:
+            all_sim_params['has_osc'] = all_sim_params['var_pe'] != 0.
+        return results, all_sim_params
     else:
         return results
 

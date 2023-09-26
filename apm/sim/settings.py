@@ -36,12 +36,12 @@ COMP_VARS = [1, 0.25]
 
 # Aperiodic parameters - ranges
 EXPS = np.arange(-3, 0.5, 0.5)
-KNEES = np.array([0.002, 0.005, 0.015, 0.040, 0.070])
+KNEES = np.array([0.005, 0.015, 0.030, 0.050, 0.075])
 
 # Periodic parameter - ranges
 FREQS = np.arange(1, 50, 2)
 POWERS = np.arange(0, 2, 0.1)
-BWS = np.arange(0.25, 2.0, 0.25)
+BWS = np.arange(0.5, 3.5, 0.5)
 
 ###################################################################################################
 ## Define parameters per component
