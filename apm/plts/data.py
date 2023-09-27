@@ -41,8 +41,7 @@ def plot_timeseries_and_psd(times, sig, fs, **plt_kwargs):
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore")
 
-        plot_time_series(times, sig, xlim=plt_kwargs.pop('xlim', [0, 2]),
-                         **plt_kwargs, ax=ax1)
+        plot_time_series(times, sig, **plt_kwargs, ax=ax1)
 
         freqs, psd = trim_spectrum(*compute_spectrum(sig, fs, nperseg=500), [1, 75])
         plot_power_spectra(freqs, psd, ax=ax2)

@@ -40,6 +40,15 @@ UPDATES = {
 ###################################################################################################
 ## Functions for updating / sampling paramters
 
+def update_sim_params(sim_params, samplers):
+    """Update a simulation parameter definition from set of samplers."""
+
+    for key, val in samplers.items():
+        UPDATES[key](sim_params, next(val))
+
+    return sim_params
+
+
 def update_vals(sim_params, values, update):
     """Update simulation parameter values."""
 

@@ -7,7 +7,7 @@ import numpy as np
 from neurodsp.sim.info import get_sim_func
 from neurodsp.sim.combined import sim_peak_oscillation
 
-from apm.sim.params import UPDATES, update_vals
+from apm.sim.params import update_sim_params, UPDATES, update_vals
 
 ###################################################################################################
 ###################################################################################################
@@ -32,6 +32,45 @@ def sig_yielder(sim_func, sim_params, n_sims):
 
     for _ in range(n_sims):
         yield sim_func(**sim_params)
+
+
+def sig_yielder_update(sim_func, sim_params, samplers, n_sims, return_sim_params=False):
+    """Generator to yield a simulated signals from a given simulation function and parameters.
+
+    Parameters
+    ----------
+    sim_func : callable
+        Function to create the simulated time series.
+    sim_params : dict
+        The parameters for the simulated signal, passed into `sim_func`.
+    samplers : dict
+        Dictionary of samplers to update simulation parameters.
+    n_sims : int
+        Number of simulations to set as the max.
+    return_sim_params : bool, optional, default: False
+        Whether to also yield the simulation parameters for each simulated signal.
+
+    Yields
+    ------
+    sig : 1d array
+        Simulated time series.
+    sim_params : dict
+        Simulation parameters for the current simulated signal.
+        Only returned if `return_sim_params` is True.
+    """
+
+    # Take a copy of simulation parameters and initialize first update
+    cur_sim_params = update_sim_params(deepcopy(sim_params), samplers)
+
+    for _ in range(n_sims):
+
+        cur_sim_params = update_sim_params(cur_sim_params, samplers)
+        cur_sig = sim_func(**cur_sim_params)
+
+        if return_sim_params:
+            yield cur_sig, cur_sim_params
+        else:
+            yield cur_sig
 
 
 def sim_multiple(sim_func, sim_params, n_sims):

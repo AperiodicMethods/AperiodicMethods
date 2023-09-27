@@ -9,7 +9,7 @@ import pandas as pd
 from tqdm.notebook import tqdm
 
 from apm.io import load_pickle
-from apm.sim.sim import sig_yielder
+from apm.sim.sim import sig_yielder, sig_yielder_update
 from apm.sim.params import UPDATES, update_vals, unpack_param_dict
 
 ###################################################################################################
@@ -171,29 +171,22 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
     results : dict
         Computed results for each measure across the set of simulated data.
     all_sim_params : pd.DataFrame
-        A collected of the simulation parameters.
+        Collected simulation parameters across all the simulations.
         Only returned if `return_sim_params` is True.
     """
 
     results = {func.__name__ : deepcopy(np.zeros(n_sims)) for func in measures.keys()}
 
-    cur_sim_params = deepcopy(sim_params)
-
     if return_sim_params:
         all_sim_params = []
 
-    for key, val in samplers.items():
-        UPDATES[key](cur_sim_params, next(val))
-
-    for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
+    for s_ind, (sig, cur_sim_params) in enumerate(\
+        sig_yielder_update(sim_func, sim_params, samplers, n_sims, True)):
 
         if verbose:
             print(cur_sim_params)
         if return_sim_params:
             all_sim_params.append(deepcopy(unpack_param_dict(cur_sim_params)))
-
-        for key, val in samplers.items():
-            UPDATES[key](cur_sim_params, next(val))
 
         for measure, params in measures.items():
             results[measure.__name__][s_ind] = measure(sig, **params)
