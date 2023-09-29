@@ -39,7 +39,7 @@ EXPS = np.arange(-3, 0.5, 0.5)
 KNEES = np.array([0.005, 0.015, 0.030, 0.050, 0.075])
 
 # Periodic parameter - ranges
-FREQS = np.arange(1, 50, 2)
+FREQS = np.arange(5, 35, 1)
 POWERS = np.arange(0, 2, 0.1)
 BWS = np.arange(0.5, 3.5, 0.5)
 

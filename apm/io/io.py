@@ -46,7 +46,7 @@ def load_eeg_demo_data(files, folder, data_field):
 
     data = []
     for file in files:
-        loaded = loadmat(check_folder(f_name, save_path), squeeze_me=True)
+        loaded = loadmat(check_folder(file, folder), squeeze_me=True)
         data.append(loaded[data_field])
     data = np.array(data)
 

@@ -2,6 +2,8 @@
 
 from itertools import product
 
+import numpy as np
+
 from bootstrap import bootstrap_corr, bootstrap_diff
 
 ###################################################################################################
@@ -114,3 +116,29 @@ def compute_diffs_to_feature(results, feature, diff_func=bootstrap_diff):
         all_diffs[m2][m1] = diffs
 
     return all_diffs
+
+
+def unpack_corrs(corrs):
+    """Unpack a correlation dictionary into a matrix.
+
+    Parameters
+    ----------
+    corrs : dict
+        Dictionary of correlation results.
+
+    Returns
+    -------
+    corrs_mat : 2d array
+        Matrix of correlation values.
+    """
+
+    corrs_mat = np.zeros([len(corrs.keys()), len(corrs.keys())])
+
+    for ii, m1 in enumerate(corrs.keys()):
+        for jj, m2 in enumerate(corrs.keys()):
+            if ii == jj:
+                corrs_mat[ii, jj] = np.nan
+            else:
+                corrs_mat[ii, jj] = corrs[m1][m2][0]
+
+    return corrs_mat
