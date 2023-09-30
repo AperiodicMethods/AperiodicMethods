@@ -15,6 +15,7 @@ from apm.plts.settings import FIGSIZE2
 ###################################################################################################
 ###################################################################################################
 
+# NOTE: to drop?
 @savefig
 def plot_psds_two(freqs1, psd1, freqs2, psd2, **plt_kwargs):
     """Plot side-by-side power spectra."""

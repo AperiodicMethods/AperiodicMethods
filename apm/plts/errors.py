@@ -55,15 +55,3 @@ def plot_violin_errors(errors, ylim=None, **plt_kwargs):
         item.set_fontsize(18)
 
     plt.tight_layout()
-
-
-@savefig
-@style_plot
-def plot_corr_matrix(corrs, **plt_kwargs):
-    """Plot a correlation matrix, computed from the output of df.corr()."""
-
-    mask = np.zeros_like(corrs, dtype=bool)
-    mask[np.triu_indices_from(mask)] = True
-
-    plt.figure(figsize=plt_kwargs.pop('figsize', [10, 8]))
-    sns.heatmap(corrs, mask=mask, cmap='bwr',  vmin=-1, vmax=1, **plt_kwargs)

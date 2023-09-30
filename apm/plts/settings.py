@@ -29,3 +29,17 @@ COLORS = {
 
 # Save setting
 SAVE_EXT = '.pdf'
+
+# Define default measure labels
+LABELS = {
+    'specparam' : 'Aperiodic Exponent',
+    'irasa' : 'Aperiodic Exponent',
+
+    'hurst' : 'Hurst Exponent',
+    'dfa' : 'DFA Exponent',
+
+    'lempelziv' : 'Lempel Ziv Complexity',
+    'hjorth_complexity' : 'Hjorth Complexity',
+
+    'app_entropy' : 'Approximate Entropy',
+}
