@@ -26,15 +26,27 @@ Introduces and overviews the simulations used throughout the project.
 
 #### 10-Simulations
 
-Demonstrates examples of simulations across different parameters.
+Introduction to simulations used in this project.
 
-#### 11-SimulationTests
+#### 11-TimeDomainSimulations
+
+Demonstrates examples of time domain simulations across different parameters.
+
+#### 12-PowerSpectrumSimulations
+
+Demonstrates examples of frequency domain simulations across different parameters.
+
+#### 13-SimulationTests
 
 Overview of how the method evaluation simulations are done.
 
-#### 12-SimulationComparisons
+#### 14-SimulationComparisons
 
 Overview of how the method comparisons simulations are done.
+
+#### 15-PrecomputeSims
+
+Pre-computes a set of simulations to be used later in the project.
 
 ## 2) Spectral Domain Methods
 
