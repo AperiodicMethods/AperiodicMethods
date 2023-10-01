@@ -33,3 +33,28 @@ def check_folder(file_name, folder):
         file_path = file_name
 
     return file_path
+
+
+def check_ext(file_name, extension):
+    """"Check a file name for a given extension, and add if missing.
+
+    Parameters
+    ----------
+    file_name : str
+        File name to check.
+    extension : str
+        Extension to check / add to file name.
+
+    Returns
+    -------
+    file_name : str
+        File name, checked and updated for the extension.
+    """
+
+    if not extension[0] == '.':
+        extension = '.' + extension
+
+    if not file_name.split('.')[-1] == extension[1:]:
+        file_name = file_name + extension
+
+    return file_name

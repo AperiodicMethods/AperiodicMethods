@@ -5,30 +5,12 @@ import warnings
 import matplotlib.pyplot as plt
 
 from fooof.utils import trim_spectrum
-from fooof.plts.spectra import plot_spectra
 from neurodsp.spectral import compute_spectrum
 from neurodsp.plts import plot_time_series, plot_power_spectra
 from neurodsp.plts.utils import savefig
 
-from apm.plts.settings import FIGSIZE2
-
 ###################################################################################################
 ###################################################################################################
-
-# NOTE: to drop?
-@savefig
-def plot_psds_two(freqs1, psd1, freqs2, psd2, **plt_kwargs):
-    """Plot side-by-side power spectra."""
-
-    fig, axes = plt.subplots(1, 2, figsize=plt_kwargs.pop('figsize', FIGSIZE2))
-
-    plot_spectra(freqs1, psd1, ax=axes[0], **plt_kwargs)
-    plot_spectra(freqs2, psd2, ax=axes[1], **plt_kwargs)
-
-    for ax in axes:
-        ax.grid(False)
-    plt.subplots_adjust(wspace=0.3)
-
 
 # NOTE: use from NDSP when merged in there
 @savefig
