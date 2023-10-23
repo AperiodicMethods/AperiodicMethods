@@ -54,7 +54,10 @@ def check_ext(file_name, extension):
     if not extension[0] == '.':
         extension = '.' + extension
 
-    if not file_name.split('.')[-1] == extension[1:]:
-        file_name = file_name + extension
+    if isinstance(file_name, str):
+        if not file_name.split('.')[-1] == extension[1:]:
+            file_name = file_name + extension
+    elif isinstance(file_name, Path):
+        file_name = file_name.with_suffix(extension)
 
     return file_name

@@ -15,7 +15,7 @@ from .utils import get_ax
 
 @savefig
 @style_plot
-def plot_boxplot_errors(errors, **plt_kwargs):
+def plot_boxplot_errors(errors, labels=None, **plt_kwargs):
     """Plot a boxplot of distributions of errors for each spectrum fit method.
 
     Parameters
@@ -24,15 +24,20 @@ def plot_boxplot_errors(errors, **plt_kwargs):
         Dictionary of errors per method.
     """
 
+    df = pd.DataFrame(errors)
+
     ax = get_ax(None, figsize=plt_kwargs.pop('figsize', [10, 5]))
 
-    ax.boxplot([errors[meth] for meth in errors.keys()],
-                labels=errors.keys(), showfliers=False, **plt_kwargs)
+    sns.boxplot(data=df, fliersize=0, ax=ax, **plt_kwargs)
 
+    if labels:
+        ax.set_xticklabels(labels)
+
+    plt.tight_layout()
 
 @savefig
 @style_plot
-def plot_violin_errors(errors, ylim=None, **plt_kwargs):
+def plot_violin_errors(errors, labels=None, **plt_kwargs):
     """Plot a violin plot of distributions of errors for each spectrum fit method.
 
     Parameters
@@ -41,15 +46,14 @@ def plot_violin_errors(errors, ylim=None, **plt_kwargs):
         Dictionary of errors per method.
     """
 
-    # Violin plot of the error distributions
     df = pd.DataFrame(errors)
 
     ax = get_ax(None, figsize=plt_kwargs.pop('figsize', [8, 2]))
     ax = sns.violinplot(data=df, cut=0, ax=ax, **plt_kwargs)
 
-    ax.set_ylim(ylim)
+    if labels:
+        ax.set_xticklabels(labels)
 
-    # Set font sizes
     ax.title.set_fontsize(32)
     for item in ax.get_xticklabels() + ax.get_yticklabels():
         item.set_fontsize(18)

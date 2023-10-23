@@ -6,14 +6,14 @@
 FIGSIZE1 = (6, 5)
 FIGSIZE2 = (12, 5)
 
-## COLOR SETTINGS
+## COLOR SETTINGS - SIMULATIONS
 
 # Colors for simulation types
-AP_COLOR = '#0043ad'   # OLD: '#0043ad'
+AP_COLOR = '#0043ad'   #
 CB_COLOR = '#750896'   # OLD: '#1c8c00'
 
 # Colors for aperiodic parameters
-KN_COLOR = '#5f0e99'
+KN_COLOR = '#9073fa'   # OLD: '#5f0e99'
 
 # Colors for periodic parameters
 CF_COLOR = '#acc918'
@@ -28,6 +28,17 @@ COLORS = {
     'CF' : CF_COLOR,
     'PW' : PW_COLOR,
     'BW' : BW_COLOR,
+}
+
+## COLOR SETTINGS - METHODS
+
+FIT_COLOR = '#2655b5'
+SP_COLOR = '#d1291d'
+IR_COLOR = '#36a118'
+
+METHOD_COLORS = {
+    'specparam' : SP_COLOR,
+    'irasa' : IR_COLOR,
 }
 
 ## SAVE SETTINGS

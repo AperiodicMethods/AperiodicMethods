@@ -17,7 +17,7 @@ from apm.sim.params import UPDATES, update_vals, unpack_param_dict
 ###################################################################################################
 
 def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
-             n_sims=10, avg_func=np.mean, var_func=np.std):
+             n_sims=10, avg_func=np.mean, var_func=np.std, warnings_action='ignore'):
     """Compute a measure of interest across a set of simulations.
 
     Parameters
@@ -55,19 +55,23 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
 
     avg = [None] * len(values)
     var = [None] * len(values)
-    for sp_ind, cur_sim_params in enumerate(update_vals(deepcopy(sim_params), values, update)):
 
-        inst_outs = [None] * n_sims
-        for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
-            inst_outs[s_ind] = measure_func(sig, **measure_params)
+    with warnings.catch_warnings():
+        warnings.simplefilter(warnings_action)
+        for sp_ind, cur_sim_params in enumerate(update_vals(deepcopy(sim_params), values, update)):
 
-        avg[sp_ind] = avg_func(inst_outs, 0)
-        var[sp_ind] = var_func(inst_outs, 0)
+            inst_outs = [None] * n_sims
+            for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
+                inst_outs[s_ind] = measure_func(sig, **measure_params)
+
+            avg[sp_ind] = avg_func(inst_outs, 0)
+            var[sp_ind] = var_func(inst_outs, 0)
 
     return np.array(avg), np.array(var)
 
 
-def run_sims_load(sims_file, measure_func, measure_params, avg_func=np.mean, var_func=np.std):
+def run_sims_load(sims_file, measure_func, measure_params, avg_func=np.mean,
+                  var_func=np.std, warnings_action='ignore'):
     """Run measures across a set of simulations loaded from file."""
 
     sigs = load_pickle(sims_file, None)
@@ -76,14 +80,17 @@ def run_sims_load(sims_file, measure_func, measure_params, avg_func=np.mean, var
 
     avg = [None] * len(values)
     var = [None] * len(values)
-    for sp_ind, value in enumerate(values):
 
-        inst_outs = [None] * n_sims
-        for s_ind, sig in enumerate(sigs[value]):
-            inst_outs[s_ind] = measure_func(sig, **measure_params)
+    with warnings.catch_warnings():
+        warnings.simplefilter(warnings_action)
+        for sp_ind, value in enumerate(values):
 
-        avg[sp_ind] = avg_func(inst_outs, 0)
-        var[sp_ind] = var_func(inst_outs, 0)
+            inst_outs = [None] * n_sims
+            for s_ind, sig in enumerate(sigs[value]):
+                inst_outs[s_ind] = measure_func(sig, **measure_params)
+
+            avg[sp_ind] = avg_func(inst_outs, 0)
+            var[sp_ind] = var_func(inst_outs, 0)
 
     return np.array(avg), np.array(var)
 

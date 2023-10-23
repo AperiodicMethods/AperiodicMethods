@@ -9,7 +9,7 @@ from apm.sim.settings import FS
 
 # Frequency range
 FIT_F_RANGE = (1, 50)
-FIT_F_RANGE_LONG = (1, 75)
+FIT_F_RANGE_LONG = (1, 100)
 ALPHA_RANGE = [7, 14]
 
 # SpecParam settings
