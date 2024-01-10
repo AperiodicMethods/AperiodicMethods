@@ -41,7 +41,7 @@ def plot_results_all(results, labels=None, **plt_kwargs):
                 warnings.simplefilter('ignore')
 
                 ax_kwargs = {}
-                if ax_r != (n_measures)-1:
+                if ax_r != (n_measures) - 1:
                     ax_kwargs['xticks'] = []
                 else:
                     ax_kwargs['xlabel'] = LABELS[l2]
@@ -50,5 +50,5 @@ def plot_results_all(results, labels=None, **plt_kwargs):
                 else:
                     ax_kwargs['ylabel'] = LABELS[l1]
 
-                plot_dots(results[l1], results[l2], **ax_kwargs,
+                plot_dots(results[l2], results[l1], **ax_kwargs,
                           **plt_kwargs, ax=axes[ax_r, ax_c])

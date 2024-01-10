@@ -1,9 +1,14 @@
 """Periodic measurement functions."""
 
+import warnings
+
 import numpy as np
 
-from fooof import FOOOF
-from fooof.utils import trim_spectrum
+# Ignore deprecation / update warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore")
+    from fooof import FOOOF
+    from fooof.utils import trim_spectrum
 from neurodsp.spectral import compute_spectrum
 
 from apm.methods.settings import ALPHA_RANGE

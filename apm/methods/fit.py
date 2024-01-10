@@ -13,8 +13,11 @@ from scipy.stats import ranksums
 from scipy.optimize import curve_fit
 from sklearn.linear_model import RANSACRegressor
 
-from fooof import FOOOF
-from fooof.core.funcs import expo_nk_function as expf
+# Ignore deprecation / update warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore")
+    from fooof import FOOOF
+    from fooof.core.funcs import expo_nk_function as expf
 
 from apm.analysis.error import abs_err
 from apm.utils.data import exclude_spectrum

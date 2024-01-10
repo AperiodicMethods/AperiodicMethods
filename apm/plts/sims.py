@@ -13,8 +13,8 @@ from apm.sim.settings import EXPS, FREQS, POWERS
 ###################################################################################################
 
 @savefig
-def plot_sims(x_vals, y_vals, y_shades, expected=None, color=None,
-              title=None, xlabel=None, ylabel=None, ylim=None, figsize=(6, 5)):
+def plot_sims(x_vals, y_vals, y_shades, xlabel=None, ylabel=None, color=None,
+              ylim=None, title=None, expected=None, figsize=(6, 5)):
     """Plot simulation results across a single parameter."""
 
     _, ax = plt.subplots(figsize=figsize)
@@ -27,8 +27,8 @@ def plot_sims(x_vals, y_vals, y_shades, expected=None, color=None,
 
 
 @savefig
-def plot_ap_sims(sims_exp, sims_exp_var, sims_comb, sims_comb_var,
-                 expected=None, ylabel=None, ylim=None, figsize=(6, 5)):
+def plot_ap_sims(sims_exp, sims_exp_var, sims_comb, sims_comb_var, ylabel=None,
+                 ylim=None, expected=None, legend_loc=None, figsize=(6, 5)):
     """Plot simulation results across aperiodic parameters."""
 
     _, ax = plt.subplots(figsize=figsize)
@@ -39,12 +39,12 @@ def plot_ap_sims(sims_exp, sims_exp_var, sims_comb, sims_comb_var,
     plot_lines(np.abs(EXPS), sims_exp, sims_exp_var, color=AP_COLOR, label='Aperiodic', ax=ax)
     plot_lines(np.abs(EXPS), sims_comb, sims_comb_var, color=CB_COLOR, label='Combined', ax=ax)
     plot_lines(xlabel='Simulated Exponent', ylabel=ylabel, ylim=ylim, ax=ax)
-    plt.legend(fontsize=14)
+    plt.legend(fontsize=14, loc=legend_loc)
 
 
 @savefig
-def plot_pe_sims(sims_freq, sims_freq_var, sims_pow, sims_pow_var,
-                 expected=None, ylabel=None, ylim=None, figsize=(6, 5)):
+def plot_pe_sims(sims_freq, sims_freq_var, sims_pow, sims_pow_var, ylabel=None,
+                 ylim=None, expected=None, legend_loc=None, figsize=(6, 5)):
     """Plot simulation results across periodic parameters."""
 
     _, ax = plt.subplots(figsize=figsize)
@@ -67,4 +67,4 @@ def plot_pe_sims(sims_freq, sims_freq_var, sims_pow, sims_pow_var,
     if ylim:
         plt.ylim(ylim)
 
-    plt.legend(leg_lines, leg_labels, loc=4, fontsize=14)
+    plt.legend(leg_lines, leg_labels, loc=legend_loc, fontsize=14)

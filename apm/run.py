@@ -96,7 +96,8 @@ def run_sims_load(sims_file, measure_func, measure_params, avg_func=np.mean,
 
 
 def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update, values,
-                      n_sims=10, avg_func=np.mean, var_func=np.std, n_jobs=-1, pbar=False):
+                      n_sims=10, avg_func=np.mean, var_func=np.std, n_jobs=-1, pbar=False,
+                      warnings_action='ignore'):
     """Compute a set of measures across simulations, in parallel.
 
     Notes
@@ -114,13 +115,15 @@ def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update
     # Duplicate sims to equal length of n_sims
     sim_params = [pii for pi in range(len(sim_params)) for pii in [sim_params[pi]] * n_sims]
 
-    with Pool(processes=n_jobs) as pool:
+    with warnings.catch_warnings():
+        warnings.simplefilter(warnings_action)
+        with Pool(processes=n_jobs) as pool:
 
-        mapping = pool.imap(partial(_proxy, sim_func=sim_func, measure_func=measure_func,
-                                    measure_params=measure_params), sim_params)
+            mapping = pool.imap(partial(_proxy, sim_func=sim_func, measure_func=measure_func,
+                                        measure_params=measure_params), sim_params)
 
-        measures = list(tqdm(mapping, desc="Running Simulations",
-                             total=len(sim_params), dynamic_ncols=True, disable=not pbar))
+            measures = list(tqdm(mapping, desc="Running Simulations",
+                                 total=len(sim_params), dynamic_ncols=True, disable=not pbar))
 
     # Reshape array and take mean across n_sims
     measures = np.array(measures)
