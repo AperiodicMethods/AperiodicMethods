@@ -5,7 +5,7 @@ import numpy as np
 ###################################################################################################
 ###################################################################################################
 
-def compute_avgs(results, avg_func=np.mean):
+def compute_avgs(results, avg_func=np.nanmean):
     """Compute averages across a set of results.
 
     Parameters

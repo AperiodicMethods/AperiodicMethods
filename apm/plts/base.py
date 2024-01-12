@@ -15,10 +15,13 @@ from .utils import get_ax, add_text, formr
 @savefig
 @style_plot
 def plot_dots(x_vals=None, y_vals=None, add_corr=True, corr_func=spearmanr,
-              tposition='tr', ax=None, **plt_kwargs):
+              tposition='tr', expected=None, ax=None, **plt_kwargs):
     """Plot data as dots."""
 
     ax = get_ax(ax, figsize=plt_kwargs.pop('figsize', None))
+
+    if expected:
+        ax.plot(expected, expected, color='black', linestyle='--', alpha=0.35)
 
     if x_vals is not None:
         ax.scatter(x_vals, y_vals, **plt_kwargs)
