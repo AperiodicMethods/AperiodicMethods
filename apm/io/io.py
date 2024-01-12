@@ -3,9 +3,6 @@
 import os
 import pickle
 
-import numpy as np
-from scipy.io import loadmat
-
 from apm.io.utils import clean_files, check_folder, check_ext
 
 ###################################################################################################
@@ -37,17 +34,5 @@ def load_pickle(f_name, save_path):
 
     with open(check_folder(check_ext(f_name, '.p'), save_path), 'rb') as pickle_file:
         data = pickle.load(pickle_file)
-
-    return data
-
-
-def load_eeg_demo_data(files, folder, data_field):
-    """Helper function for loading the EEG demo dataset."""
-
-    data = []
-    for file in files:
-        loaded = loadmat(check_folder(file, folder), squeeze_me=True)
-        data.append(loaded[data_field])
-    data = np.array(data)
 
     return data
