@@ -52,3 +52,4 @@ This project repository is set up in the following way:
 
 - `apm/` is a custom module that implements the 'aperiodic methods' for the project
 - `notebooks/` is a collection of Jupyter notebooks that step through the project
+- `scripts/` is a set of Python scripts that run parts of the project

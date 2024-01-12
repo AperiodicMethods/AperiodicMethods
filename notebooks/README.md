@@ -44,10 +44,6 @@ Overview of how the method evaluation simulations are done.
 
 Overview of how the method comparisons simulations are done.
 
-#### 15-PrecomputeSims
-
-Pre-computes a set of simulations to be used later in the project.
-
 ## 2) Spectral Domain Methods
 
 This section introduces spectral domain methods, evaluating and comparing them on simulated data, and covers Figure 3 of the paper.
