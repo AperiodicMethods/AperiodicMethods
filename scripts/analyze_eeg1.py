@@ -2,16 +2,13 @@
 
 from pathlib import Path
 
-import numpy as np
-
 # Import custom code
-import sys; from pathlib import Path
+import sys
 sys.path.append(str(Path('..').resolve()))
-from apm.io import APMDB, get_files, save_pickle
-from apm.io.data import load_eeg_demo_data, load_eeg_demo_group_data
+from apm.io import APMDB, save_pickle
+from apm.io.data import load_eeg_demo_group_data
 from apm.data.measures import MEASURES, PEAK_MEASURES
-from apm.analysis import (compute_avgs, compute_all_corrs,
-                          compute_corrs_to_feature, compute_diffs_to_feature)
+from apm.analysis import compute_avgs, compute_all_corrs, compute_corrs_to_feature
 from apm.run import run_measures, run_group_measures
 
 ###################################################################################################
@@ -47,7 +44,6 @@ def main():
 
     # Compute group level peak measures
     group_results_peaks = run_group_measures(group_data, PEAK_MEASURES)
-    group_results_peaks['alpha_power'] = np.log10(group_results_peaks['alpha_power'])
     save_pickle(group_results_peaks, 'eeg1_group_results_peaks', OUTPATH)
 
     ## APERIODIC CORRELATIONS
