@@ -1,7 +1,6 @@
 """Analysis script for analyzing the demo EEG dataset."""
 
 from pathlib import Path
-from copy import deepcopy
 
 import numpy as np
 
@@ -18,13 +17,8 @@ from apm.run import run_measures, run_group_measures
 ###################################################################################################
 ###################################################################################################
 
-# Run settings
-RUN_EXTRACTED = True
-RUN_GROUP = True
-
-# Define the data folders
-FOLDER_EXTRACTED = Path('/Users/tom/Data/VoytekLab/ExtractedSubsets/eeg_data')
-FOLDER_GROUP = Path('/Users/tom/Documents/Research/2-Projects/1a-Current(Voytek)/AperiodicMethods/2-Data/apm_data/')
+# Define data folder
+FOLDER = Path('/Users/tom/Documents/Research/2-Projects/1a-Current(Voytek)/AperiodicMethods/2-Data/apm_data/')
 
 # Settings for saving out results files
 OUTPATH = APMDB().data_path / 'eeg1'
@@ -37,101 +31,54 @@ DATA_FIELD = 'oz_rest_data'
 
 def main():
 
-    ##############################################################################################
+    print('\nANALYZING GROUP EEG DATA...')
 
     ## LOAD DATA
 
-    if RUN_EXTRACTED:
+    # Load group data
+    group_data = load_eeg_demo_group_data(FOLDER)
 
-        print('\nANALYZING EXTRACTED EEG DATA...')
+    ## APERIODIC MEASURES
 
-        # Get the list of available files
-        files = get_files(FOLDER_EXTRACTED, select='.mat')
+    group_results = run_group_measures(group_data, MEASURES)
+    save_pickle(group_results, 'eeg1_group_results', OUTPATH)
 
-        # FIX: temporarily drop subject which has a data quirk (wrong size array)
-        files.remove('1009.mat')
+    ## PEAK MEASURES
 
-        # Load data
-        data = load_eeg_demo_data(files, FOLDER_EXTRACTED, DATA_FIELD)
+    # Compute group level peak measures
+    group_results_peaks = run_group_measures(group_data, PEAK_MEASURES)
+    group_results_peaks['alpha_power'] = np.log10(group_results_peaks['alpha_power'])
+    save_pickle(group_results_peaks, 'eeg1_group_results_peaks', OUTPATH)
 
-        ## APERIODIC MEASURES
+    ## APERIODIC CORRELATIONS
 
-        # Compute measures of interest on the data
-        results = run_measures(data, MEASURES)
-        save_pickle(results, 'eeg1_results', OUTPATH)
+    # Compute average and sub-select time domain measures
+    group_avg = compute_avgs(group_results)
+    group_avg_ts = {ke : va for ke, va in group_avg.items() \
+        if ke not in ['specparam', 'irasa']}
 
-        ## XX
+    # Compute and save spatial correlations across time domain measures
+    group_corrs = compute_all_corrs(group_avg_ts)
+    save_pickle(group_corrs, 'eeg1_spatial_corrs', OUTPATH)
 
-        # Compute correlations across all pairs of methods
-        all_corrs = compute_all_corrs(results)
-        save_pickle(all_corrs, 'eeg1_all_corrs', OUTPATH)
+    # Compute and save spatial correlations between time domain and exponent measures
+    group_exp_corrs = compute_corrs_to_feature(group_avg_ts, group_avg['specparam'])
+    save_pickle(group_exp_corrs, 'eeg1_spatial_corrs_exp', OUTPATH)
 
-        ## PEAK MEASURES
+    ## PEAK CORRELATIONS
 
-        # Compute periodic measures
-        peak_results = run_measures(data, PEAK_MEASURES)
-        save_pickle(peak_results, 'eeg1_peak_results', OUTPATH)
+    # Compute spatial correlations between peak measures and time domain measures
+    group_avg_peaks = compute_avgs(group_results_peaks)
+    group_alpha_corrs = compute_corrs_to_feature(\
+        group_avg_ts, group_avg_peaks['alpha_power'])
+    save_pickle(group_alpha_corrs, 'eeg1_spatial_corrs_alpha', OUTPATH)
 
-        ## PEAK CORRELATIONS
-        alpha_corrs = compute_corrs_to_feature(results, peak_results['alpha_power'])
-        save_pickle(alpha_corrs, 'eeg1_alpha_corrs', OUTPATH)
+    # # Compute differences between peak correlations
+    # group_alpha_corr_diffs = compute_diffs_to_feature(\
+    #     group_avg_ts, group_avg_peaks['alpha_power'])
+    # save_pickle(group_alpha_corr_diffs, 'eeg1_group_alpha_corr_diffs', OUTPATH)
 
-        alpha_corr_diffs = compute_diffs_to_feature(results, peak_results['alpha_power'])
-        save_pickle(alpha_corrs, 'eeg1_alpha_corr_diffs', OUTPATH)
-
-        print('COMPLETED EXTRACTED EEG DATA ANALYSES\n')
-
-    ###############################################################################################
-
-    if RUN_GROUP:
-
-        print('\nANALYZING GROUP EEG DATA...')
-
-        ## LOAD DATA
-
-        # Load group data
-        group_data = load_eeg_demo_group_data(FOLDER_GROUP)
-
-        ## APERIODIC MEASURES
-        group_results = run_group_measures(group_data, MEASURES)
-        save_pickle(group_results, 'eeg1_group_results', OUTPATH)
-
-        ## APERIODIC CORRELATIONS
-
-        # Compute average and subselect time domain measures
-        group_avg = compute_avgs(group_results)
-        group_avg_ts = {ke : va for ke, va in group_avg.items() \
-            if ke not in ['specparam', 'irasa']}
-
-        # Compute and save group correlations
-        group_corrs = compute_all_corrs(group_avg_ts)
-        save_pickle(group_corrs, 'eeg1_group_corrs', OUTPATH)
-
-        # Compute and save differences
-        group_exp_corrs = compute_corrs_to_feature(group_avg_ts, group_avg['specparam'])
-        save_pickle(group_exp_corrs, 'eeg1_group_exp_corrs', OUTPATH)
-
-        ## PEAK MEASURES
-
-        # Compute group level peak measures
-        group_results_peaks = run_group_measures(group_data, PEAK_MEASURES)
-        group_results_peaks['alpha_power'] = np.log10(group_results_peaks['alpha_power'])
-        save_pickle(group_results_peaks, 'eeg1_group_results_peaks', OUTPATH)
-
-        ## PEAK CORRELATIONS
-
-        # Compute correlations between peak measures and time domain measures
-        group_avg_peaks = compute_avgs(group_results_peaks)
-        group_alpha_corrs = compute_corrs_to_feature(\
-            group_avg_ts, group_avg_peaks['alpha_power'])
-        save_pickle(group_alpha_corrs, 'eeg1_group_alpha_corrs', OUTPATH)
-
-        # Compute differences between peak correlations
-        group_alpha_corr_diffs = compute_diffs_to_feature(\
-            group_avg_ts, group_avg_peaks['alpha_power'])
-        save_pickle(group_alpha_corr_diffs, 'eeg1_group_alpha_corr_diffs', OUTPATH)
-
-        print('COMPLETED GROUP EEG DATA ANALYSES\n')
+    print('COMPLETED GROUP EEG DATA ANALYSES\n')
 
 
 if __name__ == "__main__":
