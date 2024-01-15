@@ -142,11 +142,14 @@ def multi_wperm_entropy(sig, **kwargs):
 
 ## SPECTRAL MEASURES
 
-### Fit functions for IRASA
 def fit_irasa_exp(freqs, psd_ap):
+    """IRASAS fit function - fit single exponent model & return exponent."""
+
     return fit_irasa(freqs, psd_ap)[1]
 
+
 def fit_irasa_knee(freqs, psd_ap):
+    """IRASA fit function - fit knee model."""
 
     # Force non-negative parameters
     lower_bounds = (0, 0, 0)
@@ -160,13 +163,18 @@ def fit_irasa_knee(freqs, psd_ap):
 
     return offset, knee, -exp
 
+
 def fit_irasa_knee_exp(freqs, psd_ap):
+    """IRASA fit function - fit knee model & return exponent."""
+
     return fit_irasa_knee(freqs, psd_ap)[2]
+
 
 IRASA_FIT_FUNCS = {
     'fit_irasa_exp' : fit_irasa_exp,
     'fit_irasa_knee' : fit_irasa_knee_exp,
 }
+
 
 def irasa(sig, fit_func='fit_irasa_exp', flip_sign=True, **kwargs):
     """Wrapper function for fitting IRASA and returning fit exponent.

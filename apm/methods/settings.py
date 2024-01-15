@@ -31,6 +31,7 @@ IRASA_PARAMS = {
     'fs' : FS,
     'f_range' : FIT_F_RANGE,
 }
+
 IRASA_PARAMS_KNEE = {
     'fs' : FS,
     'f_range' : FIT_F_RANGE_LONG,
@@ -44,6 +45,7 @@ AC_PARAMS = {
     'max_lag' : 250,
     'lag_step' : 1,
 }
+
 AC_DECAY_PARAMS = {
     'fs' : FS,
     'max_lag' : 1500,
@@ -68,7 +70,7 @@ DFA_PARAMS = {
     'n_scales' : 10,
     'min_scale' : 0.1,
     'max_scale' : 2.0,
-    'deg' : 1
+    'deg' : 1,
 }
 
 ## COMPLEXITY MEASURES
@@ -98,20 +100,24 @@ SFD_PARAMS = {}
 AP_ENT_PARAMS = {
     'order' : 2,
 }
+
 # Sample Entropy
 SA_ENT_PARAMS = {
     'order' : 2,
 }
+
 # Permutation Entropy
 PE_ENT_PARAMS = {
     'order' : 3,
     'delay' : 1,
 }
+
 # Weighted Permutation Entropy
 WPE_ENT_PARAMS = {
     'order' : 3,
     'delay' : 1,
 }
+
 # Spectral Entropy
 SP_ENT_PARAMS = {
     'sf' : FS,
