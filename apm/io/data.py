@@ -1,5 +1,7 @@
 """I/O utilities for loading empirical data."""
 
+import csv
+
 import numpy as np
 from scipy.io import loadmat
 
@@ -7,7 +9,7 @@ import mne
 from mne.io import read_raw_edf
 
 from apm.io.io import check_folder
-from apm.data.settings import EEG1
+from apm.data.settings import EEG1, EEG2
 
 ###################################################################################################
 ###################################################################################################
@@ -49,7 +51,20 @@ def load_eeg_demo_info(data_path):
 
 ## EEG2: DEV DATA
 
-...
+def load_eeg_dev_info(data_path):
+    """Helper function to load montage & info for dev EEG data."""
+
+    # Read in list of channel names that are kept in reduced 111 montage
+    with open(data_path / 'chans111.csv', 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        ch_labels = list(reader)[0]
+
+    montage = mne.channels.make_standard_montage('GSN-HydroCel-129')
+    info = mne.create_info(ch_labels, EEG2['fs'], 'eeg')
+    info = info.set_montage(montage)
+
+    return info
+
 
 ## IEEG DATA
 

@@ -2,13 +2,19 @@
 
 import warnings
 
+from matplotlib import cm
+
+from neurodsp.plts.utils import savefig
+
 from apm.plts.utils import make_axes
+from apm.plts.results import plot_topo
 from apm.plts.base import plot_dots
 from apm.plts.settings import LABELS
 
 ###################################################################################################
 ###################################################################################################
 
+@savefig
 def plot_results_all(results, labels=None, **plt_kwargs):
     """Plot multi-axis figure comparing all measures to each other.
 
@@ -52,3 +58,13 @@ def plot_results_all(results, labels=None, **plt_kwargs):
 
                 plot_dots(results[l2], results[l1], **ax_kwargs,
                           **plt_kwargs, ax=axes[ax_r, ax_c])
+
+
+@savefig
+def plot_topo_row(results, measures, info):
+    """Helper function to plot a row of topographies."""
+
+    axes = make_axes(1, len(measures), figsize=(2.5 * len(measures), 3), wspace=0.55)
+    for measure, ax in zip(measures, axes):
+        ax.set_title(measure, fontdict={'fontsize' : 10})
+        plot_topo(results[measure], info, axes=ax)

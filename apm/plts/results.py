@@ -3,6 +3,9 @@
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib import cm
+
+from mne.viz import plot_topomap
 
 from neurodsp.plts.utils import savefig
 from neurodsp.plts.style import style_plot
@@ -30,3 +33,10 @@ def plot_corr_matrix(corrs, **plt_kwargs):
                 cbar=plt_kwargs.pop('cbar', True),
                 annot_kws={"size": 11},
                 **plt_kwargs)
+
+
+@savefig
+def plot_topo(data, info, size=2, **plt_kwargs):
+    """Helper function for plotting topographies."""
+
+    plot_topomap(data, info, cmap=cm.viridis, contours=0, size=2, show=False, **plt_kwargs)

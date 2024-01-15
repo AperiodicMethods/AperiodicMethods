@@ -35,6 +35,7 @@ def plot_boxplot_errors(errors, labels=None, **plt_kwargs):
 
     plt.tight_layout()
 
+
 @savefig
 @style_plot
 def plot_violin_errors(errors, labels=None, **plt_kwargs):
