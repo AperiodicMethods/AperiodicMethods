@@ -15,13 +15,11 @@ from apm.run import run_measures, run_group_measures
 ###################################################################################################
 
 # Define data folder
-FOLDER = Path('/Users/tom/Documents/Research/2-Projects/1a-Current(Voytek)/AperiodicMethods/2-Data/apm_data/')
+PROJECT = Path('/Users/tom/Documents/Research/2-Projects/1a-Current(Voytek)/AperiodicMethods/')
+DATA_FOLDER = PROJECT / '2-Data/apm_data/eeg1'
 
 # Settings for saving out results files
 OUTPATH = APMDB().data_path / 'eeg1'
-
-# Define data field to extract from files
-DATA_FIELD = 'oz_rest_data'
 
 ###################################################################################################
 ###################################################################################################
@@ -38,13 +36,13 @@ def main():
     ## APERIODIC MEASURES
 
     group_results = run_group_measures(group_data, MEASURES)
-    save_pickle(group_results, 'eeg1_group_results', OUTPATH)
+    save_pickle(group_results, 'eeg1_results', OUTPATH)
 
     ## PEAK MEASURES
 
     # Compute group level peak measures
     group_results_peaks = run_group_measures(group_data, PEAK_MEASURES)
-    save_pickle(group_results_peaks, 'eeg1_group_results_peaks', OUTPATH)
+    save_pickle(group_results_peaks, 'eeg1_results_peaks', OUTPATH)
 
     ## APERIODIC CORRELATIONS
 
@@ -72,7 +70,7 @@ def main():
     # # Compute differences between peak correlations
     # group_alpha_corr_diffs = compute_diffs_to_feature(\
     #     group_avg_ts, group_avg_peaks['alpha_power'])
-    # save_pickle(group_alpha_corr_diffs, 'eeg1_group_alpha_corr_diffs', OUTPATH)
+    # save_pickle(group_alpha_corr_diffs, 'eeg1_spatial_alpha_corrs_diffs', OUTPATH)
 
     print('COMPLETED GROUP EEG DATA ANALYSES\n')
 
