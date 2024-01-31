@@ -52,7 +52,8 @@ MAX_TIME = 30
 
 ## METHOD SETTINGS
 
-FIT_RANGE = [1, 75]
+#FIT_RANGE = [1, 75]
+FIT_RANGE = [1, 60]
 
 PSD_SETTINGS = {
     'fs' : FS,
