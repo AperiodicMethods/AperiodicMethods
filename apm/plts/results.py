@@ -8,15 +8,11 @@ from matplotlib import cm
 from mne.viz import plot_topomap
 
 from neurodsp.plts.utils import savefig
-from neurodsp.plts.style import style_plot
-
-from .utils import get_ax
 
 ###################################################################################################
 ###################################################################################################
 
 @savefig
-@style_plot
 def plot_corr_matrix(corrs, **plt_kwargs):
     """Plot a correlation matrix, computed from the output of df.corr()."""
 
@@ -33,6 +29,14 @@ def plot_corr_matrix(corrs, **plt_kwargs):
                 cbar=plt_kwargs.pop('cbar', True),
                 annot_kws={"size": 11},
                 **plt_kwargs)
+
+    cax = plt.gca()
+    if 1 in corrs.shape:
+        cax.set_xticks([])
+        cax.set_yticks([])
+    else:
+        cax.set_xticklabels(cax.get_xticklabels(), rotation=45, fontsize=10, ha='right')
+        cax.set_yticklabels(cax.get_yticklabels(), rotation=0, fontsize=10)
 
 
 @savefig

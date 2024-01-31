@@ -18,5 +18,6 @@ EEG2 = {
 IEEG = {
     'fs' : 200,
     'n_seconds' : 60,
-    'f_range' : [1, 75],
+    #'f_range' : [1, 75],
+    'f_range' : [1, 60],
 }

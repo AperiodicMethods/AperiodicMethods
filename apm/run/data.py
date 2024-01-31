@@ -27,10 +27,8 @@ def run_measures(data, measures, warnings_action='ignore'):
         The values are the computed measures for each method.
     """
 
-    # Initialize results
     results = {func.__name__ : np.zeros(data.shape[0]) for func in measures.keys()}
 
-    # Calculate measures on data
     with warnings.catch_warnings():
         warnings.simplefilter(warnings_action)
         for ind, sig in enumerate(data):

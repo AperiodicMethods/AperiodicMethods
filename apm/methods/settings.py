@@ -52,7 +52,6 @@ AC_DECAY_PARAMS = {
     'lag_step' : 2,
     'level' : 0.5,
 }
-#DECAY_LEVEL = 0.5
 
 ## FLUCTUATION METHODS
 
@@ -128,9 +127,12 @@ SP_ENT_PARAMS = {
 
 # Multiscale Approximate Entropy
 MULTI_AP_ENT_PARAMS = {}
+
 # Multiscale Sample Entropy
 MULTI_SA_ENT_PARAMS = {}
+
 # Multiscale Permutation Entropy
 MULTI_PE_ENT_PARAMS = {}
+
 # Multiscale Weighted Permutation Entropy
 MULTI_WPE_ENT_PARAMS = {}

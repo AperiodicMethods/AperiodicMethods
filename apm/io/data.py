@@ -3,6 +3,7 @@
 import csv
 
 import numpy as np
+import pandas as pd
 from scipy.io import loadmat
 
 import mne
@@ -68,14 +69,17 @@ def load_eeg_dev_info(data_path):
 
 ## IEEG DATA
 
-def load_ieeg_file(file, folder, max_time=None):
+def load_ieeg_file(file, folder, max_time=None, return_channels=False):
     """Helper function to load a file of iEEG data."""
 
     edf = read_raw_edf(folder / file, verbose=False)
 
-    # Extract times series from data object
+    # Extract data attributes of interest from object
     times = edf.times
     data = np.array(edf.get_data())
+
+    # Collect channel names, and strip 'W' marker
+    ch_names = [ch[0:-1] for ch in edf.ch_names]
 
     # Restrict data to times of interest
     if max_time:
@@ -86,18 +90,52 @@ def load_ieeg_file(file, folder, max_time=None):
     times = times.astype('float32')
     data = data.astype('float32')
 
-    return times, data
+    if not return_channels:
+        return times, data
+    else:
+        return times, data, ch_names
 
 
-def load_ieeg_all(files, folder, max_time=None):
+def load_ieeg_all(files, folder, max_time=None, exclude_files=None, return_channels=False):
     """Helper function to load all iEEG data together."""
 
     all_data = []
+    all_chs = []
     for file in files:
 
-        _, data = load_ieeg_file(file, folder, max_time=max_time)
+        if exclude_files:
+            if file in exclude_files:
+                continue
+
+        _, data, chs = load_ieeg_file(file, folder, max_time=max_time, return_channels=True)
         all_data.append(data)
+        all_chs.extend(chs)
 
     all_data = np.vstack(all_data)
 
-    return all_data
+    if not return_channels:
+        return all_data
+    else:
+        return all_data, all_chs
+
+
+def load_ieeg_metadata(path):
+    """Load metadata files for the iEEG dataset."""
+
+    ch_info = pd.read_csv(path / 'ChannelInformation.csv', dtype = {'Channel name': str})
+    ch_info['Channel name'] = [ch[1:-1] for ch in ch_info['Channel name']]
+
+    patient_info = pd.read_csv(path / 'PatientInformation.csv')
+    region_info = pd.read_csv(path / 'RegionInformation.csv')
+
+    return ch_info, patient_info, region_info
+
+
+def get_patient_info(chs, ch_info, patient_info):
+    """Get patient information, based on a set of channel labels."""
+
+    patients = [ch_info[ch_info['Channel name'] == ch]['Patient'].values[0] for ch in chs]
+    ages = [patient_info[patient_info['ID'] == patient]['Age at time of study'].values[0] \
+        for patient in patients]
+
+    return np.array(patients), np.array(ages)

@@ -61,10 +61,11 @@ def plot_results_all(results, labels=None, **plt_kwargs):
 
 
 @savefig
-def plot_topo_row(results, measures, info):
+def plot_topo_row(results, measures, info, **plt_kwargs):
     """Helper function to plot a row of topographies."""
 
-    axes = make_axes(1, len(measures), figsize=(2.5 * len(measures), 3), wspace=0.55)
+    axes = make_axes(1, len(measures), figsize=(2.5 * len(measures), 3),
+                     wspace=plt_kwargs.pop('wspace', 0.35))
     for measure, ax in zip(measures, axes):
         ax.set_title(measure, fontdict={'fontsize' : 10})
         plot_topo(results[measure], info, axes=ax)
