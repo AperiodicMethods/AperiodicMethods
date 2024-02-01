@@ -3,6 +3,7 @@
 from itertools import product
 
 import numpy as np
+from sklearn import linear_model
 
 from bootstrap import bootstrap_corr, bootstrap_diff
 
@@ -142,3 +143,15 @@ def unpack_corrs(corrs):
                 corrs_mat[ii, jj] = corrs[m1][m2][0]
 
     return corrs_mat
+
+
+def compute_reg_var(var, control):
+    """Compute a partialized variable - residuals after removing impact of another variable."""
+
+    vals = var.reshape(-1, 1)
+    cont = control.reshape(-1, 1)
+
+    vals_reg = linear_model.LinearRegression().fit(cont, vals)
+    vals_res = vals - vals_reg.predict(cont)
+
+    return vals_res
