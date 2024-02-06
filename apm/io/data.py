@@ -10,12 +10,12 @@ import mne
 from mne.io import read_raw_edf
 
 from apm.io.io import check_folder
-from apm.data.settings import EEG1, EEG2
 
 ###################################################################################################
 ###################################################################################################
 
 ## EEG1: DEMO DATA
+
 def load_eeg_demo_data(files, folder, data_field):
     """Helper function for loading the EEG demo dataset."""
 
@@ -45,7 +45,7 @@ def load_eeg_demo_info(data_path):
         ch_names = [str(line.strip()) for line in file]
 
     montage = mne.channels.make_standard_montage('standard_1020')
-    info = mne.create_info(ch_names, EEG1['fs'], 'eeg')
+    info = mne.create_info(ch_names, 500, 'eeg')
     info = info.set_montage(montage)
 
     return info
@@ -61,7 +61,7 @@ def load_eeg_dev_info(data_path):
         ch_labels = list(reader)[0]
 
     montage = mne.channels.make_standard_montage('GSN-HydroCel-129')
-    info = mne.create_info(ch_labels, EEG2['fs'], 'eeg')
+    info = mne.create_info(ch_labels, 500, 'eeg')
     info = info.set_montage(montage)
 
     return info
