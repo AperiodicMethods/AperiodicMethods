@@ -17,7 +17,9 @@ from apm.io import APMDB, get_files, save_pickle
 from apm.run import run_measures
 from apm.methods import fit_irasa_knee
 from apm.analysis import compute_all_corrs
-from apm.data.measures import TS_MEASURES, SPECPARAM_SETTINGS_KNEE
+
+# Import general settings from script settings
+from settings import TS_MEASURES, SPECPARAM_SETTINGS_KNEE
 
 ###################################################################################################
 ###################################################################################################
@@ -64,12 +66,6 @@ IRASA_SETTINGS = {
     'fs' : FS,
     'f_range' : FIT_RANGE,
 }
-
-#IRASA_MEASURES = {
-#    irasa : IRASA_SETTINGS,
-#}
-
-#MEASURES = TS_MEASURES | IRASA_MEASURES
 
 ###################################################################################################
 ###################################################################################################
