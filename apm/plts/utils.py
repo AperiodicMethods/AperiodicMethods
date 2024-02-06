@@ -50,11 +50,19 @@ def add_text(text, position='tr', xtp=None, ytp=None, ax=None):
 
     if not xtp:
         if position == 'tl':
-            xtp, ytp = 0.05, 0.8755
+            xtp, ytp = 0.050, 0.8755
+            ha = 'left'
         if position == 'tr':
-            xtp, ytp = 0.775, 0.8755
+            xtp, ytp = 0.950, 0.8755
+            ha = 'right'
+        if position == 'bl':
+            xtp, ytp = 0.050, 0.1245
+            ha = 'left'
+        if position == 'br':
+            xtp, ytp = 0.950, 0.1245
+            ha = 'right'
 
-    ax.text(xtp, ytp, text, transform=ax.transAxes)
+    ax.text(xtp, ytp, text, transform=ax.transAxes, ha=ha)
 
 
 def formr(r_val):
