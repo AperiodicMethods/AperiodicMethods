@@ -7,6 +7,7 @@ import numpy as np
 from fooof import FOOOFGroup
 from fooof.utils.params import compute_knee_frequency
 from neurodsp.spectral import compute_spectrum
+from neurodsp.aperiodic.irasa import compute_irasa
 
 # Import custom code
 import sys
@@ -14,10 +15,9 @@ sys.path.append(str(Path('..').resolve()))
 from apm.io.data import load_ieeg_all
 from apm.io import APMDB, get_files, save_pickle
 from apm.run import run_measures
+from apm.methods import fit_irasa_knee
 from apm.analysis import compute_all_corrs
 from apm.data.measures import TS_MEASURES, SPECPARAM_SETTINGS_KNEE
-
-from apm.methods import irasa
 
 ###################################################################################################
 ###################################################################################################
@@ -52,7 +52,6 @@ MAX_TIME = 30
 
 ## METHOD SETTINGS
 
-#FIT_RANGE = [1, 75]
 FIT_RANGE = [1, 60]
 
 PSD_SETTINGS = {
@@ -64,14 +63,13 @@ PSD_SETTINGS = {
 IRASA_SETTINGS = {
     'fs' : FS,
     'f_range' : FIT_RANGE,
-    'fit_func' : 'fit_irasa_knee',
 }
 
-IRASA_MEASURES = {
-    irasa : IRASA_SETTINGS,
-}
+#IRASA_MEASURES = {
+#    irasa : IRASA_SETTINGS,
+#}
 
-MEASURES = TS_MEASURES | IRASA_MEASURES
+#MEASURES = TS_MEASURES | IRASA_MEASURES
 
 ###################################################################################################
 ###################################################################################################
@@ -90,8 +88,8 @@ def main():
 
     ## APERIODIC MEASURES
 
-    # Compute measures of interest on the iEEG data
-    results = run_measures(all_data, MEASURES)
+    # Compute time domain measures of interest on the iEEG data
+    results = run_measures(all_data, TS_MEASURES)
 
     # Run specparam
     freqs, powers = compute_spectrum(all_data, **PSD_SETTINGS)
@@ -107,6 +105,22 @@ def main():
     results['specparam_knee'] = np.array(fg.get_params('aperiodic', 'knee'))
     results['specparam_knee_freq'] = np.nan_to_num(np.array(knee_freqs))
 
+    # Run IRASA
+    ir_exps = []
+    ir_knees = []
+    for sig in all_data:
+        freqs_ir, psd_ap, psd_pe = compute_irasa(sig, **IRASA_SETTINGS)
+        off_ir, kne_ir, exp_ir = fit_irasa_knee(freqs_ir, psd_ap)
+        ir_exps.append(-exp_ir)
+        ir_knees.append(kne_ir)
+
+    # Add IRASA results to overall results
+    results['irasa'] = np.array(ir_exps)
+    knee_freqs_ir = [compute_knee_frequency(kn, exp) for kn, exp in zip(ir_knees, ir_exps)]
+    results['irasa_knee'] = np.array(ir_knees)
+    results['irasa_knee_freq'] = np.nan_to_num(np.array(knee_freqs_ir))
+
+    # Save out results
     save_pickle(results, 'ieeg_results', OUTPATH)
 
     ## APERIODIC CORRELATIONS
