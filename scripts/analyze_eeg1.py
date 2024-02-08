@@ -92,13 +92,13 @@ def main():
     ## PEAK MEASURES
 
     # Extract and collect the peak alpha power per channel
-    group_results_peaks = {'alpha_power' : np.zeros([len(fgs), len(fg)])}
+    results_peaks = {'alpha_power' : np.zeros([len(fgs), len(fg)])}
     for s_ind, fg in enumerate(fgs):
         for c_ind in range(len(fg)):
-            group_results_peaks['alpha_power'][s_ind, c_ind] = \
-                get_fm_peak_power(fg.get_fooof(ind), ALPHA_RANGE)
+            results_peaks['alpha_power'][s_ind, c_ind] = \
+                get_fm_peak_power(fg.get_fooof(c_ind), ALPHA_RANGE)
 
-    save_pickle(group_results_peaks, 'eeg1_results_peaks', OUTPATH)
+    save_pickle(results_peaks, 'eeg1_results_peaks', OUTPATH)
 
     ## SPATIAL MEASURES: APERIODIC
 
@@ -118,7 +118,7 @@ def main():
     ## SPATIAL MEASURES: PERIODIC
 
     # Compute spatial correlations between peak measures and time domain measures
-    group_avg_peaks = compute_avgs(group_results_peaks)
+    group_avg_peaks = compute_avgs(results_peaks)
     group_alpha_corrs = compute_corrs_to_feature(\
         group_avg_ts, group_avg_peaks['alpha_power'])
     save_pickle(group_alpha_corrs, 'eeg1_spatial_corrs_alpha', OUTPATH)
