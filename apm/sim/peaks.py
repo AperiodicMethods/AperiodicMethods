@@ -1,4 +1,4 @@
-"""Code for simulating power spectra."""
+"""Code for simulating peaks."""
 
 import pkg_resources
 

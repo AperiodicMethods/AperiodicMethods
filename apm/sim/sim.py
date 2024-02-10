@@ -99,7 +99,28 @@ def sim_multiple(sim_func, sim_params, n_sims):
 
 
 def sim_across_values(sim_func, sim_params, update, values, n_sims):
-    """Helper function to create a set of simulations across different parameter values."""
+    """Helper function to create a set of simulations across different parameter values.
+
+    Parameters
+    ----------
+    sim_func : callable
+        Function to create the simulated time series.
+    sim_params : dict
+        The parameters for the simulated signal, passed into `sim_func`.
+    update : {'update_exp', 'update_freq', 'update_pow', 'update_comb_exp'} or callable
+        Specifies which parameter to update in simulation parameters.
+    values : list or 1d array
+        Parameter values to step across.
+    n_sims : int
+        Number of simulations to create.
+
+    Returns
+    -------
+    sims : dict of {float : array}
+        Dictionary of simulated signals.
+        Each key is the simulation parameter value for the set of simulations.
+        Each value is the set of simulations for that value, as [n_sims, sig length].
+    """
 
     update = UPDATES[update] if isinstance(update, str) else update
 
@@ -111,7 +132,22 @@ def sim_across_values(sim_func, sim_params, update, values, n_sims):
 
 
 def sim_combined_peak(n_seconds, fs, components):
-    """Simulate a combined signal with an aperiodic component and a peak."""
+    """Simulate a combined signal with an aperiodic component and a peak.
+
+    Parameters
+    ----------
+    n_seconds : float
+        Simulation time, in seconds.
+    fs : float
+        Sampling rate of simulated signal, in Hz.
+    components : dict
+        A dictionary of simulation functions to run, with their desired parameters.
+
+    Returns
+    -------
+    sig : 1d array
+        Simulated combined peak signal.
+    """
 
     sim_names = list(components.keys())
     assert len(sim_names) == 2, 'Expected only 2 components.'
@@ -125,7 +161,8 @@ def sim_combined_peak(n_seconds, fs, components):
 
     return sig
 
-# Alternative implementation - probably to drop:
+
+# Alternative implementation of the above - probably to drop:
 # def sim_combined_peak(n_seconds, fs, ap_func, ap_params, peak_params):
 
 #     sig_ap = ap_func(n_seconds, fs, **ap_params)

@@ -33,7 +33,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
     update : {'update_exp', 'update_freq', 'update_pow', 'update_comb_exp'} or callable
         Specifies which parameter to update in simulation parameters.
     values : list or 1d array
-        A parameter to step across and re-run measure calculations for.
+        Parameter values to step across and re-run measure calculations for.
     n_sims : int, optional, default: 10
         The number of iterations to simulate and calculate measures, per value.
     avg_func : callable, optional, default: np.mean

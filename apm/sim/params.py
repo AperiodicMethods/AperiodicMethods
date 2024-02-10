@@ -6,22 +6,30 @@ import numpy as np
 ## Define update functions
 
 # Update aperiodic parameters - exponent
-upd_exp = lambda params, val : params.update({'exponent' : val})
+upd_exp = lambda params, val : \
+    params.update({'exponent' : val})
 
 # Update aperiodic parameters (in combined signals) - exponent
-upd_comb_exp = lambda params, val : params['components']['sim_powerlaw'].update({'exponent' : val})
+upd_comb_exp = lambda params, val : \
+    params['components']['sim_powerlaw'].update({'exponent' : val})
 
 # Update aperiodic parameters - knee
-upd_knee = lambda params, val : params.update({'tau_d' : val})
+upd_knee = lambda params, val : \
+    params.update({'tau_d' : val})
 
 # Update periodic parameters (in combined signals)
-upd_freq = lambda params, val : params['components']['sim_oscillation'].update({'freq' : val})
-upd_pow = lambda params, val : params.update({'component_variances' : [1, val]})
+upd_freq = lambda params, val : \
+    params['components']['sim_oscillation'].update({'freq' : val})
+upd_pow = lambda params, val : \
+    params.update({'component_variances' : [1, val]})
 
 # Update periodic parameters (in combined peak signals)
-upd_peak_freq = lambda params, val : params['components']['sim_peak_oscillation'].update({'freq' : val})
-upd_peak_hgt = lambda params, val : params['components']['sim_peak_oscillation'].update({'height' : val})
-upd_peak_bw = lambda params, val : params['components']['sim_peak_oscillation'].update({'bw' : val})
+upd_peak_freq = lambda params, val : \
+    params['components']['sim_peak_oscillation'].update({'freq' : val})
+upd_peak_hgt = lambda params, val : \
+    params['components']['sim_peak_oscillation'].update({'height' : val})
+upd_peak_bw = lambda params, val : \
+    params['components']['sim_peak_oscillation'].update({'bw' : val})
 
 ###################################################################################################
 ## Collect together all update function
@@ -41,7 +49,20 @@ UPDATES = {
 ## Functions for updating / sampling paramters
 
 def update_sim_params(sim_params, samplers):
-    """Update a simulation parameter definition from set of samplers."""
+    """Update a simulation parameter definition from set of samplers.
+
+    Parameters
+    ----------
+    sim_params : dict
+        The parameters for the simulated signal.
+    samplers : dict
+        Dictionary of samplers to update simulation parameters.
+
+    Returns
+    -------
+    sim_params : dict
+        The updated parameters for the simulated signal.
+    """
 
     for key, val in samplers.items():
         UPDATES[key](sim_params, next(val))
@@ -50,7 +71,22 @@ def update_sim_params(sim_params, samplers):
 
 
 def update_vals(sim_params, values, update):
-    """Update simulation parameter values."""
+    """Update simulation parameter values.
+
+    Parameters
+    ----------
+    sim_params : dict
+        The parameters for the simulated signal.
+    values : list or 1d array
+        Parameter values to update across.
+    update : callable
+        Function to use to apply update to `sim_params`.
+
+    Yields
+    ------
+    sim_params : dict
+        The parameters for the simulated signal.
+    """
 
     for val in values:
         update(sim_params, val)
@@ -70,7 +106,7 @@ def unpack_param_dict(params):
     nparams : dict
         Flattened dictionary of simulation parameters.
 
-    Note: could be added to NDSP?
+    ToDo / Note: could be added to NDSP?
     """
 
     nparams = {}
@@ -88,7 +124,21 @@ def unpack_param_dict(params):
 
 
 def sampler(values, probs=None):
-    """Create a generator to sample from a parameter range."""
+    """Create a generator to sample from a parameter range.
+
+    Parameters
+    ----------
+    values : list or 1d array
+        Parameter values to create a generator for.
+    probs : 1d array, optional
+        Probabilities to sample from values.
+        If provided, should be the same lengths as `values`.
+
+    Yields
+    ------
+    generator
+        Generator to sample parameter values from.
+    """
 
     # Check that length of values is same as length of probs, if provided
     if np.any(probs):

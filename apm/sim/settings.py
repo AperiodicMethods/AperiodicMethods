@@ -1,4 +1,4 @@
-"""Default settings file."""
+"""Simulation settings."""
 
 from copy import deepcopy
 
