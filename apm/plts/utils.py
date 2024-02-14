@@ -45,7 +45,12 @@ def color_red_or_green(value, threshold=0.001):
 
 def add_text(text, position='tr', xtp=None, ytp=None, ax=None):
     """Add text to a plot.
-    positions: 'tr' - 'top right', 'tl' - 'top left'
+
+    positions:
+        'tr' : 'top right'
+        'tl' : 'top left'
+        'br' : 'bottom right'
+        'bl' : 'bottom left'
     """
 
     if not xtp:
@@ -56,10 +61,10 @@ def add_text(text, position='tr', xtp=None, ytp=None, ax=None):
             xtp, ytp = 0.950, 0.8755
             ha = 'right'
         if position == 'bl':
-            xtp, ytp = 0.050, 0.1245
+            xtp, ytp = 0.050, 0.0750
             ha = 'left'
         if position == 'br':
-            xtp, ytp = 0.950, 0.1245
+            xtp, ytp = 0.950, 0.0750
             ha = 'right'
 
     ax.text(xtp, ytp, text, transform=ax.transAxes, ha=ha)

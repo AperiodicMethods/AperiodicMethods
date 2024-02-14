@@ -27,12 +27,21 @@ def alpha_power(sig, log=True, **kwargs):
         fm = FOOOF(**kwargs, verbose=False)
 
     fm.fit(freqs, powers)
-    alpha_freqs, alpha_powers = trim_spectrum(\
-        fm.freqs, fm.get_data('peak', 'linear'), ALPHA_RANGE)
 
-    alpha_power = np.max(alpha_powers)
-
-    if log:
-        alpha_power = np.log10(alpha_power)
+    alpha_power = get_fm_peak_power(fm, ALPHA_RANGE, log=log)
 
     return alpha_power
+
+
+def get_fm_peak_power(fm, peak_range, log=True):
+    """Helper function for getting peak power from spectral model."""
+
+    peak_freqs, peak_powers = trim_spectrum(\
+        fm.freqs, fm.get_data('peak', 'linear'), peak_range)
+
+    peak_power = np.max(peak_powers)
+
+    if log:
+        peak_power = np.log10(peak_power)
+
+    return peak_power
