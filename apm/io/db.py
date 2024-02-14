@@ -50,18 +50,11 @@ class APMDB():
         self.sims_path = self.data_path / 'sims'
         self.literature_path = self.data_path / 'literature'
 
-        # ToDo: check if need to keep these:
-        self.psds_path = self.data_path / 'psds'
-        self.fooof_path = self.data_path / 'fooof'
-
         # Initialize paths if not already created
         self._mkpath(self.data_path)
         self._mkpath(self.figs_path)
         self._mkpath(self.sims_path)
         self._mkpath(self.literature_path)
-
-        self._mkpath(self.fooof_path)
-        self._mkpath(self.psds_path)
 
 
     def get_files(self, directory, **kwargs):
