@@ -96,7 +96,7 @@ def run_sims_load(sims_file, measure_func, measure_params, avg_func=np.mean,
 
 
 def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update, values,
-                      n_sims=10, avg_func=np.mean, var_func=np.std, n_jobs=-1, pbar=False,
+                      n_sims=10, avg_func=np.mean, var_func=np.std, n_jobs=4, pbar=False,
                       warnings_action='ignore'):
     """Compute a set of measures across simulations, in parallel.
 

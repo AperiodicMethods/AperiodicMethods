@@ -12,7 +12,7 @@ N_SIMS = 50
 
 # General simulation settings
 N_SECONDS = 30
-FS = 500
+FS = 250
 
 ###################################################################################################
 ## Define parameter values
@@ -98,7 +98,7 @@ SIM_PARAMS_COMB.update({
         **deepcopy(AP_PARAMS),
         **deepcopy(OSC_PARAMS),
     },
-    'component_variances' : COMP_VARS
+    'component_variances' : COMP_VARS,
 })
 
 # Sim parameters for combined signal with a bursty oscillation
@@ -108,7 +108,7 @@ SIM_PARAMS_BURST.update({
         **deepcopy(AP_PARAMS),
         **deepcopy(BURST_PARAMS),
     },
-    'component_variances' : COMP_VARS
+    'component_variances' : COMP_VARS,
 })
 
 # Sim parameters for combined signal with a wide peak
