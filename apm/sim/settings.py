@@ -9,6 +9,7 @@ import numpy as np
 
 # Set the number of instances to run
 N_SIMS = 50
+N_SIMS2 = 10
 
 # General simulation settings
 N_SECONDS = 30

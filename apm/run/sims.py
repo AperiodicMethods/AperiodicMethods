@@ -70,12 +70,15 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
     return np.array(avg), np.array(var)
 
 
-def run_sims_load(sims_file, measure_func, measure_params, avg_func=np.mean,
-                  var_func=np.std, warnings_action='ignore'):
+def run_sims_load(sims_file, measure_func, measure_params, n_sims=None,
+                  avg_func=np.mean, var_func=np.std, warnings_action='ignore'):
     """Run measures across a set of simulations loaded from file."""
 
     sigs = load_pickle(sims_file, None)
     values = list(sigs.keys())
+
+    if n_sims:
+        sigs = {val : sigs[val][:n_sims, :] for val in values}
     n_sims = sigs[values[0]].shape[0]
 
     avg = [None] * len(values)
