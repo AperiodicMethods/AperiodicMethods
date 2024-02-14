@@ -44,61 +44,61 @@ Overview of how the method evaluation simulations are done.
 
 Overview of how the method comparisons simulations are done.
 
-## 2) Spectral Domain Methods
-
-This section introduces spectral domain methods, evaluating and comparing them on simulated data, and covers Figure 3 of the paper.
-
-#### 20-SpectralMethods
-
-Introduction to the spectral domain methods used in this project.
-
-#### 21-SpectralFitting
-
-This notebook examines methods that fit aperiodic components to power spectra.
-
-#### 22-SpecParam
-
-This notebook examines the spectral parameterization ('specparam') method for parameterizing periodic and aperiodic components from neural power spectra.
-
-#### 23-IRASA
-
-This notebook examines the 'irregular resampling auto-spectral analysis' (IRASA) method for decomposing time series.
-
-#### 24-ExponentComparisons
-
-This notebook compares methods that can be used to measure the aperiodic exponent, including specparam and IRASA.
-
-## 3) Time Domain Methods
+## 2) Time Domain Methods
 
 This section introduces time domain methods, evaluating them on simulated data, and covers Figure 4 of the paper.
 
-#### 30-TimeDomainMethods
+#### 20-TimeDomainMethods
 
 Introduction to the time domain methods used in this project.
 
-#### 31-AutoCorrelation
+#### 21-AutoCorrelation
 
 This notebook examines auto-correlation measures.
 
-#### 32-Fluctuations
+#### 22-Fluctuations
 
 This notebook examines 'fluctuation' analyses, including the Hurst exponent, and detrended fluctuation analysis (DFA).
 
-#### 33-FractalDimension
+#### 23-FractalDimension
 
 This notebook examines fractal dimension measures that can be applied to time series.
 
-#### 34-Complexity
+#### 24-Complexity
 
 This notebook examines complexity measures that can be applied to time series.
 
-#### 35-Entropy
+#### 25-Entropy
 
 This notebook examines information theory / entropy measures.
 
-#### 36-MultiscaleEntropy
+#### 26-MultiscaleEntropy
 
 This notebook examines multiscale entropy measures.
+
+## 3) Spectral Domain Methods
+
+This section introduces spectral domain methods, evaluating and comparing them on simulated data, and covers Figure 3 of the paper.
+
+#### 30-SpectralMethods
+
+Introduction to the spectral domain methods used in this project.
+
+#### 31-SpectralFitting
+
+This notebook examines methods that fit aperiodic components to power spectra.
+
+#### 32-SpecParam
+
+This notebook examines the spectral parameterization ('specparam') method for parameterizing periodic and aperiodic components from neural power spectra.
+
+#### 33-IRASA
+
+This notebook examines the 'irregular resampling auto-spectral analysis' (IRASA) method for decomposing time series.
+
+#### 34-ExponentComparisons
+
+This notebook compares methods that can be used to measure the aperiodic exponent, including specparam and IRASA.
 
 ## 4) Method Comparisons
 
