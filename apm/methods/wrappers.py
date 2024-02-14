@@ -6,7 +6,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 from antropy import hjorth_params, lziv_complexity
-from neurokit2.complexity import (fractal_sevcik, complexity_lyapunov,
+from neurokit2.complexity import (fractal_correlation, fractal_sevcik, complexity_lyapunov,
                                   complexity_wpe, entropy_multiscale)
 
 from fooof import FOOOF
@@ -100,6 +100,12 @@ def lyapunov(sig, **kwargs):
 
 
 ## FRACTAL DIMENSION MEASURES
+
+def correlation_dimension(sig, **kwargs):
+    """Wrapper function for computing correlation dimension."""
+
+    return fractal_correlation(sig, **kwargs)[0]
+
 
 def sevcik_fd(sig, **kwargs):
     """Wrapper function for computing Sevcik fractal dimension."""

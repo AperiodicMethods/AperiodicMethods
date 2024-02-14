@@ -5,39 +5,6 @@ from apm.sim.settings import FS
 ###################################################################################################
 ###################################################################################################
 
-## SPECTRAL FITTING
-
-# Frequency range
-FIT_F_RANGE = (1, 50)
-FIT_F_RANGE_LONG = (1, 100)
-ALPHA_RANGE = [7, 14]
-
-# SpecParam settings
-SPECPARAM_PARAMS = {
-    'fs' : FS,
-    'f_range' : FIT_F_RANGE,
-    'min_peak_height' : 0.05,
-}
-
-SPECPARAM_PARAMS_KNEE = {
-    'fs' : FS,
-    'f_range' : FIT_F_RANGE_LONG,
-    'min_peak_height' : 0.05,
-    'aperiodic_mode' : 'knee',
-}
-
-# IRASA settings
-IRASA_PARAMS = {
-    'fs' : FS,
-    'f_range' : FIT_F_RANGE,
-}
-
-IRASA_PARAMS_KNEE = {
-    'fs' : FS,
-    'f_range' : FIT_F_RANGE_LONG,
-    'fit_func' : 'fit_irasa_knee',
-}
-
 ## AUTO-CORRELATION MEASURES
 
 # Settings for autocorrelations
@@ -88,6 +55,10 @@ LY_PARAMS = {}
 
 ## FRACTAL MEASURES
 
+# Correlation dimension
+CD_PARAMS = {}
+
+# Fractal dimension
 HFD_PARAMS = {}
 KFD_PARAMS = {}
 PFD_PARAMS = {}
@@ -136,3 +107,36 @@ MULTI_PE_ENT_PARAMS = {}
 
 # Multiscale Weighted Permutation Entropy
 MULTI_WPE_ENT_PARAMS = {}
+
+## SPECTRAL FITTING
+
+# Frequency range
+FIT_F_RANGE = (1, 50)
+FIT_F_RANGE_LONG = (1, 100)
+ALPHA_RANGE = [7, 14]
+
+# SpecParam settings
+SPECPARAM_PARAMS = {
+    'fs' : FS,
+    'f_range' : FIT_F_RANGE,
+    'min_peak_height' : 0.05,
+}
+
+SPECPARAM_PARAMS_KNEE = {
+    'fs' : FS,
+    'f_range' : FIT_F_RANGE_LONG,
+    'min_peak_height' : 0.05,
+    'aperiodic_mode' : 'knee',
+}
+
+# IRASA settings
+IRASA_PARAMS = {
+    'fs' : FS,
+    'f_range' : FIT_F_RANGE,
+}
+
+IRASA_PARAMS_KNEE = {
+    'fs' : FS,
+    'f_range' : FIT_F_RANGE_LONG,
+    'fit_func' : 'fit_irasa_knee',
+}
