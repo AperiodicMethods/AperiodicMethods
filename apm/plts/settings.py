@@ -64,10 +64,10 @@ LABELS = {
     'dfa' : 'DFA Exponent',
 
     # Fractal Dimension Measures
+    'correlation_dimension' : 'Correlation Dimension',
     'higuchi_fd' : 'Higuchi Fractal Dimension',
     'katz_fd' : 'Katz Fractal Dimension',
     'petrosian_fd' : 'Petrosian Fractal Dimension',
-    'sevcik_fd' : 'Sevcik Fractal Dimension',
 
     # Complexity Measures
     'hjorth_activity' : 'Hjorth Activity',
@@ -83,8 +83,51 @@ LABELS = {
     'wperm_entropy' : 'Weighted Permuation Entropy',
 
     # Multiscale entropy measures
-    'multi_sample_entropy' : 'Multiscale Sample Entropy',
     'multi_app_entropy' : 'Multiscale Approximate Entropy',
+    'multi_sample_entropy' : 'Multiscale Sample Entropy',
     'multi_perm_entropy' : 'Multiscale Permutation Entropy',
     'multi_wperm_entropy' : 'Multiscale WPermutation Entropy',
+}
+
+## ABBREVIATIONS
+
+# Define default measure abbreviations
+ABBRS =  {
+
+    # Exponent measures
+    'specparam' : 'Exp(SP)',
+    'irasa' : 'Exp(IR)',
+
+    # Autocorrelation Measures
+    'autocorr' : 'AC',
+    'autocorr_decay_time' : 'ACD',
+
+    # Fluctuation measures
+    'hurst' : 'HE',
+    'dfa' : 'DFA',
+
+    # Fractal Dimension Measures
+    'correlation_dimension' : 'CD',
+    'higuchi_fd' : 'HFD',
+    'katz_fd' : 'KFD',
+    'petrosian_fd' : 'PFD',
+
+    # Complexity Measures
+    'hjorth_activity' : 'HJA',
+    'hjorth_mobility' : 'HJM',
+    'hjorth_complexity' : 'HJC',
+    'lempelziv' : 'LZC',
+    'lyapunov' : 'LLE',
+
+    # Entropy measures
+    'app_entropy' : 'ApEn',
+    'sample_entropy' : 'SampEn',
+    'perm_entropy' : 'PeEn',
+    'wperm_entropy' : 'wPeEn',
+
+    # Multiscale entropy measures
+    'multi_app_entropy' : 'mApEn',
+    'multi_sample_entropy' : 'mSampEn',
+    'multi_perm_entropy' : 'mPeEn',
+    'multi_wperm_entropy' : 'mwPeEn',
 }

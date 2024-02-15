@@ -2,6 +2,7 @@
 
 import warnings
 
+import numpy as np
 from matplotlib import cm
 
 from neurodsp.plts.utils import savefig
@@ -13,6 +14,24 @@ from apm.plts.settings import LABELS
 
 ###################################################################################################
 ###################################################################################################
+
+@savefig
+def plot_results_rows(results, rows, columns, **plt_kwargs):
+    """Plot result comparisons, organized by rows and columns."""
+
+    n_rows, n_cols = len(rows), len(columns)
+    axes = make_axes(n_rows, n_cols,
+                     figsize=plt_kwargs.pop('figsize', (4 * n_cols, 4 * n_rows)),
+                     wspace=plt_kwargs.pop('wspace', 0.2),
+                     hspace=plt_kwargs.pop('wspace', 0.2))
+    axes = np.atleast_2d(axes).T if n_rows > n_cols else np.atleast_2d(axes)
+
+    for ri, row in enumerate(rows):
+        for ci, col in enumerate(columns):
+            plot_dots(results[row], results[col],
+                      xlabel=LABELS[row], ylabel=LABELS[col],
+                      **plt_kwargs, ax=axes[ri, ci])
+
 
 @savefig
 def plot_results_all(results, labels=None, **plt_kwargs):
@@ -30,16 +49,19 @@ def plot_results_all(results, labels=None, **plt_kwargs):
     if not labels:
         labels = list(results.keys())
 
-    n_measures = len(labels)
+    n_measures = len(labels) - 1
 
     plt_kwargs.setdefault('alpha', 0.75)
 
-    axes = make_axes(n_measures, n_measures, figsize=(24, 24), wspace=0.1, hspace=0.1)
+    axes = make_axes(n_measures, n_measures,
+                     figsize=plt_kwargs.pop('figsize', (24, 24)),
+                     wspace=plt_kwargs.pop('wspace', 0.2),
+                     hspace=plt_kwargs.pop('hspace', 0.2))
 
-    for ax_r, l1 in enumerate(labels):
-        for ax_c, l2 in enumerate(labels):
+    for ax_r, l1 in enumerate(labels[1:]):
+        for ax_c, l2 in enumerate(labels[:-1]):
 
-            if ax_r <= ax_c:
+            if ax_r < ax_c:
                 axes[ax_r, ax_c].axis('off')
                 continue
 
