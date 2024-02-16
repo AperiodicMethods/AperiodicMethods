@@ -39,6 +39,20 @@ DFA_PARAMS = {
     'deg' : 1,
 }
 
+## FRACTAL MEASURES
+
+# Correlation dimension
+CD_PARAMS = {
+    'delay' : 4,
+    'dimension' : 20,
+}
+
+# Fractal dimension
+HFD_PARAMS = {}
+KFD_PARAMS = {}
+PFD_PARAMS = {}
+SFD_PARAMS = {}
+
 ## COMPLEXITY MEASURES
 
 # Hjorth measures
@@ -51,18 +65,10 @@ LZ_PARAMS = {
 }
 
 # Lyapunov exponent
-LY_PARAMS = {}
-
-## FRACTAL MEASURES
-
-# Correlation dimension
-CD_PARAMS = {}
-
-# Fractal dimension
-HFD_PARAMS = {}
-KFD_PARAMS = {}
-PFD_PARAMS = {}
-SFD_PARAMS = {}
+LY_PARAMS = {
+    'delay' : 4,
+    'dimension' : 20,
+}
 
 ## ENTROPY MEASURES
 
