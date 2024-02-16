@@ -17,6 +17,9 @@ from neurodsp.aperiodic.dfa import compute_fluctuations
 from neurodsp.aperiodic.autocorr import compute_autocorr
 from neurodsp.aperiodic.irasa import compute_irasa, fit_irasa
 
+# Import local autocorrelation functions
+from apm.methods.ac import compute_decay_time, fit_acf
+
 ###################################################################################################
 ###################################################################################################
 
@@ -34,19 +37,10 @@ def autocorr_decay_time(sig, fs, level=0, **kwargs):
     return compute_decay_time(*compute_autocorr(sig, **kwargs), fs, level)
 
 
-def compute_decay_time(times, acs, fs, level=0):
-    """Compute autocorrelation decay time, from precomputed autocorrelation.
-    Note: this could be added to NDSP?
-    """
+def autocorr_timescale(sig, fs, **kwargs):
+    """Wrapper function for computing autocorrelation and timescale together."""
 
-    val_checks = acs < level
-
-    if np.any(val_checks):
-        result = times[np.argmax(val_checks)] / fs
-    else:
-        result = np.nan
-
-    return result
+    return fit_acf(*compute_autocorr(sig, **kwargs), fs)[0]
 
 
 ## FLUCTUATION MEASURES
