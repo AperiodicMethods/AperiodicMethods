@@ -16,8 +16,8 @@ from apm.sim.params import UPDATES, update_vals, unpack_param_dict
 ###################################################################################################
 ###################################################################################################
 
-def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
-             n_sims=10, avg_func=np.mean, var_func=np.std, warnings_action='ignore'):
+def run_sims(sim_func, sim_params, measure_func, measure_params, update,
+             values, n_sims, warnings_action='ignore'):
     """Compute a measure of interest across a set of simulations.
 
     Parameters
@@ -34,73 +34,63 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update, values,
         Specifies which parameter to update in simulation parameters.
     values : list or 1d array
         Parameter values to step across and re-run measure calculations for.
-    n_sims : int, optional, default: 10
+    n_sims : int
         The number of iterations to simulate and calculate measures, per value.
-    avg_func : callable, optional, default: np.mean
-        The function to calculate the average for a particular parameter value.
-    var_func : callable, optional, default: np.std
-        The function to calculate the variability for a particular parameter value.
 
     Returns
     -------
     measures : 1d array
         The results of the measures applied to the set of simulations.
-
-    Notes
-    -----
-    For each parameter value, the average across `n_sims` simulations is computed and returned.
     """
 
+    n_params = len(values)
     update = UPDATES[update] if isinstance(update, str) else update
 
-    avg = [None] * len(values)
-    var = [None] * len(values)
+    results = np.zeros([n_params, n_sims])
 
     with warnings.catch_warnings():
         warnings.simplefilter(warnings_action)
+
         for sp_ind, cur_sim_params in enumerate(update_vals(deepcopy(sim_params), values, update)):
 
-            inst_outs = [None] * n_sims
             for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
-                inst_outs[s_ind] = measure_func(sig, **measure_params)
+                results[sp_ind, s_ind] = measure_func(sig, **measure_params)
 
-            avg[sp_ind] = avg_func(inst_outs, 0)
-            var[sp_ind] = var_func(inst_outs, 0)
-
-    return np.array(avg), np.array(var)
+    return results
 
 
-def run_sims_load(sims_file, measure_func, measure_params, n_sims=None,
-                  avg_func=np.mean, var_func=np.std, warnings_action='ignore'):
-    """Run measures across a set of simulations loaded from file."""
+def run_sims_load(sims_file, measure_func, measure_params, n_sims=None, warnings_action='ignore'):
+    """Run measures across a set of simulations loaded from file.
+
+    Notes
+    -----
+    This function has the same call signature as `run_sims`,
+    replacing `sims_files` for sim_func, sim_params.
+    """
 
     sigs = load_pickle(sims_file, None)
     values = list(sigs.keys())
+    n_params = len(values)
 
     if n_sims:
         sigs = {val : sigs[val][:n_sims, :] for val in values}
     n_sims = sigs[values[0]].shape[0]
 
-    avg = [None] * len(values)
-    var = [None] * len(values)
+    results = np.zeros([n_params, n_sims])
 
     with warnings.catch_warnings():
         warnings.simplefilter(warnings_action)
+
         for sp_ind, value in enumerate(values):
 
-            inst_outs = [None] * n_sims
             for s_ind, sig in enumerate(sigs[value]):
-                inst_outs[s_ind] = measure_func(sig, **measure_params)
+                results[sp_ind, s_ind] = measure_func(sig, **measure_params)
 
-            avg[sp_ind] = avg_func(inst_outs, 0)
-            var[sp_ind] = var_func(inst_outs, 0)
-
-    return np.array(avg), np.array(var)
+    return results
 
 
-def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update, values,
-                      n_sims=10, avg_func=np.mean, var_func=np.std, n_jobs=4, pbar=False,
-                      warnings_action='ignore'):
+def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update,
+                      values, n_sims, n_jobs=4, pbar=False, warnings_action='ignore'):
     """Compute a set of measures across simulations, in parallel.
 
     Notes
@@ -125,27 +115,23 @@ def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update
             mapping = pool.imap(partial(_proxy, sim_func=sim_func, measure_func=measure_func,
                                         measure_params=measure_params), sim_params)
 
-            measures = list(tqdm(mapping, desc="Running Simulations",
-                                 total=len(sim_params), dynamic_ncols=True, disable=not pbar))
+            results = list(tqdm(mapping, desc="Running Simulations",
+                                total=len(sim_params), dynamic_ncols=True, disable=not pbar))
 
-    # Reshape array and take mean across n_sims
-    measures = np.array(measures)
-    remainder = int(measures.size / (len(values) * n_sims))
+    results = np.array(results)
+    remainder = int(results.size / (len(values) * n_sims))
 
     if remainder == 1:
         # Cases when measure_func returns a single value
-        measures = np.reshape(measures, (len(values), n_sims))
+        results = np.reshape(results, (len(values), n_sims))
     else:
         # Cases where measure_func returns >1 value
         try:
-            measures = np.reshape(measures, (len(values), n_sims, remainder))
+            results = np.reshape(results, (len(values), n_sims, remainder))
         except:
             raise ValueError('The measure function returns an array with varying shape.')
 
-    averages = avg_func(measures, axis=1)
-    variability = var_func(measures, axis=1)
-
-    return averages, variability
+    return results
 
 
 def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
