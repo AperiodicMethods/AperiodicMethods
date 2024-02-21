@@ -38,7 +38,12 @@ OUTPATH = APMDB().data_path / 'eeg2'
 # Define sampling frequency of current dataset
 FS = 500
 
-## METHOD SETTINGS
+## TS METHOD SETTINGS
+
+# Update sampling rate for time series methods
+TS_MEASURES = set_measure_settings(TS_MEASURES, 'fs', FS)
+
+## SPECTRAL METHOD SETTINGS
 
 FIT_RANGE = [3, 40]
 

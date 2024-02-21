@@ -15,6 +15,7 @@ from apm.io.data import load_eeg_demo_group_data
 from apm.analysis import (compute_avgs, compute_all_corrs,
                           compute_corrs_to_feature, compute_diffs_to_feature)
 from apm.run import run_group_measures
+from apm.run.utils import set_measure_settings
 from apm.methods import irasa
 from apm.methods.settings import ALPHA_RANGE
 from apm.methods.periodic import get_fm_peak_power
@@ -40,7 +41,12 @@ OUTPATH = APMDB().data_path / 'eeg1'
 FS = 500
 N_SECONDS = 30
 
-## METHOD SETTINGS
+## TS METHOD SETTINGS
+
+# Update sampling rate for time series methods
+TS_MEASURES = set_measure_settings(TS_MEASURES, 'fs', FS)
+
+## SPECLTRAL METHOD SETTINGS
 
 FIT_RANGE = [3, 40]
 

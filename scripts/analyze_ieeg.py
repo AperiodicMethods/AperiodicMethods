@@ -52,7 +52,12 @@ FS = 200
 # Define max time to load
 MAX_TIME = 30
 
-## METHOD SETTINGS
+## TS METHOD SETTINGS
+
+# Update sampling rate for time series methods
+TS_MEASURES = set_measure_settings(TS_MEASURES, 'fs', FS)
+
+## SPECTRAL METHOD SETTINGS
 
 FIT_RANGE_SHORT = [3, 40]
 FIT_RANGE_LONG = [1, 60]
@@ -67,7 +72,6 @@ IRASA_SETTINGS_SHORT = {
     'fs' : FS,
     'f_range' : FIT_RANGE_SHORT,
 }
-
 
 IRASA_SETTINGS_LONG = {
     'fs' : FS,
