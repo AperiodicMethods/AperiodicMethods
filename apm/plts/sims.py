@@ -13,22 +13,24 @@ from apm.sim.settings import EXPS, FREQS, POWERS
 ###################################################################################################
 
 @savefig
-def plot_sims(x_vals, y_vals, y_shades, xlabel=None, ylabel=None, color=None,
-              ylim=None, title=None, expected=None, figsize=(6, 5)):
-    """Plot simulation results across a single parameter."""
+def plot_sims(sim_vals, measures, xlabel=None, ylabel=None, color=None,
+              expected=None, avg_func=np.mean, var_func=np.std,
+              ylim=None, title=None, figsize=(6, 5)):
+    """Plot simulation results across variations of a single parameter."""
 
     _, ax = plt.subplots(figsize=figsize)
 
-    plot_lines(x_vals, y_vals, y_shades, color=color)
+    plot_lines(sim_vals, avg_func(measures, 1), var_func(measures, 1), color=color)
     if expected:
-        plot_lines(x_vals, expected, color='black', linestyle='--', ax=ax)
+        plot_lines(sim_vals, expected, color='black', linestyle='--', ax=ax)
 
     plot_lines(title=title, xlabel=xlabel, ylabel=ylabel, ylim=ylim, ax=ax)
 
 
 @savefig
-def plot_ap_sims(sims_exp, sims_exp_var, sims_comb, sims_comb_var, ylabel=None,
-                 ylim=None, expected=None, legend_loc=None, figsize=(6, 5)):
+def plot_ap_sims(sims_exp, sims_comb, measure=None, expected=None,
+                 avg_func=np.mean, var_func=np.std, ylim=None,
+                 legend_loc=None, figsize=(6, 5)):
     """Plot simulation results across aperiodic parameters."""
 
     _, ax = plt.subplots(figsize=figsize)
@@ -36,24 +38,27 @@ def plot_ap_sims(sims_exp, sims_exp_var, sims_comb, sims_comb_var, ylabel=None,
     if expected is not None:
         plot_lines(np.abs(EXPS), expected, color='k', linestyle='--', label='Expected')
 
-    plot_lines(np.abs(EXPS), sims_exp, sims_exp_var, color=AP_COLOR, label='Aperiodic', ax=ax)
-    plot_lines(np.abs(EXPS), sims_comb, sims_comb_var, color=CB_COLOR, label='Combined', ax=ax)
-    plot_lines(xlabel='Simulated Exponent', ylabel=ylabel, ylim=ylim, ax=ax)
+    plot_lines(np.abs(EXPS), avg_func(sims_exp, 1), var_func(sims_exp, 1),
+               color=AP_COLOR, label='Aperiodic', ax=ax)
+    plot_lines(np.abs(EXPS), avg_func(sims_comb, 1), var_func(sims_comb, 1),
+               color=CB_COLOR, label='Combined', ax=ax)
+    plot_lines(xlabel='Simulated Exponent', ylabel=measure, ylim=ylim, ax=ax)
     plt.legend(fontsize=14, loc=legend_loc)
 
 
 @savefig
-def plot_pe_sims(sims_freq, sims_freq_var, sims_pow, sims_pow_var, ylabel=None,
-                 ylim=None, expected=None, legend_loc=None, figsize=(6, 5)):
+def plot_pe_sims(sims_freq, sims_pow, measure=None, expected=None,
+                 avg_func=np.mean, var_func=np.std,
+                 ylim=None, legend_loc=None, figsize=(6, 5)):
     """Plot simulation results across periodic parameters."""
 
     _, ax = plt.subplots(figsize=figsize)
 
-    plot_lines(FREQS, sims_freq, sims_freq_var,
-               color=CF_COLOR, xlabel='Oscillation Frequency', ylabel=ylabel, ax=ax)
+    plot_lines(FREQS, avg_func(sims_freq, 1), var_func(sims_freq, 1),
+               color=CF_COLOR, xlabel='Oscillation Frequency', ylabel=measure, ax=ax)
 
     ax2 = ax.twiny()
-    plot_lines(POWERS, sims_pow, sims_pow_var,
+    plot_lines(POWERS, avg_func(sims_pow, 1), var_func(sims_pow, 1),
                color=PW_COLOR, xlabel='Oscillation Power', ax=ax2)
 
     leg_lines = [ax.get_lines()[0], ax2.get_lines()[0]]
