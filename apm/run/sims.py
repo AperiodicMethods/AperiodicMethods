@@ -17,7 +17,7 @@ from apm.sim.params import UPDATES, update_vals, unpack_param_dict
 ###################################################################################################
 
 def run_sims(sim_func, sim_params, measure_func, measure_params, update,
-             values, n_sims, warnings_action='ignore'):
+             values, n_sims, return_sim_params=False, warnings_action='ignore'):
     """Compute a measure of interest across a set of simulations.
 
     Parameters
@@ -48,15 +48,24 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update,
 
     results = np.zeros([n_params, n_sims])
 
+    if return_sim_params:
+        all_sim_params = []
+
     with warnings.catch_warnings():
         warnings.simplefilter(warnings_action)
 
         for sp_ind, cur_sim_params in enumerate(update_vals(deepcopy(sim_params), values, update)):
 
+            if return_sim_params:
+                all_sim_params.append(deepcopy(cur_sim_params))
+
             for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
                 results[sp_ind, s_ind] = measure_func(sig, **measure_params)
 
-    return results
+    if return_sim_params:
+        return results, all_sim_params
+    else:
+        return results
 
 
 def run_sims_load(sims_file, measure_func, measure_params, n_sims=None, warnings_action='ignore'):
