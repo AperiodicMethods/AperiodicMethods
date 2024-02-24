@@ -14,6 +14,7 @@ def CheckDims1D(func):
 
     return wrapper
 
+
 def CheckDims2D(func):
     """Decorator function to check all inputs are 2-D."""
 
@@ -31,6 +32,7 @@ def _check1D(arr):
         return np.squeeze(arr)
     else:
         return arr
+
 
 def _check2D(arr):
     """Check that array is 2-D, reshape if not."""

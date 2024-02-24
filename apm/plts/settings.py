@@ -20,6 +20,9 @@ CF_COLOR = '#acc918'
 PW_COLOR = '#28a103'
 BW_COLOR = '#0fd197'
 
+# Colors for burst parameters
+BST_COLOR = '#ebc334'
+
 # Collect colors
 COLORS = {
     'AP' : AP_COLOR,
@@ -28,6 +31,7 @@ COLORS = {
     'CF' : CF_COLOR,
     'PW' : PW_COLOR,
     'BW' : BW_COLOR,
+    'BST' : BST_COLOR,
 }
 
 ## COLOR SETTINGS - METHODS

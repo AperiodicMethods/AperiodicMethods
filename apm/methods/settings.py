@@ -1,5 +1,7 @@
 """Settings definitions for methods."""
 
+from copy import deepcopy
+
 from apm.sim.settings import FS
 
 ###################################################################################################
@@ -14,7 +16,7 @@ AC_PARAMS = {
 }
 
 AC_DECAY_PARAMS = {
-    'fs' : FS,
+    'fs' : None,
     'max_lag' : 1500,
     'lag_step' : 2,
     'level' : 0.5,
@@ -24,7 +26,7 @@ AC_DECAY_PARAMS = {
 
 # Hurst settings
 HURST_PARAMS = {
-    'fs' : FS,
+    'fs' : None,
     'n_scales' : 10,
     'min_scale' : 0.1,
     'max_scale' : 2.0
@@ -32,7 +34,7 @@ HURST_PARAMS = {
 
 # DFA settings
 DFA_PARAMS = {
-    'fs' : FS,
+    'fs' : None,
     'n_scales' : 10,
     'min_scale' : 0.1,
     'max_scale' : 2.0,
@@ -96,7 +98,7 @@ WPE_ENT_PARAMS = {
 
 # Spectral Entropy
 SP_ENT_PARAMS = {
-    'sf' : FS,
+    'sf' : None,
     'method' : 'fft',
 }
 
@@ -119,30 +121,45 @@ MULTI_WPE_ENT_PARAMS = {}
 # Frequency range
 FIT_F_RANGE = (1, 50)
 FIT_F_RANGE_LONG = (1, 100)
-ALPHA_RANGE = [7, 14]
+ALPHA_RANGE = (7, 14)
 
-# SpecParam settings
-SPECPARAM_PARAMS = {
-    'fs' : FS,
+# Spectral fit settings
+SPECTRAL_FIT_SETTINGS = {
+    'fs' : None,
     'f_range' : FIT_F_RANGE,
-    'min_peak_height' : 0.05,
 }
 
-SPECPARAM_PARAMS_KNEE = {
-    'fs' : FS,
+SPECTRAL_FIT_SETTINGS_LONG = {
+    'fs' : None,
     'f_range' : FIT_F_RANGE_LONG,
+}
+
+# SpecParam settings
+SPECPARAM_SETTINGS = {
+    'max_n_peaks' : 8,
+    'peak_width_limits' : [1, 8],
     'min_peak_height' : 0.05,
+    'aperiodic_mode' : 'fixed',
+}
+
+SPECPARAM_PARAMS = deepcopy(SPECTRAL_FIT_SETTINGS) | deepcopy(SPECPARAM_SETTINGS)
+
+SPECPARAM_SETTINGS_KNEE = {
+    'max_n_peaks' : 12,
+    'peak_width_limits' : [1, 8],
+    'min_peak_height' : 0.1,
     'aperiodic_mode' : 'knee',
 }
 
-# IRASA settings
-IRASA_PARAMS = {
-    'fs' : FS,
-    'f_range' : FIT_F_RANGE,
-}
+SPECPARAM_PARAMS_KNEE = deepcopy(SPECTRAL_FIT_SETTINGS_LONG) | deepcopy(SPECPARAM_SETTINGS_KNEE)
 
-IRASA_PARAMS_KNEE = {
-    'fs' : FS,
-    'f_range' : FIT_F_RANGE_LONG,
+# IRASA settings
+IRASA_SETTINGS = {}
+
+IRASA_PARAMS = deepcopy(SPECTRAL_FIT_SETTINGS) | deepcopy(IRASA_SETTINGS)
+
+IRASA_SETTINGS_KNEE = {
     'fit_func' : 'fit_irasa_knee',
 }
+
+IRASA_PARAMS_KNEE = deepcopy(SPECTRAL_FIT_SETTINGS) | deepcopy(IRASA_SETTINGS_KNEE)
