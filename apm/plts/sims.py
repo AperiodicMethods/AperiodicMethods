@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from neurodsp.plts.utils import savefig
 
 from apm.plts.base import plot_lines
+from apm.plts.utils import make_axes
 from apm.plts.settings import AP_COLOR, CB_COLOR, CF_COLOR, PW_COLOR
 from apm.sim.settings import EXPS, FREQS, POWERS
 
@@ -73,3 +74,16 @@ def plot_pe_sims(sims_freq, sims_pow, measure=None, expected=None,
         plt.ylim(ylim)
 
     plt.legend(leg_lines, leg_labels, loc=legend_loc, fontsize=14)
+
+
+@savefig
+def plot_sims_two(sim_vals1, measures1, xlabel1, sim_vals2, measures2, xlabel2,
+                  ylabel=None, color=None, avg_func=np.mean, var_func=np.std,
+                  ylim1=None, ylim2=None, figsize=(11.5, 5)):
+    """Plot simulation results for two different parameter variations, in side-by-side plots."""
+
+    axes = make_axes(1, 2, figsize=figsize)
+    plot_lines(sim_vals1, avg_func(measures1, 1), var_func(measures1, 1),
+               xlabel=xlabel1, ylabel=ylabel, color=color, ylim=ylim1, ax=axes[0])
+    plot_lines(sim_vals2, avg_func(measures2, 1), var_func(measures2, 1),
+               xlabel=xlabel2, color=color, ylim=ylim2, ax=axes[1])
