@@ -11,31 +11,30 @@ from tqdm.notebook import tqdm
 
 from apm.io import load_pickle
 from apm.sim.sim import sig_yielder, sig_yielder_update
-from apm.sim.params import UPDATES, update_vals, unpack_param_dict
 
 ###################################################################################################
 ###################################################################################################
 
-def run_sims(sim_func, sim_params, measure_func, measure_params, update,
-             values, n_sims, return_sim_params=False, warnings_action='ignore'):
+def run_sims(sim_func, sim_params, measure_func, measure_params, n_sims,
+             return_sim_params=False, warnings_action='ignore'):
     """Compute a measure of interest across a set of simulations.
 
     Parameters
     ----------
     sim_func : callable
         A function to create the simulations from.
-    sim_params : dict
-        Input arguments for `sim_func`.
+    sim_params : iterable or list of dict
+        Simulation parameters for `sim_func`.
     measure_func : callable
         A measure function to apply to the simulated data.
     measure_params : dict
         Input arguments for `measure_func`.
-    update : {'update_exp', 'update_freq', 'update_pow', 'update_comb_exp'} or callable
-        Specifies which parameter to update in simulation parameters.
-    values : list or 1d array
-        Parameter values to step across and re-run measure calculations for.
     n_sims : int
         The number of iterations to simulate and calculate measures, per value.
+    return_sim_params : bool, default: False
+        Whether to collect and return the parameters for the generated simulations.
+    warnings_action : {'ignore', 'error', 'always', 'default', 'module, 'once'}
+        Filter action for warnings.
 
     Returns
     -------
@@ -43,10 +42,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update,
         The results of the measures applied to the set of simulations.
     """
 
-    n_params = len(values)
-    update = UPDATES[update] if isinstance(update, str) else update
-
-    results = np.zeros([n_params, n_sims])
+    results = np.zeros([len(sim_params), n_sims])
 
     if return_sim_params:
         all_sim_params = []
@@ -54,13 +50,13 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, update,
     with warnings.catch_warnings():
         warnings.simplefilter(warnings_action)
 
-        for sp_ind, cur_sim_params in enumerate(update_vals(deepcopy(sim_params), values, update)):
+        for p_ind, cur_sim_params in enumerate(sim_params):
 
             if return_sim_params:
                 all_sim_params.append(deepcopy(cur_sim_params))
 
             for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
-                results[sp_ind, s_ind] = measure_func(sig, **measure_params)
+                results[p_ind, s_ind] = measure_func(sig, **measure_params)
 
     if return_sim_params:
         return results, all_sim_params
@@ -98,8 +94,8 @@ def run_sims_load(sims_file, measure_func, measure_params, n_sims=None, warnings
     return results
 
 
-def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update,
-                      values, n_sims, n_jobs=4, pbar=False, warnings_action='ignore'):
+def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, n_sims,
+                      n_jobs=4, pbar=False, warnings_action='ignore'):
     """Compute a set of measures across simulations, in parallel.
 
     Notes
@@ -109,10 +105,10 @@ def run_sims_parallel(sim_func, sim_params, measure_func, measure_params, update
 
     n_jobs = cpu_count() if n_jobs == -1 else n_jobs
 
-    # Generator to list
-    update = UPDATES[update] if isinstance(update, str) else update
-    sim_params = update_vals(deepcopy(sim_params), values, update)
-    sim_params = [deepcopy(next(sim_params)) for vi in values]
+    # Typecast generator to list & get the set of iterated values
+    sim_params = list(sim_params)
+    values = sim_params.values if hasattr(sim_params, 'values') \
+        else list(range(len(sim_params)))
 
     # Duplicate sims to equal length of n_sims
     sim_params = [pii for pi in range(len(sim_params)) for pii in [sim_params[pi]] * n_sims]
