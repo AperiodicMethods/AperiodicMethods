@@ -1,4 +1,7 @@
-"""SimParams."""
+"""SimParams.
+
+NOTE: This code is a candidate for moving to NDSP.
+"""
 
 from copy import deepcopy
 
@@ -154,25 +157,26 @@ class SimParams():
     def _make_params(self, parameters=None, **kwargs):
         """Sub-function for `make_params`."""
 
-
-        parameters = {} if not parameters else parameters
+        parameters = {} if not parameters else deepcopy(parameters)
 
         if isinstance(parameters, list):
-            params = self._make_combined_params(parameters, **kwargs)
+            comps = [parameters.pop(0)]
+            kwargs = kwargs | parameters[0] if parameters else kwargs
+            params = self._make_combined_params(comps, **kwargs)
         else:
             params = parameters | kwargs
 
         return params
 
 
-    def _make_combined_params(self, comps, variances=None):
+    def _make_combined_params(self, components, component_variances=None):
         """Make parameters for combined simulations, specifying multiple components.
 
         Parameters
         ----------
-        comps : list of dict
+        components : list of dict
             List of simulation component parameters.
-        variances : list of float
+        component_variances : list of float
             Component variances for the combined simulation.
 
         Returns
@@ -183,17 +187,20 @@ class SimParams():
 
         parameters = {}
 
-        components = {}
-        for comp in comps:
-            components.update(**deepcopy(comp))
-        parameters['components'] = components
+        comps = {}
+        for comp in components:
+            comps.update(**deepcopy(comp))
+        parameters['components'] = comps
 
-        if variances:
-            parameters['component_variances'] = variances
+        if component_variances:
+            parameters['component_variances'] = component_variances
 
         return parameters
 
 
+# TODO / NOTES:
+# - could update initialize (take in initialized sim_param object)
+# - could update `register_group_iters` to take in sim_params to initialize together
 class SimIters(SimParams):
     """Class object for managing simulation iterators.
 
@@ -277,3 +284,10 @@ class SimIters(SimParams):
             'values' : values,
             'component' : component,
         }
+
+
+    def register_group_iters(self, group):
+        """Register a group of simulation iterators."""
+
+        for iterdef in group:
+            self.register_iter(*iterdef)

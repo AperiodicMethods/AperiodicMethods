@@ -7,7 +7,7 @@ import numpy as np
 from neurodsp.sim.info import get_sim_func
 from neurodsp.sim.combined import sim_peak_oscillation
 
-from apm.sim.params import update_sim_params, UPDATES, update_vals
+#from apm.sim.params import update_sim_params
 
 ###################################################################################################
 ###################################################################################################
@@ -98,19 +98,15 @@ def sim_multiple(sim_func, sim_params, n_sims):
     return sigs
 
 
-def sim_across_values(sim_func, sim_params, update, values, n_sims):
+def sim_across_values(sim_func, sim_params, n_sims):
     """Helper function to create a set of simulations across different parameter values.
 
     Parameters
     ----------
     sim_func : callable
         Function to create the simulated time series.
-    sim_params : dict
-        The parameters for the simulated signal, passed into `sim_func`.
-    update : {'update_exp', 'update_freq', 'update_pow', 'update_comb_exp'} or callable
-        Specifies which parameter to update in simulation parameters.
-    values : list or 1d array
-        Parameter values to step across.
+    sim_params : iterable or list of dict
+        Simulation parameters for `sim_func`.
     n_sims : int
         Number of simulations to create.
 
@@ -119,14 +115,14 @@ def sim_across_values(sim_func, sim_params, update, values, n_sims):
     sims : dict of {float : array}
         Dictionary of simulated signals.
         Each key is the simulation parameter value for the set of simulations.
-        Each value is the set of simulations for that value, as [n_sims, sig length].
+        Each value is the set of simulations for that value, as [n_sims, sig_length].
     """
 
-    update = UPDATES[update] if isinstance(update, str) else update
-
     sims = {}
-    for val, cur_sim_params in zip(values, update_vals(deepcopy(sim_params), values, update)):
-        sims[val] = sim_multiple(sim_func, cur_sim_params, n_sims)
+    for ind, cur_sim_params in enumerate(sim_params):
+        label = sim_params.values[ind] if hasattr(sim_params, 'values') else ind
+        label = label[-1] if isinstance(label, list) else label
+        sims[label] = sim_multiple(sim_func, cur_sim_params, n_sims)
 
     return sims
 

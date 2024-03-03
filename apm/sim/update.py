@@ -1,4 +1,7 @@
-"""Param management."""
+"""Param management.
+
+NOTE: This code is a candidate for moving to NDSP.
+"""
 
 from copy import deepcopy
 
@@ -16,7 +19,7 @@ def param_updater(parameter):
 
 
 def component_updater(component, parameter):
-    """Create a lambda updater function to update a specified parameter within a specified component."""
+    """Create a lambda updater function to update a parameter within a simulation component."""
 
     return lambda params, value : params['components'][component].update({parameter : value})
 
@@ -25,8 +28,9 @@ def component_updater(component, parameter):
 def param_yielder(updater, sim_params, values):
     """Parameter yielder."""
 
+    # The deepcopy'ing ensures to not change the input dict & that each output is new
     for cur_params in update_vals(deepcopy(sim_params), values, updater):
-        yield cur_params
+        yield deepcopy(cur_params)
 
 
 ## PARAM ITER

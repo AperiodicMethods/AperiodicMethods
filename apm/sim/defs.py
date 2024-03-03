@@ -1,6 +1,6 @@
 """Simulation definitions."""
 
-from apm.sim.settings import N_SECONDS, FS
+from apm.sim.settings import N_SIMS, N_SIMS2, N_SECONDS, FS
 from apm.sim.settings import EXP, EXP1, EXP2, KNEE, F_RANGE, FREQ, BW, HEIGHT, COMP_VARS
 from apm.sim.settings import EXPS, TSCALES, KNEES, FREQS, POWERS, CVARS, BWS, BPROBS
 from apm.sim.objs import SimParams, SimIters
@@ -54,7 +54,6 @@ SIM_DEFS = {
     'burst' : SIM_PARAMS['sim_bursty_oscillation'],
 
     # Combined Signals
-    'peak' : SIM_PARAMS['sim_peak_oscillation'],
     'comb' : [{
         'sim_powerlaw' : SIM_PARAMS['sim_powerlaw'],
         'sim_oscillation' : SIM_PARAMS['sim_oscillation'],
@@ -67,6 +66,10 @@ SIM_DEFS = {
     },
     {'component_variances' : COMP_VARS},
     ],
+    'peak' : [{
+        'sim_powerlaw' : SIM_PARAMS['sim_powerlaw'],
+        'sim_peak_oscillation' : SIM_PARAMS['sim_peak_oscillation'],
+    }],
 }
 
 ###################################################################################################
@@ -76,18 +79,18 @@ ITER_DEFS = [
 
     ['ap_exp', 'ap', 'exponent', EXPS],
     ['comb_exp', 'comb', 'exponent', EXPS, 'sim_powerlaw'],
-    ['syn_time', 'syn', 'tau_d', TSCALES],
+    ['syn_tscales', 'syn', 'tau_d', TSCALES],
     ['kn_knee', 'knee', 'knee', KNEES],
 
     ['osc_freq', 'comb', 'freq', FREQS, 'sim_oscillation'],
     #['osc_pow', 'comb', 'component_variances', POWERS],
     ['osc_pow', 'comb', 'component_variances', CVARS],
 
-    ['peak_freq', 'peak', 'freq', FREQS],
-    ['peak_pow', 'peak', 'height', POWERS],
-    ['peak_bw', 'peak', 'bw', BWS],
+    ['peak_freq', 'peak', 'freq', FREQS, 'sim_peak_oscillation'],
+    ['peak_pow', 'peak', 'height', POWERS, 'sim_peak_oscillation'],
+    ['peak_bw', 'peak', 'bw', BWS, 'sim_peak_oscillation'],
 
-    ['burst_prob', 'comb_burst', 'enter_burst', BPROBS, 'sim_bursty_oscillation'],
+    ['comb_burst', 'comb_burst', 'enter_burst', BPROBS, 'sim_bursty_oscillation'],
 ]
 
 ###################################################################################################

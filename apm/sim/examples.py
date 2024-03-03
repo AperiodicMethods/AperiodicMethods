@@ -18,12 +18,12 @@ from apm.sim.settings import N_SECONDS, FS
 # Define times vector
 TIMES = create_times(N_SECONDS, FS)
 
-def get_examples():
+def get_examples(n_seconds=N_SECONDS, fs=FS):
 
     set_random_seed(404)
 
     # Define sim parameters
-    sim_params = SimParams(N_SECONDS, FS)
+    sim_params = SimParams(n_seconds, fs)
     sim_params.register_group(SIM_DEFS)
 
     examples = {
