@@ -57,6 +57,13 @@ class SimParams():
 
 
     @property
+    def labels(self):
+        """Get the set of labels for the defined parameters."""
+
+        return list(self._params.keys())
+
+
+    @property
     def params(self):
         """Get the set of currently defined simulation parameters."""
 
@@ -237,6 +244,13 @@ class SimIters(SimParams):
         """Get the set of currently defined simulation iterators."""
 
         return {label : self.make_iter(**params) for label, params in self._iters.items()}
+
+
+    @property
+    def labels(self):
+        """Get the set of labels for the defined iterators."""
+
+        return list(self._iters.keys())
 
 
     def make_iter(self, label, update, values, component=None):

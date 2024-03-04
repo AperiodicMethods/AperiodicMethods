@@ -15,10 +15,14 @@ from apm.sim.settings import N_SECONDS, FS
 ###################################################################################################
 ###################################################################################################
 
-# Define times vector
-TIMES = create_times(N_SECONDS, FS)
+def get_times(n_seconds=N_SECONDS, fs=FS):
+    """Helper function to get a times vector for example signals."""
+
+    return create_times(n_seconds, fs)
+
 
 def get_examples(n_seconds=N_SECONDS, fs=FS):
+    """Helper function to get a collection of example signals."""
 
     set_random_seed(404)
 
