@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from apm.sim.params import sampler
+from apm.sim.params import create_sampler
 from apm.sim.update import create_updater
 from apm.sim.settings import N_SIMS, N_SIMS2, N_SAMPLES, N_SECONDS, FS
 from apm.sim.settings import EXP, EXP1, EXP2, KNEE, F_RANGE, FREQ, BW, HEIGHT, COMP_VARS
@@ -164,10 +164,11 @@ SAMPLER_DEFS = [
         'name' : 'comb_sampler',
         'label' : 'comb',
         'samplers' : {
-            create_updater('exponent', 'sim_powerlaw') : sampler(np.arange(-2.5, 0.1, 0.1)),
-            create_updater('component_variances') : sampler(np.arange(0, 1.1, 0.1),
-                                                            probs = [0.30] + ([0.07] * 10)),
-            create_updater('freq', 'sim_oscillation') : sampler(np.arange(5, 36, 1)),
+            create_updater('exponent', 'sim_powerlaw') : create_sampler(np.arange(-2.5, 0.1, 0.1)),
+            create_updater('component_variances') : \
+                create_sampler([[1, val] for val in np.arange(0, 1.1, 0.1)],
+                               probs = [0.30] + ([0.07] * 10)),
+            create_updater('freq', 'sim_oscillation') : create_sampler(np.arange(5, 36, 1)),
         },
     },
 ]
