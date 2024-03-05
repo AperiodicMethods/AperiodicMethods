@@ -1,9 +1,13 @@
 """Simulation definitions."""
 
-from apm.sim.settings import N_SIMS, N_SIMS2, N_SECONDS, FS
+import numpy as np
+
+from apm.sim.params import sampler
+from apm.sim.update import create_updater
+from apm.sim.settings import N_SIMS, N_SIMS2, N_SAMPLES, N_SECONDS, FS
 from apm.sim.settings import EXP, EXP1, EXP2, KNEE, F_RANGE, FREQ, BW, HEIGHT, COMP_VARS
 from apm.sim.settings import EXPS, TSCALES, KNEES, FREQS, POWERS, CVARS, BWS, BPROBS
-from apm.sim.objs import SimParams, SimIters
+from apm.sim.objs import SimParams, SimIters, SimSamplers
 
 ###################################################################################################
 ## Define parameters per simulation function
@@ -153,13 +157,34 @@ ITER_DEFS = [
 ]
 
 ###################################################################################################
+## Collect group definition of simulation parameter samplers
+
+SAMPLER_DEFS = [
+    {
+        'name' : 'comb_sampler',
+        'label' : 'comb',
+        'samplers' : {
+            create_updater('exponent', 'sim_powerlaw') : sampler(np.arange(-2.5, 0.1, 0.1)),
+            create_updater('component_variances') : sampler(np.arange(0, 1.1, 0.1),
+                                                            probs = [0.30] + ([0.07] * 10)),
+            create_updater('freq', 'sim_oscillation') : sampler(np.arange(5, 36, 1)),
+        },
+    },
+]
+
+###################################################################################################
 ## Define simulation parameter and simulation iterator objects
 
 # Collect and define simulation parameters
 SIM_PARAMS = SimParams(N_SECONDS, FS)
 SIM_PARAMS.register_group(SIM_DEFS)
 
-# Collect and defined simulation iterators
+# Collect and define simulation iterators
 SIM_ITERS = SimIters(N_SECONDS, FS)
 SIM_ITERS.register_group(SIM_DEFS)
 SIM_ITERS.register_group_iters(ITER_DEFS)
+
+# Collect and define simulation samplers
+SIM_SAMPLERS = SimSamplers(N_SECONDS, FS, N_SAMPLES)
+SIM_SAMPLERS.register_group(SIM_DEFS)
+SIM_SAMPLERS.register_group_samplers(SAMPLER_DEFS)
