@@ -57,14 +57,14 @@ SIM_DEFS = {
     'comb' : [{
         'sim_powerlaw' : SIM_PARAMS['sim_powerlaw'],
         'sim_oscillation' : SIM_PARAMS['sim_oscillation'],
-    },
-    {'component_variances' : COMP_VARS},
+        },
+        {'component_variances' : COMP_VARS},
     ],
     'comb_burst' : [{
         'sim_powerlaw' : SIM_PARAMS['sim_powerlaw'],
         'sim_bursty_oscillation' : SIM_PARAMS['sim_bursty_oscillation'],
-    },
-    {'component_variances' : COMP_VARS},
+        },
+        {'component_variances' : COMP_VARS},
     ],
     'peak' : [{
         'sim_powerlaw' : SIM_PARAMS['sim_powerlaw'],
@@ -77,19 +77,79 @@ SIM_DEFS = {
 
 ITER_DEFS = [
 
-    ['ap_exp', 'ap', 'exponent', EXPS],
-    ['comb_exp', 'comb', 'exponent', EXPS, 'sim_powerlaw'],
-    ['syn_tscales', 'syn', 'tau_d', TSCALES],
-    ['kn_knee', 'knee', 'knee', KNEES],
+    # Aperiodic Parameter Iterators
+    {
+        'name' : 'ap_exp',
+        'label' : 'ap',
+        'update' : 'exponent',
+        'values' : EXPS,
+    },
+    {
+        'name' : 'comb_exp',
+        'label' : 'comb',
+        'update' : 'exponent',
+        'values' : EXPS,
+        'component' : 'sim_powerlaw'
+    },
+    {
+        'name' : 'syn_tscales',
+        'label' : 'syn',
+        'update' : 'tau_d',
+        'values' : TSCALES,
+    },
+    {
+        'name' : 'kn_knee',
+        'label' : 'knee',
+        'update' : 'knee',
+        'values' : KNEES,
+    },
 
-    ['osc_freq', 'comb', 'freq', FREQS, 'sim_oscillation'],
-    ['osc_pow', 'comb', 'component_variances', CVARS],
+    # Periodic Parameter Iterators
+    {
+        'name' : 'osc_freq',
+        'label' : 'comb',
+        'update' : 'freq',
+        'values' : FREQS,
+        'component' : 'sim_oscillation',
+    },
+    {
+        'name' : 'osc_pow',
+        'label' : 'comb',
+        'update' : 'component_variances',
+        'values' : CVARS,
+    },
 
-    ['peak_freq', 'peak', 'freq', FREQS, 'sim_peak_oscillation'],
-    ['peak_pow', 'peak', 'height', POWERS, 'sim_peak_oscillation'],
-    ['peak_bw', 'peak', 'bw', BWS, 'sim_peak_oscillation'],
+    # Peak Simulation Iterators
+    {
+        'name' : 'peak_freq',
+        'label' : 'peak',
+        'update' : 'freq',
+        'values' : FREQS,
+        'component' : 'sim_peak_oscillation',
+    },
+    {
+        'name' : 'peak_pow',
+        'label' : 'peak',
+        'update' : 'height',
+        'values' : POWERS,
+        'component' : 'sim_peak_oscillation',
+    },
+    {
+        'name' : 'peak_bw',
+        'label' : 'peak',
+        'update' : 'bw',
+        'values' : BWS,
+        'component' : ' sim_peak_oscillation',
+    },
 
-    ['comb_burst', 'comb_burst', 'enter_burst', BPROBS, 'sim_bursty_oscillation'],
+    # Bursty Oscillation Iterators
+    {
+        'name' : 'comb_burst',
+        'label' : 'comb_burst',
+        'update' : 'enter_burst',
+        'values' : BPROBS,
+        'component' : 'sim_bursty_oscillation',
+    },
 ]
 
 ###################################################################################################
