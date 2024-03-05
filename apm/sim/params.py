@@ -52,7 +52,6 @@ import numpy as np
 #     'update_peak_hgt' : upd_peak_hgt,
 #     'update_peak_bw' : upd_peak_bw,
 #     'update_burst_prob' : upd_burst_prob,
-
 #     'update_knee2' : upd_knee2,
 # }
 

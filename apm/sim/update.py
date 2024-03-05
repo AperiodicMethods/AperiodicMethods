@@ -13,15 +13,63 @@ from apm.sim.params import update_vals
 ## PARAM UPDATERS
 
 def param_updater(parameter):
-    """Create a lambda updater function to update a specified parameter."""
+    """Create a lambda updater function to update a specified parameter.
+
+    Parameters
+    ----------
+    parameter : str
+        Name of the parameter to update.
+
+    Returns
+    -------
+    callable
+        Updater function which can update specified parameter in simulation parameters.
+    """
 
     return lambda params, value : params.update({parameter : value})
 
 
-def component_updater(component, parameter):
-    """Create a lambda updater function to update a parameter within a simulation component."""
+def component_updater(parameter, component):
+    """Create a lambda updater function to update a parameter within a simulation component.
+
+    Parameters
+    ----------
+    parameter : str
+        Name of the parameter to update.
+    component : str
+        Name of the component to update the parameter within.
+
+    Returns
+    -------
+    callable
+        Updater function which can update specified parameter in simulation parameters.
+    """
 
     return lambda params, value : params['components'][component].update({parameter : value})
+
+
+def create_updater(update, component=None):
+    """Create an updater function for updating simulation parameters.
+
+    Parameters
+    ----------
+    parameter : str
+        Name of the parameter to update.
+    component : str
+        Name of the component to update the parameter within.
+
+    Returns
+    -------
+    callable
+        Updater function which can update specified parameter in simulation parameters.
+    """
+
+    if component is not None:
+        updater = component_updater(update, component)
+    else:
+        updater = param_updater(update)
+
+    return updater
 
 
 ## PARAM YIELDER
@@ -67,7 +115,7 @@ class ParamIter():
         self.values = values
         self.component = component
 
-        self._updater = self._create_updater()
+        self._updater = create_updater(self.update, self.component)
         self._reset_yielder()
 
 
@@ -89,17 +137,6 @@ class ParamIter():
         """Define length of the object as the number of values to step across."""
 
         return len(self.values)
-
-
-    def _create_updater(self):
-        """Initialize the updater function used to update simulation parameters."""
-
-        if self.component is not None:
-            updater = component_updater(self.component, self.update)
-        else:
-            updater = param_updater(self.update)
-
-        return updater
 
 
     def _reset_yielder(self):
