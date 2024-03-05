@@ -4,18 +4,13 @@ NOTE: This code is a candidate for moving to NDSP.
 """
 
 from copy import deepcopy
-from itertools import count
 
 from apm.sim.params import update_vals
 from apm.sim.sim import sig_yielder
+from apm.sim.utils import counter
 
 ###################################################################################################
 ###################################################################################################
-
-## UTILS
-
-def counter(value):
-    return range(value) if value else count()
 
 ## PARAM UPDATERS
 
@@ -285,7 +280,7 @@ class ParamSampler():
     def __len__(self):
         """Define length of the object as the maximum number of parameters to sample."""
 
-        return self.n_samples
+        return self.n_samples if self.n_samples else 0
 
 
     def _reset_yielder(self):
@@ -374,7 +369,7 @@ class SigIter():
     def __len__(self):
         """Define length of the object as the number of simulations to create."""
 
-        return self.n_sims
+        return self.n_sims if self.n_sims else 0
 
 
     def _reset_yielder(self):

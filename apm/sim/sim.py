@@ -5,6 +5,7 @@ from copy import deepcopy
 import numpy as np
 
 from apm.sim.params import update_sim_params
+from apm.sim.utils import counter
 
 ###################################################################################################
 ###################################################################################################
@@ -18,8 +19,9 @@ def sig_yielder(sim_func, sim_params, n_sims):
         Function to create the simulated time series.
     sim_params : dict
         The parameters for the simulated signal, passed into `sim_func`.
-    n_sims : int
+    n_sims : int, optional
         Number of simulations to set as the max.
+        If None, creates an infinite generator.
 
     Yields
     ------
@@ -27,7 +29,7 @@ def sig_yielder(sim_func, sim_params, n_sims):
         Simulated time series.
     """
 
-    for _ in range(n_sims):
+    for _ in counter(n_sims):
         yield sim_func(**sim_params)
 
 

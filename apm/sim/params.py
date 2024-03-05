@@ -2,6 +2,8 @@
 
 import numpy as np
 
+from apm.sim.utils import counter
+
 ###################################################################################################
 ## Define update functions
 
@@ -133,7 +135,7 @@ def unpack_param_dict(params):
     return nparams
 
 
-def sampler(values, probs=None):
+def create_sampler(values, probs=None, n_samples=None):
     """Create a generator to sample from a parameter range.
 
     Parameters
@@ -143,6 +145,9 @@ def sampler(values, probs=None):
     probs : 1d array, optional
         Probabilities to sample from values.
         If provided, should be the same lengths as `values`.
+    n_samples : int, optional
+        The number of parameter iterations to set as max.
+        If None, creates an infinite generator.
 
     Yields
     ------
@@ -155,5 +160,9 @@ def sampler(values, probs=None):
         if len(values) != len(probs):
             raise ValueError("The number of options must match the number of probabilities.")
 
-    while True:
-        yield np.random.choice(values, p=probs)
+    for _ in counter(n_samples):
+
+        if isinstance(values[0], (list, np.ndarray)):
+            yield values[np.random.choice(len(values), p=probs)]
+        else:
+            yield np.random.choice(values, p=probs)
