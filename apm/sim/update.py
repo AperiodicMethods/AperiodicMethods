@@ -4,12 +4,18 @@ NOTE: This code is a candidate for moving to NDSP.
 """
 
 from copy import deepcopy
+from itertools import count
 
 from apm.sim.params import update_vals
 from apm.sim.sim import sig_yielder
 
 ###################################################################################################
 ###################################################################################################
+
+## UTILS
+
+def counter(value):
+    return range(value) if value else count()
 
 ## PARAM UPDATERS
 
@@ -156,7 +162,7 @@ class ParamIter():
         """Iterate across simulation parameters."""
 
         self._reset_yielder()
-        for _ in range(len(self)):
+        for _ in counter(len(self)):
             yield next(self)
 
 
@@ -199,7 +205,7 @@ def param_iter(params, update, values, component=None):
 
 ## PARAM SAMPLER
 
-def param_sample_yielder(sim_params, samplers, n_samples):
+def param_sample_yielder(sim_params, samplers, n_samples=None):
     """Generator to yield randomly sampled parameter definitions.
 
     Parameters
@@ -207,9 +213,12 @@ def param_sample_yielder(sim_params, samplers, n_samples):
     sim_params : dict
         The parameters for the simulated signal.
     samplers : dict
-        xx
-    n_samples : int
+        Sampler definitions to update parameters with.
+        Each key should be a callable, a parameter updated function.
+        Each value should be a generator, to sample updated parameter values from.
+    n_samples : int, optional
         The number of parameter iterations to set as max.
+        If None, creates an infinite generator.
 
     Yields
     ------
@@ -217,7 +226,7 @@ def param_sample_yielder(sim_params, samplers, n_samples):
         Simulation parameter definition.
     """
 
-    for ind in range(n_samples):
+    for ind in counter(n_samples):
         out_params = deepcopy(sim_params)
         for updater, sampler in samplers.items():
             updater(out_params, next(sampler))
@@ -236,8 +245,9 @@ class ParamSampler():
         Sampler definitions to update parameters with.
         Each key should be a callable, a parameter updated function.
         Each value should be a generator, to sample updated parameter values from.
-    n_sims : int
+    n_samples : int, optional
         The number of parameter iterations to set as max.
+        If None, creates an infinite generator.
 
     Attributes
     ----------
@@ -247,15 +257,16 @@ class ParamSampler():
         Generator for sampling the parameter samples.
     """
 
-    def __init__(self, params, samplers, n_sims):
+    def __init__(self, params, samplers, n_samples=None):
         """Initialize parameter sampler object."""
 
         self.params = deepcopy(params)
-        self.n_sims = n_sims
         self.samplers = samplers
+        self.n_samples = n_samples
 
         self.yielder = None
         self._reset_yielder()
+
 
     def __next__(self):
         """Sample the next set of simulation parameters."""
@@ -267,22 +278,23 @@ class ParamSampler():
         """Iterate across sampled simulation parameters."""
 
         self._reset_yielder()
-        for _ in range(len(self)):
+        for _ in counter(len(self)):
             yield next(self)
+
 
     def __len__(self):
         """Define length of the object as the maximum number of parameters to sample."""
 
-        return self.n_sims
+        return self.n_samples
 
 
     def _reset_yielder(self):
         """Reset the object yielder."""
 
-        self.yielder = param_sample_yielder(self.params, self.samplers, self.n_sims)
+        self.yielder = param_sample_yielder(self.params, self.samplers, self.n_samples)
 
 
-def param_sampler(sim_params, samplers, n_sims):
+def param_sampler(sim_params, samplers, n_samples=None):
     """Wrapper function for the ParamSampler object.
 
     Parameters
@@ -293,8 +305,9 @@ def param_sampler(sim_params, samplers, n_sims):
         Sampler definitions to update parameters with.
         Each key should be a callable, a parameter updated function.
         Each value should be a generator, to sample updated parameter values from.
-    n_sims : int
+    n_samples : int, optional
         The number of parameter iterations to set as max.
+        If None, creates an infinite generator.
 
     Returns
     -------
@@ -302,7 +315,7 @@ def param_sampler(sim_params, samplers, n_sims):
         Iterable object for sampling parameter definitions.
     """
 
-    return ParamSampler(sim_params, samplers, n_sims)
+    return ParamSampler(sim_params, samplers, n_samples)
 
 
 ## SIG YIELDER / ITER
@@ -318,8 +331,9 @@ class SigIter():
         Function to create simulations.
     sim_params : dict
         Simulation parameters.
-    n_sims : int
+    n_sims : int, optional
         Number of simulations to create.
+        If None, creates an infinite generator.
 
     Attributes
     ----------
@@ -329,7 +343,7 @@ class SigIter():
         Generator for sampling the sig iterations.
     """
 
-    def __init__(self, sim_func, sim_params, n_sims):
+    def __init__(self, sim_func, sim_params, n_sims=None):
         """Initialize signal iteration object."""
 
         self.sim_func = sim_func
@@ -353,7 +367,7 @@ class SigIter():
         """Iterate across simulation outputs."""
 
         self._reset_yielder()
-        for _ in range(len(self)):
+        for _ in counter(len(self)):
             yield next(self)
 
 

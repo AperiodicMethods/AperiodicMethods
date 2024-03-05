@@ -391,13 +391,17 @@ class SimSamplers(SimParams):
         Simulation time, in seconds.
     fs : float
         Sampling rate of simulated signal, in Hz.
+    n_samples : int, optional
+        The number of parameter iterations to set as max.
+        If None, samplers are created as infinite generators.
     """
 
-    def __init__(self, n_seconds, fs):
+    def __init__(self, n_seconds, fs, n_samples=None):
         """Initialize SimSamplers objects."""
 
         SimParams.__init__(self, n_seconds, fs)
 
+        self.n_samples = n_samples
         self._samplers = {}
 
 
@@ -434,7 +438,7 @@ class SimSamplers(SimParams):
         return {label : self.make_sampler(**params) for label, params in self._samplers.items()}
 
 
-    def make_sampler(self, label, samplers, n_sims):
+    def make_sampler(self, label, samplers, n_samples=None):
         """Create sampler to sample simulation parameter values.
 
         Parameters
@@ -445,8 +449,6 @@ class SimSamplers(SimParams):
             Sampler definitions to update parameters with.
             Each key should be a callable, a parameter updated function.
             Each value should be a generator, to sample updated parameter values from.
-        n_sims : int
-            The number of parameter iterations to set as max.
 
         Returns
         -------
@@ -454,10 +456,10 @@ class SimSamplers(SimParams):
             Generator object for sampling simulation parameters.
         """
 
-        return param_sampler(super().__getitem__(label), samplers, n_sims)
+        return param_sampler(super().__getitem__(label), samplers, self.n_samples)
 
 
-    def register_sampler(self, name, label, samplers, n_sims):
+    def register_sampler(self, name, label, samplers):
         """Register a sampler definition.
 
         Parameters
@@ -470,14 +472,11 @@ class SimSamplers(SimParams):
             Sampler definitions to update parameters with.
             Each key should be a callable, a parameter updated function.
             Each value should be a generator, to sample updated parameter values from.
-        n_sims : int
-            The number of parameter iterations to set as max.
         """
 
         self._samplers[name] = {
             'label' : label,
             'samplers' : samplers,
-            'n_sims' : n_sims,
         }
 
 
