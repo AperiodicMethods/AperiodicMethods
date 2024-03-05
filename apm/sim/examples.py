@@ -6,10 +6,9 @@ from neurodsp.sim import (sim_powerlaw, sim_synaptic_current, sim_knee,
                           sim_combined, sim_peak_oscillation)
 from neurodsp.utils import set_random_seed
 
-from apm.sim.sim import sim_combined_peak
-
-from apm.sim.defs import SIM_DEFS
 from apm.sim.objs import SimParams
+from apm.sim.funcs import sim_combined_peak
+from apm.sim.defs import SIM_DEFS
 from apm.sim.settings import N_SECONDS, FS
 
 ###################################################################################################

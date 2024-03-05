@@ -83,7 +83,6 @@ ITER_DEFS = [
     ['kn_knee', 'knee', 'knee', KNEES],
 
     ['osc_freq', 'comb', 'freq', FREQS, 'sim_oscillation'],
-    #['osc_pow', 'comb', 'component_variances', POWERS],
     ['osc_pow', 'comb', 'component_variances', CVARS],
 
     ['peak_freq', 'peak', 'freq', FREQS, 'sim_peak_oscillation'],
@@ -96,11 +95,11 @@ ITER_DEFS = [
 ###################################################################################################
 ## Define simulation parameter and simulation iterator objects
 
-# ...
+# Collect and define simulation parameters
 SIM_PARAMS = SimParams(N_SECONDS, FS)
 SIM_PARAMS.register_group(SIM_DEFS)
 
-# ...
+# Collect and defined simulation iterators
 SIM_ITERS = SimIters(N_SECONDS, FS)
 SIM_ITERS.register_group(SIM_DEFS)
 SIM_ITERS.register_group_iters(ITER_DEFS)

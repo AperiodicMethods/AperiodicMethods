@@ -23,6 +23,7 @@ def component_updater(component, parameter):
 
     return lambda params, value : params['components'][component].update({parameter : value})
 
+
 ## PARAM YIELDER
 
 def param_yielder(updater, sim_params, values):
@@ -132,6 +133,8 @@ def param_iter(params, update, values, component=None):
 
 ## SIG YIELDER / ITER
 
+# Note: consolidate with sig_yielder
+
 class SigIter():
     """Object for iterating across sampled simulations.
 
@@ -172,7 +175,7 @@ class SigIter():
         return self.n_sims
 
 
-def sig_iter(sim_func, sim_paras, n_sims):
+def sig_iter(sim_func, sim_params, n_sims):
     """Wrapper function for the SigIter object.
 
     Parameters
