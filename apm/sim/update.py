@@ -196,6 +196,115 @@ def param_iter(params, update, values, component=None):
 
     return ParamIter(params, update, values, component)
 
+
+## PARAM SAMPLER
+
+def param_sample_yielder(sim_params, samplers, n_samples):
+    """Generator to yield randomly sampled parameter definitions.
+
+    Parameters
+    ----------
+    sim_params : dict
+        The parameters for the simulated signal.
+    samplers : dict
+        xx
+    n_samples : int
+        The number of parameter iterations to set as max.
+
+    Yields
+    ------
+    sim_params : dict
+        Simulation parameter definition.
+    """
+
+    for ind in range(n_samples):
+        out_params = deepcopy(sim_params)
+        for updater, sampler in samplers.items():
+            updater(out_params, next(sampler))
+
+        yield out_params
+
+
+class ParamSampler():
+    """Object for sampling parameter definitions.
+
+    Parameters
+    ----------
+    params : dict
+        Parameter definition to create sampler with.
+    samplers : dict
+        Sampler definitions to update parameters with.
+        Each key should be a callable, a parameter updated function.
+        Each value should be a generator, to sample updated parameter values from.
+    n_sims : int
+        The number of parameter iterations to set as max.
+
+    Attributes
+    ----------
+    index : int
+        Index of current number of yielded parameter definitions.
+    yielder : generator
+        Generator for sampling the parameter samples.
+    """
+
+    def __init__(self, params, samplers, n_sims):
+        """Initialize parameter sampler object."""
+
+        self.params = deepcopy(params)
+        self.n_sims = n_sims
+        self.samplers = samplers
+
+        self.yielder = None
+        self._reset_yielder()
+
+    def __next__(self):
+        """Sample the next set of simulation parameters."""
+
+        return next(self.yielder)
+
+
+    def __iter__(self):
+        """Iterate across sampled simulation parameters."""
+
+        self._reset_yielder()
+        for _ in range(len(self)):
+            yield next(self)
+
+    def __len__(self):
+        """Define length of the object as the maximum number of parameters to sample."""
+
+        return self.n_sims
+
+
+    def _reset_yielder(self):
+        """Reset the object yielder."""
+
+        self.yielder = param_sample_yielder(self.params, self.samplers, self.n_sims)
+
+
+def param_sampler(sim_params, samplers, n_sims):
+    """Wrapper function for the ParamSampler object.
+
+    Parameters
+    ----------
+    params : dict
+        Parameter definition to create sampler with.
+    samplers : dict
+        Sampler definitions to update parameters with.
+        Each key should be a callable, a parameter updated function.
+        Each value should be a generator, to sample updated parameter values from.
+    n_sims : int
+        The number of parameter iterations to set as max.
+
+    Returns
+    -------
+    ParamSampler
+        Iterable object for sampling parameter definitions.
+    """
+
+    return ParamSampler(sim_params, samplers, n_sims)
+
+
 ## SIG YIELDER / ITER
 
 # Note: consolidate with sig_yielder

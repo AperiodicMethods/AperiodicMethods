@@ -5,7 +5,7 @@ NOTE: This code is a candidate for moving to NDSP.
 
 from copy import deepcopy
 
-from apm.sim.update import param_iter
+from apm.sim.update import param_iter, param_sampler
 
 ###################################################################################################
 ###################################################################################################
@@ -377,6 +377,147 @@ class SimIters(SimParams):
 
         if clear_iters:
             self._iters = {}
+
+        if clear_params:
+            super().clear(clear_base=clear_base)
+
+
+class SimSamplers(SimParams):
+    """Object for sampling simulation parameter definitions.
+
+    Parameters
+    ----------
+    n_seconds : float
+        Simulation time, in seconds.
+    fs : float
+        Sampling rate of simulated signal, in Hz.
+    """
+
+    def __init__(self, n_seconds, fs):
+        """Initialize SimSamplers objects."""
+
+        SimParams.__init__(self, n_seconds, fs)
+
+        self._samplers = {}
+
+
+    def __getitem__(self, label):
+        """Make object subscriptable, to access simulation iterators.
+
+        Parameters
+        ----------
+        label : str
+            Label to access and create parameter sampler from `_samplers`.
+        """
+
+        return self.make_sampler(**self._samplers[label])
+
+
+    def labels(self):
+        """Get the set of labels for the defined iterators."""
+
+        return list(self._samplers.keys())
+
+
+    @property
+    def samplers(self):
+        """Get the set of currently defined simulation samplers.
+
+        Returns
+        -------
+        samplers : dict
+            Dictionary of currently defined simulation samplers.
+            Each key is a label for the parameter sampler.
+            Each value is a ParamSampler object.
+        """
+
+        return {label : self.make_sampler(**params) for label, params in self._samplers.items()}
+
+
+    def make_sampler(self, label, samplers, n_sims):
+        """Create sampler to sample simulation parameter values.
+
+        Parameters
+        ----------
+        label : str
+            Label for the simulation parameters.
+        samplers : dict
+            Sampler definitions to update parameters with.
+            Each key should be a callable, a parameter updated function.
+            Each value should be a generator, to sample updated parameter values from.
+        n_sims : int
+            The number of parameter iterations to set as max.
+
+        Returns
+        -------
+        ParamSampler
+            Generator object for sampling simulation parameters.
+        """
+
+        return param_sampler(super().__getitem__(label), samplers, n_sims)
+
+
+    def register_sampler(self, name, label, samplers, n_sims):
+        """Register a sampler definition.
+
+        Parameters
+        ----------
+        name : str
+            Name to give the registered iterator.
+        label : str
+            Label for the simulation parameters.
+        samplers : dict
+            Sampler definitions to update parameters with.
+            Each key should be a callable, a parameter updated function.
+            Each value should be a generator, to sample updated parameter values from.
+        n_sims : int
+            The number of parameter iterations to set as max.
+        """
+
+        self._samplers[name] = {
+            'label' : label,
+            'samplers' : samplers,
+            'n_sims' : n_sims,
+        }
+
+
+    def register_group_samplers(self, group, clear=False):
+        """Register a group of simulation samplers.
+
+        Parameters
+        ----------
+        group : list of list or list of dict
+            Set of simulation iterator definitions.
+        clear : bool, optional, default: False
+            If True, clears current parameter samplers before adding new group.
+        """
+
+        if clear:
+            self.clear()
+
+        for samplerdef in group:
+            if isinstance(samplerdef, list):
+                self.register_sampler(*samplerdef)
+            elif isinstance(samplerdef, dict):
+                self.register_sampler(**samplerdef)
+
+
+    def clear(self, clear_samplers=True, clear_params=False, clear_base=False):
+        """"Clear sampler and/or parameter definitions.
+
+        Parameters
+        ----------
+        clear_samplers : bool, optional, default: True
+            Whether to clear the currently defined samplers.
+        clear_params : bool, optional, default: False
+            Whether to clear the currently defined simulation parameters.
+        clear_base : bool, optional, default: False
+            Whether to also clear base parameters.
+            Only applied if `clear_params` is True.
+        """
+
+        if clear_samplers:
+            self._samplers = {}
 
         if clear_params:
             super().clear(clear_base=clear_base)
