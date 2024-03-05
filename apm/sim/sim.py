@@ -31,6 +31,7 @@ def sig_yielder(sim_func, sim_params, n_sims):
         yield sim_func(**sim_params)
 
 
+# TO UPDATE / REFACTOR OUT
 def sig_yielder_update(sim_func, sim_params, samplers, n_sims, return_sim_params=False):
     """Generator to yield simulated signals from a given simulation function and parameters.
 

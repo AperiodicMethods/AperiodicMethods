@@ -11,7 +11,7 @@ from apm.sim.update import param_iter
 ###################################################################################################
 
 class SimParams():
-    """Class object for managing simulation parameters.
+    """Object for managing simulation parameters.
 
     Parameters
     ----------
@@ -51,21 +51,41 @@ class SimParams():
 
     @property
     def base(self):
-        """Get the base parameters, common across all simulations."""
+        """Get the base parameters, common across all simulations.
+
+        Returns
+        -------
+        base_params : dict
+            Definition of the current base parameters.
+        """
 
         return {'n_seconds' : self.n_seconds, 'fs' : self.fs}
 
 
     @property
     def labels(self):
-        """Get the set of labels for the defined parameters."""
+        """Get the set of labels for the defined parameters.
+
+        Returns
+        -------
+        labels : list of str
+            Labels for all defined simulation parameters.
+        """
 
         return list(self._params.keys())
 
 
     @property
     def params(self):
-        """Get the set of currently defined simulation parameters."""
+        """Get the set of currently defined simulation parameters.
+
+        Returns
+        -------
+        params : dict
+            Dictionary of currently defined simulation parameters.
+            Each key is a label for the parameter definition.
+            Each value is a dictionary of simulations parameters.
+        """
 
         return {label : self.base | params for label, params in self._params.items()}
 
@@ -176,6 +196,7 @@ class SimParams():
         return params
 
 
+    # Note: could be independent function?
     def _make_combined_params(self, components, component_variances=None):
         """Make parameters for combined simulations, specifying multiple components.
 
@@ -233,7 +254,7 @@ class SimIters(SimParams):
         Parameters
         ----------
         label : str
-            Label to access simulation parameters from `params`.
+            Label to access and create parameter iterator from `_iters`.
         """
 
         return self.make_iter(**self._iters[label])
@@ -241,14 +262,28 @@ class SimIters(SimParams):
 
     @property
     def iters(self):
-        """Get the set of currently defined simulation iterators."""
+        """Get the set of currently defined simulation iterators.
+
+        Returns
+        -------
+        iters : dict
+            Dictionary of currently defined simulation iterators.
+            Each key is a label for the parameter iterator.
+            Each value is a ParamIter object.
+        """
 
         return {label : self.make_iter(**params) for label, params in self._iters.items()}
 
 
     @property
     def labels(self):
-        """Get the set of labels for the defined iterators."""
+        """Get the set of labels for the defined iterators.
+
+        Returns
+        -------
+        labels : list of str
+            Labels for all defined iterators.
+        """
 
         return list(self._iters.keys())
 
@@ -267,6 +302,11 @@ class SimIters(SimParams):
         component : str, optional
             Which component to update the parameter in.
             Only used if the parameter definition is for a multi-component simulation.
+
+        Returns
+        -------
+        ParamIter
+            Generator object for iterating across simulation parameters.
         """
 
         assert label in self._params.keys(), "Label for simulation parameters not found."
@@ -300,8 +340,43 @@ class SimIters(SimParams):
         }
 
 
-    def register_group_iters(self, group):
-        """Register a group of simulation iterators."""
+    def register_group_iters(self, group, clear=False):
+        """Register a group of simulation iterators.
+
+        Parameters
+        ----------
+        group : list of list or list of dict
+            Set of simulation iterator definitions.
+        clear : bool, optional, default: False
+            If True, clears current parameter iterators before adding new group.
+        """
+
+        if clear:
+            self.clear()
 
         for iterdef in group:
-            self.register_iter(*iterdef)
+            if isinstance(iterdef, list):
+                self.register_iter(*iterdef)
+            elif isinstance(iterdef, dict):
+                self.register_iter(**iterdef)
+
+
+    def clear(self, clear_iters=True, clear_params=False, clear_base=False):
+        """"Clear iterator and/or parameter definitions.
+
+        Parameters
+        ----------
+        clear_iters : bool, optional, default: True
+            Whether to clear the currently defined iterators.
+        clear_params : bool, optional, default: False
+            Whether to clear the currently defined simulation parameters.
+        clear_base : bool, optional, default: False
+            Whether to also clear base parameters.
+            Only applied if `clear_params` is True.
+        """
+
+        if clear_iters:
+            self._iters = {}
+
+        if clear_params:
+            super().clear(clear_base=clear_base)

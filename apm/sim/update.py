@@ -6,6 +6,7 @@ NOTE: This code is a candidate for moving to NDSP.
 from copy import deepcopy
 
 from apm.sim.params import update_vals
+from apm.sim.sim import sig_yielder
 
 ###################################################################################################
 ###################################################################################################
@@ -74,8 +75,23 @@ def create_updater(update, component=None):
 
 ## PARAM YIELDER
 
-def param_yielder(updater, sim_params, values):
-    """Parameter yielder."""
+def param_iter_yielder(sim_params, updater, values):
+    """Parameter yielder.
+
+    Parameters
+    ----------
+    sim_params : dict
+        Parameter definition.
+    updater : callable
+        Updater function to update parameter definition.
+    values : 1d array
+        Values to iterate across.
+
+    Yields
+    ------
+    sim_params : dict
+        Simulation parameter definition.
+    """
 
     # The deepcopy'ing ensures to not change the input dict & that each output is new
     for cur_params in update_vals(deepcopy(sim_params), values, updater):
@@ -98,6 +114,13 @@ class ParamIter():
     component : str, optional
         Which component to update the parameter in.
         Only used if the parameter definition is for a multi-component simulation.
+
+    Attributes
+    ----------
+    index : int
+        Index of current location through the iteration.
+    yielder : generator
+        Generator for sampling the sig iterations.
     """
 
     def __init__(self, params, update, values, component=None):
@@ -116,12 +139,16 @@ class ParamIter():
         self.component = component
 
         self._updater = create_updater(self.update, self.component)
+
+        self.index = 0
+        self.yielder = None
         self._reset_yielder()
 
 
     def __next__(self):
         """Sample the next set of simulation parameters."""
 
+        self.index += 1
         return next(self.yielder)
 
 
@@ -142,7 +169,8 @@ class ParamIter():
     def _reset_yielder(self):
         """Reset the object yielder."""
 
-        self.yielder = param_yielder(self._updater, self.params, self.values)
+        self.index = 0
+        self.yielder = param_iter_yielder(self.params, self._updater, self.values)
 
 
 def param_iter(params, update, values, component=None):
@@ -183,6 +211,13 @@ class SigIter():
         Simulation parameters.
     n_sims : int
         Number of simulations to create.
+
+    Attributes
+    ----------
+    index : int
+        Index of current location through the iteration.
+    yielder : generator
+        Generator for sampling the sig iterations.
     """
 
     def __init__(self, sim_func, sim_params, n_sims):
@@ -192,17 +227,24 @@ class SigIter():
         self.sim_params = deepcopy(sim_params)
         self.n_sims = n_sims
 
+        self.index = 0
+        self.yielder = None
+        self._reset_yielder()
+
 
     def __next__(self):
         """Sample a new simulation."""
 
-        return self.sim_func(**self.sim_params)
+        self.index += 1
+
+        return next(self.yielder)
 
 
     def __iter__(self):
         """Iterate across simulation outputs."""
 
-        for _ in range(self.n_sims):
+        self._reset_yielder()
+        for _ in range(len(self)):
             yield next(self)
 
 
@@ -210,6 +252,13 @@ class SigIter():
         """Define length of the object as the number of simulations to create."""
 
         return self.n_sims
+
+
+    def _reset_yielder(self):
+        """Reset the object yielder."""
+
+        self.index = 0
+        self._yielder = sig_yielder(self.sim_func, self.sim_params, self.n_sims)
 
 
 def sig_iter(sim_func, sim_params, n_sims):
