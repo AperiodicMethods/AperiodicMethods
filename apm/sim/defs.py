@@ -2,8 +2,7 @@
 
 import numpy as np
 
-from apm.sim.params import create_sampler
-from apm.sim.update import create_updater
+from apm.sim.update import create_updater, create_sampler
 from apm.sim.settings import N_SIMS, N_SIMS2, N_SAMPLES, N_SECONDS, FS
 from apm.sim.settings import EXP, EXP1, EXP2, KNEE, F_RANGE, FREQ, BW, HEIGHT, COMP_VARS
 from apm.sim.settings import EXPS, TSCALES, KNEES, FREQS, POWERS, CVARS, BWS, BPROBS

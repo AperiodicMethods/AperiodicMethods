@@ -11,7 +11,7 @@ from tqdm.notebook import tqdm
 
 from apm.io import load_pickle
 from apm.sim.sim import sig_yielder, sig_sampler
-from apm.sim.params import unpack_param_dict
+from apm.sim.utils import unpack_param_dict
 
 ###################################################################################################
 ###################################################################################################

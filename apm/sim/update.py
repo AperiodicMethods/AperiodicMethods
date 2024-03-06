@@ -5,7 +5,8 @@ NOTE: This code is a candidate for moving to NDSP.
 
 from copy import deepcopy
 
-from apm.sim.params import update_vals
+import numpy as np
+
 from apm.sim.sim import sig_yielder
 from apm.sim.utils import counter
 
@@ -94,9 +95,11 @@ def param_iter_yielder(sim_params, updater, values):
         Simulation parameter definition.
     """
 
-    # The deepcopy'ing ensures to not change the input dict & that each output is new
-    for cur_params in update_vals(deepcopy(sim_params), values, updater):
-        yield deepcopy(cur_params)
+    sim_params = deepcopy(sim_params)
+
+    for value in values:
+        updater(sim_params, value)
+        yield deepcopy(sim_params)
 
 
 ## PARAM ITER
@@ -198,7 +201,40 @@ def param_iter(params, update, values, component=None):
     return ParamIter(params, update, values, component)
 
 
-## PARAM SAMPLER
+## PARAM SAMPLERS
+
+def create_sampler(values, probs=None, n_samples=None):
+    """Create a generator to sample from a parameter range.
+
+    Parameters
+    ----------
+    values : list or 1d array
+        Parameter values to create a generator for.
+    probs : 1d array, optional
+        Probabilities to sample from values.
+        If provided, should be the same lengths as `values`.
+    n_samples : int, optional
+        The number of parameter iterations to set as max.
+        If None, creates an infinite generator.
+
+    Yields
+    ------
+    generator
+        Generator to sample parameter values from.
+    """
+
+    # Check that length of values is same as length of probs, if provided
+    if np.any(probs):
+        if len(values) != len(probs):
+            raise ValueError("The number of options must match the number of probabilities.")
+
+    for _ in counter(n_samples):
+
+        if isinstance(values[0], (list, np.ndarray)):
+            yield values[np.random.choice(len(values), p=probs)]
+        else:
+            yield np.random.choice(values, p=probs)
+
 
 def param_sample_yielder(sim_params, samplers, n_samples=None):
     """Generator to yield randomly sampled parameter definitions.
@@ -314,8 +350,6 @@ def param_sampler(sim_params, samplers, n_samples=None):
 
 
 ## SIG YIELDER / ITER
-
-# Note: consolidate with sig_yielder
 
 class SigIter():
     """Object for iterating across sampled simulations.
