@@ -10,7 +10,8 @@ import pandas as pd
 from tqdm.notebook import tqdm
 
 from apm.io import load_pickle
-from apm.sim.sim import sig_yielder, sig_yielder_update
+from apm.sim.sim import sig_yielder, sig_sampler
+from apm.sim.params import unpack_param_dict
 
 ###################################################################################################
 ###################################################################################################
@@ -145,7 +146,7 @@ def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
     return measure_func(sim_func(**sim_params), **measure_params)
 
 
-def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
+def run_comparisons(sim_func, sim_params, measures, n_sims=None,
                     return_sim_params=False, verbose=False):
     """Compute multiple measures of interest across the same set of simulations.
 
@@ -153,17 +154,13 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
     ----------
     sim_func : callable
         A function to create simulated time series.
-    sim_params : dict
-        Input arguments for `sim_func`.
+    sim_params : iterable or list of dict
+        Simulation parameters for `sim_func`.
     measures : dict
         Functions to apply to the simulated data.
         The keys should be functions to apply to the data.
         The values should be a dictionary of parameters to use for the method.
-    samplers : dict
-        Information for how to sample across parameters for the simulations.
-        The keys should be string labels of which parameter to update.
-        The values should be data ranges to sample for that parameter.
-    n_sims : int
+    n_sims : int, optional
         The number of simulations to run.
     return_sim_params : bool, default: False
         Whether to collect and return the parameters of all the generated simulations.
@@ -180,18 +177,21 @@ def run_comparisons(sim_func, sim_params, measures, samplers, n_sims,
         Only returned if `return_sim_params` is True.
     """
 
+    if not n_sims:
+        n_sims = len(sim_params)
+
     results = {func.__name__ : deepcopy(np.zeros(n_sims)) for func in measures.keys()}
 
     if return_sim_params:
-        all_sim_params = []
+        all_sim_params = [None] * n_sims
 
-    for s_ind, (sig, cur_sim_params) in enumerate(\
-        sig_yielder_update(sim_func, sim_params, samplers, n_sims, True)):
+    for s_ind, (sig, sample_params) in enumerate(sig_sampler(sim_func, sim_params, True, n_sims)):
 
         if verbose:
-            print(cur_sim_params)
+            print(sample_params)
+
         if return_sim_params:
-            all_sim_params.append(deepcopy(unpack_param_dict(cur_sim_params)))
+            all_sim_params[s_ind] = unpack_param_dict(sample_params)
 
         for measure, params in measures.items():
             results[measure.__name__][s_ind] = measure(sig, **params)
