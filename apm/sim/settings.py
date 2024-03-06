@@ -43,16 +43,16 @@ COMP_VARS = [1, 0.5]
 ## Define parameter ranges
 
 # Aperiodic parameters - ranges
-EXPS = np.arange(-3, 0.5, 0.5)
+EXPS = np.round(np.arange(-3, 0.5, 0.5), 1)
 TSCALES = np.array([0.005, 0.015, 0.030, 0.050, 0.075])
 
 KNEES = [25, 100, 400, 900, 1600]
 
 # Periodic parameter - ranges
 FREQS = np.arange(5, 36, 1)
-POWERS = np.arange(0, 2.1, 0.1)
+POWERS = np.round(np.arange(0, 2.1, 0.1), 1)
 CVARS = [[1, val] for val in POWERS]
-BWS = np.arange(0.5, 3.5, 0.5)
+BWS = np.round(np.arange(0.5, 3.5, 0.5), 1)
 
 # Burst related parameters
-BPROBS = np.arange(0.2, 0.8, 0.1)
+BPROBS = np.round(np.arange(0.2, 0.8, 0.1), 1)

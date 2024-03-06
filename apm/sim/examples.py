@@ -42,8 +42,8 @@ def get_examples(n_seconds=N_SECONDS, fs=FS):
 
         # Combined time series
         'combined' : sim_combined(**sim_params['comb']),
-        'comb-burst' : sim_combined(**sim_params['comb_burst']),
-        'comb-peak' : sim_combined_peak(**sim_params['peak']),
+        'comb_burst' : sim_combined(**sim_params['comb_burst']),
+        'comb_peak' : sim_combined_peak(**sim_params['peak']),
     }
 
     return examples
