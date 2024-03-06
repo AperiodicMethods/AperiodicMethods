@@ -17,7 +17,7 @@ from apm.sim.utils import unpack_param_dict
 ###################################################################################################
 
 def run_sims(sim_func, sim_params, measure_func, measure_params, n_sims,
-             return_params=False, warnings_action='ignore'):
+             return_params=False, outsize=1, warnings_action='ignore'):
     """Compute a measure of interest across a set of simulations.
 
     Parameters
@@ -34,6 +34,8 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_sims,
         The number of iterations to simulate and calculate measures, per value.
     return_params : bool, default: False
         Whether to collect and return the parameters for the generated simulations.
+    outsize : int, optional, default: 1
+        Expected size of the measure results.
     warnings_action : {'ignore', 'error', 'always', 'default', 'module, 'once'}
         Filter action for warnings.
 
@@ -43,7 +45,8 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_sims,
         The results of the measures applied to the set of simulations.
     """
 
-    results = np.zeros([len(sim_params), n_sims])
+    results = np.zeros([len(sim_params), n_sims, outsize]) if outsize > 1 \
+        else np.zeros([len(sim_params), n_sims])
 
     if return_params:
         all_sim_params = []
@@ -65,7 +68,8 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_sims,
         return results
 
 
-def run_sims_load(sims_file, measure_func, measure_params, n_sims=None, warnings_action='ignore'):
+def run_sims_load(sims_file, measure_func, measure_params, n_sims=None,
+                  outsize=1, warnings_action='ignore'):
     """Run measures across a set of simulations loaded from file.
 
     Notes
@@ -82,7 +86,8 @@ def run_sims_load(sims_file, measure_func, measure_params, n_sims=None, warnings
         sigs = {val : sigs[val][:n_sims, :] for val in values}
     n_sims = sigs[values[0]].shape[0]
 
-    results = np.zeros([n_params, n_sims])
+    results = np.zeros([n_params, n_sims, outsize]) if outsize > 1 \
+        else np.zeros([n_params, n_sims])
 
     with warnings.catch_warnings():
         warnings.simplefilter(warnings_action)
