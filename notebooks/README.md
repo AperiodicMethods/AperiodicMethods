@@ -32,9 +32,9 @@ Introduction to simulations used in this project.
 
 Demonstrates examples of time domain simulations across different parameters.
 
-#### 12-PowerSpectrumSimulations
+#### 12-TimeSimsParameters
 
-Demonstrates examples of frequency domain simulations across different parameters.
+Demonstrates how parameters are managed, iterated across, and sampled from, for time domain simulations.
 
 #### 13-SimulationTests
 
@@ -43,6 +43,10 @@ Overview of how the method evaluation simulations are done.
 #### 14-SimulationComparisons
 
 Overview of how the method comparisons simulations are done.
+
+#### 15-PowerSpectrumSimulations
+
+Demonstrates examples of frequency domain simulations across different parameters.
 
 ## 2) Time Domain Methods
 
