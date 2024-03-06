@@ -166,6 +166,22 @@ class SimParams():
             self.fs = fs
 
 
+    def update_param(self, label, attribute, new_value):
+        """Update a simulation parameter definition.
+
+        Parameters
+        ----------
+        label : str
+            Label for the parameter defintion.
+        attribute : str
+            Name of the attribute to update.
+        new_value : obj
+            New value to give the attribute.
+        """
+
+        self._params[label][attribute] = new_value
+
+
     def clear(self, clear_base=False):
         """"Clear parameter definitions.
 
@@ -361,6 +377,22 @@ class SimIters(SimParams):
                 self.register_iter(**iterdef)
 
 
+    def update_iter(self, label, attribute, new_value):
+        """Update the definition of an iterator.
+
+        Parameters
+        ----------
+        label : str
+            Label for the iterator.
+        attribute : str
+            Name of the attribute to update.
+        new_value : obj
+            New value to give the attribute.
+        """
+
+        self._iters[label][attribute] = new_value
+
+
     def clear(self, clear_iters=True, clear_params=False, clear_base=False):
         """"Clear iterator and/or parameter definitions.
 
@@ -500,6 +532,22 @@ class SimSamplers(SimParams):
                 self.register_sampler(*samplerdef)
             elif isinstance(samplerdef, dict):
                 self.register_sampler(**samplerdef)
+
+
+    def update_sampler(self, label, attribute, new_value):
+        """Update the definition of a sampler.
+
+        Parameters
+        ----------
+        label : str
+            Label for the sampler.
+        attribute : str
+            Name of the attribute to update.
+        new_value : obj
+            New value to give the attribute.
+        """
+
+        self._samplers[label][attribute] = new_value
 
 
     def clear(self, clear_samplers=True, clear_params=False, clear_base=False):
