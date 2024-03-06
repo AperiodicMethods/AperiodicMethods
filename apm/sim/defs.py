@@ -143,7 +143,7 @@ ITER_DEFS = [
         'label' : 'peak',
         'update' : 'bw',
         'values' : BWS,
-        'component' : ' sim_peak_oscillation',
+        'component' : 'sim_peak_oscillation',
     },
 
     # Bursty Oscillation Iterators

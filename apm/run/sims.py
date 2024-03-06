@@ -17,7 +17,7 @@ from apm.sim.params import unpack_param_dict
 ###################################################################################################
 
 def run_sims(sim_func, sim_params, measure_func, measure_params, n_sims,
-             return_sim_params=False, warnings_action='ignore'):
+             return_params=False, warnings_action='ignore'):
     """Compute a measure of interest across a set of simulations.
 
     Parameters
@@ -32,7 +32,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_sims,
         Input arguments for `measure_func`.
     n_sims : int
         The number of iterations to simulate and calculate measures, per value.
-    return_sim_params : bool, default: False
+    return_params : bool, default: False
         Whether to collect and return the parameters for the generated simulations.
     warnings_action : {'ignore', 'error', 'always', 'default', 'module, 'once'}
         Filter action for warnings.
@@ -45,7 +45,7 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_sims,
 
     results = np.zeros([len(sim_params), n_sims])
 
-    if return_sim_params:
+    if return_params:
         all_sim_params = []
 
     with warnings.catch_warnings():
@@ -53,13 +53,13 @@ def run_sims(sim_func, sim_params, measure_func, measure_params, n_sims,
 
         for p_ind, cur_sim_params in enumerate(sim_params):
 
-            if return_sim_params:
+            if return_params:
                 all_sim_params.append(deepcopy(cur_sim_params))
 
             for s_ind, sig in enumerate(sig_yielder(sim_func, cur_sim_params, n_sims)):
                 results[p_ind, s_ind] = measure_func(sig, **measure_params)
 
-    if return_sim_params:
+    if return_params:
         return results, all_sim_params
     else:
         return results
@@ -147,7 +147,7 @@ def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
 
 
 def run_comparisons(sim_func, sim_params, measures, n_sims=None,
-                    return_sim_params=False, verbose=False):
+                    return_params=False, verbose=False):
     """Compute multiple measures of interest across the same set of simulations.
 
     Parameters
@@ -162,7 +162,7 @@ def run_comparisons(sim_func, sim_params, measures, n_sims=None,
         The values should be a dictionary of parameters to use for the method.
     n_sims : int, optional
         The number of simulations to run.
-    return_sim_params : bool, default: False
+    return_params : bool, default: False
         Whether to collect and return the parameters of all the generated simulations.
     verbose : bool, optional, default: False
         Whether to print out simulation parameters.
@@ -174,7 +174,7 @@ def run_comparisons(sim_func, sim_params, measures, n_sims=None,
         Computed results for each measure across the set of simulated data.
     all_sim_params : pd.DataFrame
         Collected simulation parameters across all the simulations.
-        Only returned if `return_sim_params` is True.
+        Only returned if `return_params` is True.
     """
 
     if not n_sims:
@@ -182,7 +182,7 @@ def run_comparisons(sim_func, sim_params, measures, n_sims=None,
 
     results = {func.__name__ : deepcopy(np.zeros(n_sims)) for func in measures.keys()}
 
-    if return_sim_params:
+    if return_params:
         all_sim_params = [None] * n_sims
 
     for s_ind, (sig, sample_params) in enumerate(sig_sampler(sim_func, sim_params, True, n_sims)):
@@ -190,13 +190,13 @@ def run_comparisons(sim_func, sim_params, measures, n_sims=None,
         if verbose:
             print(sample_params)
 
-        if return_sim_params:
+        if return_params:
             all_sim_params[s_ind] = unpack_param_dict(sample_params)
 
         for measure, params in measures.items():
             results[measure.__name__][s_ind] = measure(sig, **params)
 
-    if return_sim_params:
+    if return_params:
         all_sim_params = pd.DataFrame(all_sim_params)
         # If relevant, set a marker for yes / no if signal has an oscillation
         if 'var_pe' in all_sim_params.columns:

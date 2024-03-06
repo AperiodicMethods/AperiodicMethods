@@ -117,8 +117,6 @@ def unpack_param_dict(params):
     -------
     nparams : dict
         Flattened dictionary of simulation parameters.
-
-    ToDo / Note: could be added to NDSP?
     """
 
     nparams = {}

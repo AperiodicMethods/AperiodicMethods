@@ -169,3 +169,40 @@ def sim_across_values(sim_func, sim_params, n_sims, output='dict'):
         sims = np.squeeze(np.array(list(sims.values())))
 
     return sims
+
+
+def sim_from_sampler(sim_func, sim_sampler, n_sims, return_params=False):
+    """Simulate a set of signals from a parameter sampler.
+
+    Parameters
+    ----------
+    sim_func : callable
+        Function to create the simulated time series.
+    sim_sampler : ParamSampler
+        Parameter definition to sample from.
+    n_sims : int
+        Number of simulations to create per parameter definition.
+    return_params : bool, default: False
+        Whether to collect and return the parameters of all the generated simulations.
+
+    Returns
+    -------
+    sigs : 2d array
+        Simulations, as [n_sims, sig length].
+    all_params : list of dict
+        Simulation parameters for each returned time series.
+        Only returned if `return_params` is True.
+    """
+
+    all_params = [None] * n_sims
+    sigs = np.zeros([n_sims, sim_sampler.params['n_seconds'] * sim_sampler.params['fs']])
+    for ind, (sig, params) in enumerate(sig_sampler(sim_func, sim_sampler, True, n_sims)):
+        sigs[ind, :] = sig
+
+        if return_params:
+            all_params[ind] = params
+
+    if return_params:
+        return sigs, all_params
+    else:
+        return sigs
