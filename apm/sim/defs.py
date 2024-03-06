@@ -164,11 +164,13 @@ SAMPLER_DEFS = [
         'name' : 'comb_sampler',
         'label' : 'comb',
         'samplers' : {
-            create_updater('exponent', 'sim_powerlaw') : create_sampler(np.arange(-2.5, 0.1, 0.1)),
+            create_updater('exponent', 'sim_powerlaw') : \
+                create_sampler(np.round(np.arange(-2.5, 0.1, 0.1), 1)),
             create_updater('component_variances') : \
-                create_sampler([[1, val] for val in np.arange(0, 1.1, 0.1)],
+                create_sampler([[1, val] for val in np.round(np.arange(0, 1.1, 0.1), 1)],
                                probs = [0.30] + ([0.07] * 10)),
-            create_updater('freq', 'sim_oscillation') : create_sampler(np.arange(5, 36, 1)),
+            create_updater('freq', 'sim_oscillation') : \
+                create_sampler(np.arange(5, 36, 1)),
         },
     },
 ]

@@ -11,7 +11,7 @@ from apm.sim.utils import counter
 ###################################################################################################
 
 def sig_yielder(sim_func, sim_params, n_sims):
-    """Generator to yield a simulated signals from a given simulation function and parameters.
+    """Generator to yield simulated signals from a given simulation function and parameters.
 
     Parameters
     ----------
@@ -33,44 +33,81 @@ def sig_yielder(sim_func, sim_params, n_sims):
         yield sim_func(**sim_params)
 
 
-# TO UPDATE / REFACTOR OUT
-def sig_yielder_update(sim_func, sim_params, samplers, n_sims, return_sim_params=False):
-    """Generator to yield simulated signals from a given simulation function and parameters.
+def sig_sampler(sim_func, sim_params, return_sim_params=False, n_sims=None):
+    """Generator to yield simulated signals from a parameter sampler.
 
     Parameters
     ----------
     sim_func : callable
         Function to create the simulated time series.
-    sim_params : dict
+    sim_params : iterable
         The parameters for the simulated signal, passed into `sim_func`.
-    samplers : dict
-        Dictionary of samplers to update simulation parameters.
-    n_sims : int
-        Number of simulations to set as the max.
     return_sim_params : bool, optional, default: False
-        Whether to also yield the simulation parameters for each simulated signal.
+        Whether to yield the simulation parameters as well as the simulated time series.
+    n_sims : int, optional
+        Number of simulations to set as the max.
+        If None, creates an infinite generator.
 
     Yields
     ------
     sig : 1d array
         Simulated time series.
-    sim_params : dict
-        Simulation parameters for the current simulated signal.
-        Only returned if `return_sim_params` is True.
+    sample_params : dict
+        Simulation parameters for the yielded time series.
     """
 
-    # Take a copy of simulation parameters and initialize first update
-    cur_sim_params = update_sim_params(deepcopy(sim_params), samplers)
+    if len(sim_params) and n_sims and n_sims > len(sim_params):
+        msg = 'Cannot simulate the requested number of sims with the given parameters.'
+        raise ValueError(msg)
 
-    for _ in range(n_sims):
-
-        cur_sim_params = update_sim_params(cur_sim_params, samplers)
-        cur_sig = sim_func(**cur_sim_params)
+    for ind, sample_params in zip(counter(n_sims), sim_params):
 
         if return_sim_params:
-            yield cur_sig, cur_sim_params
+            yield sim_func(**sample_params), sample_params
         else:
-            yield cur_sig
+            yield sim_func(**sample_params)
+
+        if n_sims and ind >= n_sims:
+            break
+
+# # TO UPDATE / REFACTOR OUT
+# def sig_yielder_update(sim_func, sim_params, samplers, n_sims, return_sim_params=False):
+#     """Generator to yield simulated signals from a given simulation function and parameters.
+
+#     Parameters
+#     ----------
+#     sim_func : callable
+#         Function to create the simulated time series.
+#     sim_params : dict
+#         The parameters for the simulated signal, passed into `sim_func`.
+#     samplers : dict
+#         Dictionary of samplers to update simulation parameters.
+#     n_sims : int
+#         Number of simulations to set as the max.
+#     return_sim_params : bool, optional, default: False
+#         Whether to also yield the simulation parameters for each simulated signal.
+
+#     Yields
+#     ------
+#     sig : 1d array
+#         Simulated time series.
+#     sim_params : dict
+#         Simulation parameters for the current simulated signal.
+#         Only returned if `return_sim_params` is True.
+#     """
+
+#     # Take a copy of simulation parameters and initialize first update
+#     cur_sim_params = update_sim_params(deepcopy(sim_params), samplers)
+
+#     for _ in range(n_sims):
+
+#         cur_sim_params = update_sim_params(cur_sim_params, samplers)
+#         cur_sig = sim_func(**cur_sim_params)
+
+#         if return_sim_params:
+#             yield cur_sig, cur_sim_params
+#         else:
+#             yield cur_sig
 
 
 def sim_multiple(sim_func, sim_params, n_sims):

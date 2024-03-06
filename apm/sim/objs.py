@@ -417,6 +417,7 @@ class SimSamplers(SimParams):
         return self.make_sampler(**self._samplers[label])
 
 
+    @property
     def labels(self):
         """Get the set of labels for the defined iterators."""
 
