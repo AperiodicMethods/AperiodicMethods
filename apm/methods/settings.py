@@ -58,6 +58,7 @@ SFD_PARAMS = {}
 ## COMPLEXITY MEASURES
 
 # Hjorth measures
+HJA_PARAMS = {}
 HJM_PARAMS = {}
 HJC_PARAMS = {}
 
@@ -105,16 +106,16 @@ SP_ENT_PARAMS = {
 ## MULTISCALE ENTROPY MEASURES
 
 # Multiscale Approximate Entropy
-MULTI_AP_ENT_PARAMS = {}
+MAP_ENT_PARAMS = {}
 
 # Multiscale Sample Entropy
-MULTI_SA_ENT_PARAMS = {}
+MSA_ENT_PARAMS = {}
 
 # Multiscale Permutation Entropy
-MULTI_PE_ENT_PARAMS = {}
+MPE_ENT_PARAMS = {}
 
 # Multiscale Weighted Permutation Entropy
-MULTI_WPE_ENT_PARAMS = {}
+MWPE_ENT_PARAMS = {}
 
 ## SPECTRAL FITTING
 

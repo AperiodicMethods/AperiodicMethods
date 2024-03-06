@@ -7,9 +7,12 @@ import numpy as np
 ###################################################################################################
 ## Define general simulation settings
 
-# Set the number of instances to run
+# Set the number of instances to run (within method simulations)
 N_SIMS = 50
 N_SIMS2 = 10
+
+# Set the number of samples to run (between method comparisons)
+N_SAMPLES = 1000
 
 # General simulation settings
 N_SECONDS = 30
@@ -20,7 +23,7 @@ FS2 = 500
 ## Define default parameter values
 
 # Define aperiodic parameters
-EXP = -1.5
+EXP = -1
 EXP1 = 0
 EXP2 = -2
 KNEE = 100
@@ -34,7 +37,7 @@ BW = 1.5
 HEIGHT = 1.5
 
 # Define parameters for combined signals
-COMP_VARS = [1, 0.25]
+COMP_VARS = [1, 0.5]
 
 ###################################################################################################
 ## Define parameter ranges
