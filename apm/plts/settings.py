@@ -26,7 +26,7 @@ BST_COLOR = '#ebc334'
 # Collect colors
 COLORS = {
     'AP' : AP_COLOR,
-    'CM' : CB_COLOR,
+    'COMB' : CB_COLOR,
     'KN' : KN_COLOR,
     'CF' : CF_COLOR,
     'PW' : PW_COLOR,
