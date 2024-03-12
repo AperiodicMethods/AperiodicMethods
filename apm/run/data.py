@@ -38,7 +38,7 @@ def run_measures(data, measures, warnings_action='ignore'):
     return results
 
 
-def run_group_measures(group_data, measures):
+def run_group_measures(group_data, measures, warnings_action='ignore'):
     """Compute multiple measures on empirical recordings - 3D array input.
 
     Parameters
@@ -54,9 +54,9 @@ def run_group_measures(group_data, measures):
     n_subjs, n_chs, n_timepoints = group_data.shape
     group_results = {func.__name__ : np.zeros([n_subjs, n_chs]) for func in measures.keys()}
 
-    for sub_ind in range(n_subjs):
-        subj_measures = run_measures(np.squeeze(group_data[sub_ind, :, :]), measures)
+    for ind in range(n_subjs):
+        subj_measures = run_measures(np.squeeze(group_data[ind, :, :]), measures, warnings_action)
         for label in subj_measures:
-            group_results[label][sub_ind, :] = subj_measures[label]
+            group_results[label][ind, :] = subj_measures[label]
 
     return group_results

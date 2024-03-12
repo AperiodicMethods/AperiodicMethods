@@ -152,7 +152,7 @@ def _proxy(sim_params, sim_func=None, measure_func=None, measure_params=None):
 
 
 def run_comparisons(sim_func, sim_params, measures, n_sims=None,
-                    return_params=False, verbose=False):
+                    return_params=False, verbose=False, warnings_action='ignore'):
     """Compute multiple measures of interest across the same set of simulations.
 
     Parameters
@@ -172,6 +172,8 @@ def run_comparisons(sim_func, sim_params, measures, n_sims=None,
     verbose : bool, optional, default: False
         Whether to print out simulation parameters.
         Used for checking simulations / debugging.
+    warnings_action : {'ignore', 'error', 'always', 'default', 'module, 'once'}
+        Filter action for warnings.
 
     Returns
     -------
@@ -190,16 +192,20 @@ def run_comparisons(sim_func, sim_params, measures, n_sims=None,
     if return_params:
         all_sim_params = [None] * n_sims
 
-    for s_ind, (sig, sample_params) in enumerate(sig_sampler(sim_func, sim_params, True, n_sims)):
+    with warnings.catch_warnings():
+        warnings.simplefilter(warnings_action)
 
-        if verbose:
-            print(sample_params)
+        for s_ind, (sig, sample_params) in \
+            enumerate(sig_sampler(sim_func, sim_params, True, n_sims)):
 
-        if return_params:
-            all_sim_params[s_ind] = unpack_param_dict(sample_params)
+            if verbose:
+                print(sample_params)
 
-        for measure, params in measures.items():
-            results[measure.__name__][s_ind] = measure(sig, **params)
+            if return_params:
+                all_sim_params[s_ind] = unpack_param_dict(sample_params)
+
+            for measure, params in measures.items():
+                results[measure.__name__][s_ind] = measure(sig, **params)
 
     if return_params:
         all_sim_params = pd.DataFrame(all_sim_params)

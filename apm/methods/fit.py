@@ -111,7 +111,7 @@ class SpectralFits():
 
         for ii, ki in enumerate(self.labels):
             for ij, kj in enumerate(self.labels):
-                stat, p_val = ranksums(self.errors[ki], self.errors[kj])
+                stat, p_val = ranksums(self.errors[ki], self.errors[kj], nan_policy='omit')
                 comps[ii, ij] = p_val
 
         return comps
