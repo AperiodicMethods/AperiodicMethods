@@ -1,9 +1,11 @@
 """Simulation definitions."""
 
+from copy import deepcopy
+
 import numpy as np
 
 from apm.sim.update import create_updater, create_sampler
-from apm.sim.settings import N_SIMS, N_SIMS2, N_SAMPLES, N_SECONDS, FS
+from apm.sim.settings import N_SAMPLES, N_SECONDS, FS
 from apm.sim.settings import EXP, EXP1, EXP2, KNEE, F_RANGE, FREQ, BW, HEIGHT, COMP_VARS
 from apm.sim.settings import EXPS, TSCALES, KNEES, FREQS, POWERS, CVARS, BWS, BPROBS
 from apm.sim.objs import SimParams, SimIters, SimSamplers
@@ -158,20 +160,67 @@ ITER_DEFS = [
 ###################################################################################################
 ## Collect group definition of simulation parameter samplers
 
+SAMPLER_VALS = {
+    'exp' : np.round(np.arange(-2.5, 0.1, 0.1), 1)
+}
+
 SAMPLER_DEFS = [
+
+    {
+        'name' : 'exp_sampler',
+        'label' : 'ap',
+        'samplers' : {
+            create_updater('exponent') : create_sampler(deepcopy(SAMPLER_VALS['exp'])),
+        },
+    },
+
+    {
+        'name' : 'tscale_sampler',
+        'label' : 'syn',
+        'samplers' : {
+            create_updater('tau_d') : create_sampler(np.round(np.arange(0.005, 0.075, 0.010), 3)),
+        },
+    },
+
+    {
+        'name' : 'knee_sampler',
+        'label' : 'knee',
+        'samplers' : {
+            create_updater('knee') : \
+                create_sampler([10, 25, 100, 200, 400, 700, 900, 1200, 1600, 2500]),
+            create_updater('exponent2') : \
+                create_sampler(np.round(np.arange(-2.5, -1.0, 0.25), 1)),
+        },
+    },
+
     {
         'name' : 'comb_sampler',
         'label' : 'comb',
         'samplers' : {
             create_updater('exponent', 'sim_powerlaw') : \
-                create_sampler(np.round(np.arange(-2.5, 0.1, 0.1), 1)),
+                create_sampler(deepcopy(SAMPLER_VALS['exp'])),
             create_updater('component_variances') : \
                 create_sampler([[1, val] for val in np.round(np.arange(0, 1.1, 0.1), 1)],
                                probs = [0.30] + ([0.07] * 10)),
-            create_updater('freq', 'sim_oscillation') : \
-                create_sampler(np.arange(5, 36, 1)),
+            create_updater('freq', 'sim_oscillation') : create_sampler(np.arange(5, 36, 1)),
         },
     },
+
+    {
+        'name' : 'peak_sampler',
+        'label' : 'peak',
+        'samplers' : {
+            create_updater('exponent', 'sim_powerlaw') : \
+                create_sampler(deepcopy(SAMPLER_VALS['exp'])),
+            create_updater('freq', 'sim_peak_oscillation') : \
+                create_sampler(np.arange(8, 30, 1)),
+            create_updater('height', 'sim_peak_oscillation') : \
+                create_sampler(np.round(np.arange(1.0, 2.25, 0.25), 2)),
+            create_updater('bw', 'sim_peak_oscillation') : \
+                create_sampler(np.round(np.arange(1.0, 4.5, 0.5), 1)),
+        },
+    },
+
 ]
 
 ###################################################################################################
