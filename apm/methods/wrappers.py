@@ -11,6 +11,7 @@ from neurokit2.complexity import (fractal_correlation, fractal_sevcik, complexit
 
 from fooof import FOOOF
 from fooof.core.funcs import expo_function
+from fooof.core.errors import NoModelError
 
 from neurodsp.spectral import compute_spectrum
 from neurodsp.aperiodic.dfa import compute_fluctuations
@@ -183,7 +184,11 @@ def irasa(sig, fit_func='fit_irasa_exp', flip_sign=True, **kwargs):
     """
 
     freqs, psd_ap, psd_pe = compute_irasa(sig, **kwargs)
-    exponent = IRASA_FIT_FUNCS[fit_func](freqs, psd_ap)
+
+    try:
+        exponent = IRASA_FIT_FUNCS[fit_func](freqs, psd_ap)
+    except RuntimeError:
+        exponent = np.nan
 
     if flip_sign:
         exponent = -1 * exponent
@@ -200,5 +205,12 @@ def specparam(sig, **kwargs):
         fm = kwargs.pop('fm')
     else:
         fm = FOOOF(**kwargs, verbose=False)
+
     fm.fit(freqs, powers)
-    return fm.get_params('aperiodic', 'exponent')
+
+    try:
+        exponent = fm.get_params('aperiodic', 'exponent')
+    except NoModelError:
+        exponent = np.nan
+
+    return exponent
