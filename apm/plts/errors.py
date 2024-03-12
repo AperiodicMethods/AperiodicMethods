@@ -1,6 +1,5 @@
 """Plots for the distributions of errors across methods."""
 
-import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt

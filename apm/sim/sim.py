@@ -1,7 +1,5 @@
 """Additional simulation functions & helpers."""
 
-from copy import deepcopy
-
 import numpy as np
 
 from apm.sim.utils import counter

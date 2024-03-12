@@ -9,7 +9,7 @@ def abs_err(measured_value, true_value):
     return abs(measured_value - true_value)
 
 
-def sqd_err(val, true_value):
+def sqd_err(measured_value, true_value):
     """Squared error of fit."""
 
     return (measured_value - true_value) ** 2

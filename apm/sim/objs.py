@@ -489,7 +489,8 @@ class SimSamplers(SimParams):
             Generator object for sampling simulation parameters.
         """
 
-        return param_sampler(super().__getitem__(label), samplers, self.n_samples)
+        return param_sampler(super().__getitem__(label), samplers,
+                             n_samples if n_samples else self.n_samples)
 
 
     def register_sampler(self, name, label, samplers):

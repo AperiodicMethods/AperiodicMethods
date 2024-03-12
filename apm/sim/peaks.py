@@ -52,7 +52,7 @@ def gen_peak_def(n_peaks=None):
 
         # Generate peak definitions
         peaks = []
-        for peak in range(n_peaks_sim):
+        for ind in range(n_peaks_sim):
 
             cur_cf = np.random.choice(CF_OPTS, p=CF_PROBS)
 

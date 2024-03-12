@@ -43,4 +43,4 @@ def plot_corr_matrix(corrs, **plt_kwargs):
 def plot_topo(data, info, size=2, **plt_kwargs):
     """Helper function for plotting topographies."""
 
-    plot_topomap(data, info, cmap=cm.viridis, contours=0, size=2, show=False, **plt_kwargs)
+    plot_topomap(data, info, cmap=cm.viridis, contours=0, size=size, show=False, **plt_kwargs)

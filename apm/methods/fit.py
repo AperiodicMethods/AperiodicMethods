@@ -54,7 +54,7 @@ class SpectralFits():
 
         out = SpectralFits()
 
-        for key, vals in other.errors.items():
+        for key in other.errors.keys():
             out.errors[key] = np.append(self.errors[key], other.errors[key])
 
         return out

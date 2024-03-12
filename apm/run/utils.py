@@ -22,6 +22,6 @@ def set_measure_settings(measures, setting, value):
     """
 
     for func, settings in measures.items():
-        for key, val in settings.items():
+        for key in settings.keys():
             if key == setting:
                 measures[func][key] = value

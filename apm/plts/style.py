@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 ###################################################################################################
 
 def custom_psd_style_no_grid(ax, **kwargs):
+    """Custom styling for a power spectrum plot - no grid."""
 
     ax.set_xticks([], minor=True)
     ax.set_yticks([], minor=True)
@@ -16,6 +17,7 @@ def custom_psd_style_no_grid(ax, **kwargs):
     plt.tight_layout()
 
 def custom_psd_style_no_ticks(ax, **kwargs):
+    """Custom styling for a power spectrum plot - no ticks."""
 
     ax.set_xticklabels([])
     ax.set_yticklabels([])

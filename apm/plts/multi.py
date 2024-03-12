@@ -3,7 +3,6 @@
 import warnings
 
 import numpy as np
-from matplotlib import cm
 
 from neurodsp.plts.utils import savefig
 

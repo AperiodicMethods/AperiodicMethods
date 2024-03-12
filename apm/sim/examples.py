@@ -2,8 +2,7 @@
 
 from neurodsp.utils import create_times
 from neurodsp.sim import (sim_powerlaw, sim_synaptic_current, sim_knee,
-                          sim_oscillation, sim_bursty_oscillation,
-                          sim_combined, sim_peak_oscillation)
+                          sim_oscillation, sim_bursty_oscillation, sim_combined)
 from neurodsp.utils import set_random_seed
 
 from apm.sim.objs import SimParams

@@ -16,7 +16,7 @@ from apm.methods.settings import ALPHA_RANGE
 ###################################################################################################
 ###################################################################################################
 
-def alpha_power(sig, log=True, **kwargs):
+def compute_alpha_power(sig, log=True, **kwargs):
     """Wrapper function for applying specparam and extracting alpha power."""
 
     freqs, powers = compute_spectrum(sig, kwargs.pop('fs'), f_range=kwargs.pop('f_range', None))
@@ -36,8 +36,7 @@ def alpha_power(sig, log=True, **kwargs):
 def get_fm_peak_power(fm, peak_range, log=True):
     """Helper function for getting peak power from spectral model."""
 
-    peak_freqs, peak_powers = trim_spectrum(\
-        fm.freqs, fm.get_data('peak', 'linear'), peak_range)
+    peak_freqs, peak_powers = trim_spectrum(fm.freqs, fm.get_data('peak', 'linear'), peak_range)
 
     peak_power = np.max(peak_powers)
 

@@ -159,7 +159,7 @@ def fit_irasa_knee(freqs, psd_ap):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         popt, _ = curve_fit(expo_function, freqs, np.log10(psd_ap),
-                            p0=(0, 0, 0), maxfev=5000)
+                            p0=(0, 0, 0), bounds=(lower_bounds, upper_bounds), maxfev=5000)
     offset, knee, exp = popt
 
     return offset, knee, -exp
