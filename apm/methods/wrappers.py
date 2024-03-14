@@ -152,14 +152,10 @@ def fit_irasa_exp(freqs, psd_ap):
 def fit_irasa_knee(freqs, psd_ap):
     """IRASA fit function - fit knee model."""
 
-    # Force non-negative parameters
-    lower_bounds = (0, 0, 0)
-    upper_bounds = (np.inf, np.inf, np.inf)
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         popt, _ = curve_fit(expo_function, freqs, np.log10(psd_ap),
-                            p0=(0, 0, 0), bounds=(lower_bounds, upper_bounds), maxfev=5000)
+                            p0=(0, 0, 0), maxfev=5000)
     offset, knee, exp = popt
 
     return offset, knee, -exp
@@ -180,7 +176,7 @@ IRASA_FIT_FUNCS = {
 def irasa(sig, fit_func='fit_irasa_exp', flip_sign=True, **kwargs):
     """Wrapper function for fitting IRASA and returning fit exponent.
 
-    Note: output value is sign-flipped, to match specparam format.
+    Note: output value is sign-flipped by default, to match specparam format.
     """
 
     freqs, psd_ap, psd_pe = compute_irasa(sig, **kwargs)

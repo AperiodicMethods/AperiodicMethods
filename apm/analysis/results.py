@@ -25,7 +25,14 @@ def compute_avgs(results, avg_func=np.nanmean):
     return {measure : avg_func(results[measure], 0) for measure in results.keys()}
 
 
-def cohens_d(d1, d2):
+def cohens_d(d1, d2, nan_policy='omit'):
     """Compute Cohen's D effect size measure between two sets of results."""
 
-    return (mean(d1) - mean(d2)) / (sqrt((stdev(d1) ** 2 + stdev(d2) ** 2) / 2))
+    if nan_policy == 'omit':
+        mask = np.logical_and(~np.isnan(d1), ~np.isnan(d2))
+        d1 = d1[mask]
+        d2 = d2[mask]
+
+    d_val = (mean(d1) - mean(d2)) / (sqrt((stdev(d1) ** 2 + stdev(d2) ** 2) / 2))
+
+    return d_val
