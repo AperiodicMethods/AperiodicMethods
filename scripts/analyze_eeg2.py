@@ -14,6 +14,7 @@ from apm.io import APMDB, save_pickle
 from apm.analysis import (compute_avgs, compute_all_corrs,
                           compute_corrs_to_feature, compute_diffs_to_feature)
 from apm.run import run_group_measures
+from apm.run.utils import set_measure_settings
 from apm.methods import irasa
 from apm.methods.settings import ALPHA_RANGE
 from apm.methods.periodic import get_fm_peak_power

@@ -15,6 +15,7 @@ sys.path.append(str(Path('..').resolve()))
 from apm.io.data import load_ieeg_all
 from apm.io import APMDB, get_files, save_pickle
 from apm.run import run_measures
+from apm.run.utils import set_measure_settings
 from apm.methods import fit_irasa_exp, fit_irasa_knee
 from apm.analysis import compute_all_corrs
 
