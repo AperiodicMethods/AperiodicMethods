@@ -1,11 +1,15 @@
 """Utilities for plots."""
 
+from functools import partial
+
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 from neurodsp.plts.utils import savefig
+
+from apm.plts.settings import EXT
 
 ###################################################################################################
 ###################################################################################################
@@ -92,6 +96,24 @@ def plot_colorbar(cmap, vmin, vmax, label, figsize=(2, 6), orientation='vertical
     fig.subplots_adjust(right=0.45)
 
     plt.tight_layout()
+
+
+def figsave_kwargs(file_name, file_path, save_fig):
+    """Helper function to organizing save-related figure kwargs."""
+
+    save_kwargs = {
+        'file_name' : file_name + EXT,
+        'file_path' : file_path,
+        'save_fig' : save_fig,
+    }
+
+    return save_kwargs
+
+
+def figsaver(save_fig, file_path):
+    """Helper function for partializing `figsave_kwargs` to only take file name."""
+
+    return partial(figsave_kwargs, file_path=file_path, save_fig=save_fig)
 
 
 # NOTE: ADD TO NDSP?
