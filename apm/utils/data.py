@@ -20,3 +20,12 @@ def exclude_spectrum(freqs, spectrum, exclude, make_2D=True):
         spectrum_out = _check1D(spectrum[f_mask])
 
     return freqs_out, spectrum_out
+
+
+def min_n_max(array, absolute=True):
+    """Get the min and max value of an array"""
+
+    if absolute:
+        array = np.abs(array)
+
+    return min(array), max(array)

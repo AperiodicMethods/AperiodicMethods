@@ -98,7 +98,7 @@ def plot_colorbar(cmap, vmin, vmax, label, figsize=(2, 6), orientation='vertical
     plt.tight_layout()
 
 
-def figsave_kwargs(file_name, file_path, save_fig):
+def figsave_kwargs(file_name, file_path, save_fig, directory=False):
     """Helper function to organizing save-related figure kwargs."""
 
     save_kwargs = {
@@ -107,13 +107,16 @@ def figsave_kwargs(file_name, file_path, save_fig):
         'save_fig' : save_fig,
     }
 
+    if directory:
+        save_kwargs['directory'] = save_kwargs.pop('file_path')
+
     return save_kwargs
 
 
-def figsaver(save_fig, file_path):
+def figsaver(save_fig, file_path, directory=False):
     """Helper function for partializing `figsave_kwargs` to only take file name."""
 
-    return partial(figsave_kwargs, file_path=file_path, save_fig=save_fig)
+    return partial(figsave_kwargs, file_path=file_path, save_fig=save_fig, directory=directory)
 
 
 # NOTE: ADD TO NDSP?
