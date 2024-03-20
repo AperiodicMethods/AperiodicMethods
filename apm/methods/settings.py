@@ -39,6 +39,9 @@ DFA_PARAMS = {
     'deg' : 1,
 }
 
+# Multiscale DFA settings
+MDFA_PARAMS = {}
+
 ## FRACTAL MEASURES
 
 # Correlation dimension

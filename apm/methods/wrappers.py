@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 
 from antropy import hjorth_params, lziv_complexity
 from neurokit2.complexity import (fractal_correlation, fractal_sevcik, complexity_lyapunov,
-                                  complexity_wpe, entropy_multiscale)
+                                  complexity_wpe, complexity_mfdfa, entropy_multiscale)
 
 from fooof import FOOOF
 from fooof.core.funcs import expo_function
@@ -56,6 +56,14 @@ def dfa(sig, **kwargs):
     """Wrapper function for computing DFA."""
 
     return compute_fluctuations(sig, method='dfa', **kwargs)[2]
+
+
+def multi_dfa(sig, return_val='Width', **kwargs):
+    """Wrapper function for computing multiscale / multifractal DFA."""
+
+    mfdfa, info = complexity_mfdfa(sig, **kwargs)
+
+    return mfdfa[return_val].values[0]
 
 
 ## COMPLEXITY MEASURES
