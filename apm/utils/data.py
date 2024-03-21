@@ -29,3 +29,20 @@ def min_n_max(array, absolute=True):
         array = np.abs(array)
 
     return min(array), max(array)
+
+
+def select_vals(select, *arrays):
+    """Select specified values from a set of arrays.
+
+    Parameters
+    ----------
+    select : 1d array of bool
+        Mask to select from arrays.
+    *arrays
+        Arrays to select from.
+    """
+
+    if select is not None:
+        arrays = [arr[select] for arr in arrays]
+
+    return arrays

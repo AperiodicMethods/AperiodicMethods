@@ -7,6 +7,8 @@ from sklearn import linear_model
 
 from bootstrap import bootstrap_corr, bootstrap_diff
 
+from apm.utils.data import select_vals
+
 ###################################################################################################
 ###################################################################################################
 
@@ -39,10 +41,7 @@ def compute_all_corrs(results, select=None, corr_func=bootstrap_corr):
         if m1 == m2 or all_corrs.get(m2).get(m1) is not None:
             continue
 
-        if select is not None:
-            d1, d2 = results[m1][select], results[m2][select]
-        else:
-            d1, d2 = results[m1], results[m2]
+        d1, d2 = select_vals(select, results[m1], results[m2])
 
         corrs = corr_func(d1, d2)
         all_corrs[m1][m2] = corrs
@@ -51,7 +50,7 @@ def compute_all_corrs(results, select=None, corr_func=bootstrap_corr):
     return all_corrs
 
 
-def compute_corrs_to_feature(results, feature, corr_func=bootstrap_corr):
+def compute_corrs_to_feature(results, feature, select=None, corr_func=bootstrap_corr):
     """Compute correlations between a set of measures and a given feature.
 
     Parameters
@@ -63,6 +62,8 @@ def compute_corrs_to_feature(results, feature, corr_func=bootstrap_corr):
     feature : 1d array
         Vector of values to computer correlations to.
         Should have the same length as each entry in `results`.
+    select : 1d array of bool, optional
+        A set of results to select for each measure to compute the correlation from.
 
     Returns
     -------
@@ -77,12 +78,14 @@ def compute_corrs_to_feature(results, feature, corr_func=bootstrap_corr):
     all_corrs = {method : None for method in methods}
 
     for method in methods:
-        all_corrs[method] = corr_func(results[method], feature)
+
+        result, feat = select_vals(select, results[method], feature)
+        all_corrs[method] = corr_func(result, feat)
 
     return all_corrs
 
 
-def compute_diffs_to_feature(results, feature, diff_func=bootstrap_diff):
+def compute_diffs_to_feature(results, feature, select=None, diff_func=bootstrap_diff):
     """Compute differences between correlations of a set of measures to a given feature.
 
     Parameters
@@ -94,6 +97,8 @@ def compute_diffs_to_feature(results, feature, diff_func=bootstrap_diff):
     feature : 1d array
         Vector of values to computer correlations to.
         Should have the same length as each entry in `results`.
+    select : 1d array of bool, optional
+        A set of results to select for each measure to compute the correlation from.
 
     Results
     -------
@@ -112,7 +117,9 @@ def compute_diffs_to_feature(results, feature, diff_func=bootstrap_diff):
         if m1 == m2 or all_diffs.get(m2).get(m1) is not None:
             continue
 
-        diffs = diff_func(feature, results[m1], results[m2])
+        feature, result1, result2 = select_vals(select, feature, results[m1], results[m2])
+
+        diffs = diff_func(feature, result1, result2)
         all_diffs[m1][m2] = diffs
         all_diffs[m2][m1] = diffs
 
