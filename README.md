@@ -45,6 +45,7 @@ In addition, this project requires the following dependencies:
 - [lisc](https://github.com/lisc-tools/lisc) >= 0.3, used for the literature search
 - [antropy](https://github.com/raphaelvallat/antropy), used for entropy and complexity measures
 - [neurokit2](https://github.com/neuropsychology/NeuroKit), used for some additional complexity measures
+- [bootstrap](https://github.com/TomDonoghue/bootstrap) >= 0.2.0, used for bootstrapping correlation measures
 
 The full set of requirements is listed in the `requirements.txt` file.
 
