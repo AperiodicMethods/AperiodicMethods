@@ -69,15 +69,15 @@ LABELS = {
 
     # Fractal Dimension Measures
     'correlation_dimension' : 'Correlation Dimension',
-    'higuchi_fd' : 'Higuchi Fractal Dimension',
-    'katz_fd' : 'Katz Fractal Dimension',
-    'petrosian_fd' : 'Petrosian Fractal Dimension',
+    'higuchi_fd' : 'Higuchi FD',
+    'katz_fd' : 'Katz FD',
+    'petrosian_fd' : 'Petrosian FD',
 
     # Complexity Measures
     'hjorth_activity' : 'Hjorth Activity',
     'hjorth_mobility' : 'Hjorth Mobility',
     'hjorth_complexity' : 'Hjorth Complexity',
-    'lempelziv' : 'Lempel Ziv Complexity',
+    'lempelziv' : 'Lempel-Ziv',
     'lyapunov' : 'Lyapunov Exponent',
 
     # Entropy measures
