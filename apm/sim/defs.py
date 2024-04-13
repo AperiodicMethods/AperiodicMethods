@@ -178,7 +178,8 @@ SAMPLER_DEFS = [
         'name' : 'tscale_sampler',
         'label' : 'syn',
         'samplers' : {
-            create_updater('tau_d') : create_sampler(np.round(np.arange(0.005, 0.075, 0.010), 3)),
+            create_updater('tau_d') : \
+                create_sampler(np.round(np.array([0.005, 0.015, 0.030, 0.050, 0.075]), 3)),
         },
     },
 
@@ -217,7 +218,7 @@ SAMPLER_DEFS = [
             create_updater('height', 'sim_peak_oscillation') : \
                 create_sampler(np.round(np.arange(1.0, 2.25, 0.25), 2)),
             create_updater('bw', 'sim_peak_oscillation') : \
-                create_sampler(np.round(np.arange(1.0, 4.5, 0.5), 1)),
+                create_sampler(np.round(np.arange(1.0, 5.5, 0.5), 1)),
         },
     },
 
