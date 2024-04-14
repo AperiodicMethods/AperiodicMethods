@@ -5,8 +5,8 @@ import warnings
 import numpy as np
 
 from neurodsp.plts.utils import savefig
+from neurodsp.plts.utils import make_axes
 
-from apm.plts.utils import make_axes
 from apm.plts.results import plot_topo
 from apm.plts.base import plot_dots
 from apm.plts.settings import LABELS
