@@ -9,9 +9,10 @@ import numpy as np
 import pandas as pd
 from tqdm.notebook import tqdm
 
+from neurodsp.sim.multi import sig_yielder, sig_sampler
+
 from apm.io import load_pickle
-from apm.sim.sim import sig_yielder, sig_sampler
-from apm.sim.utils import unpack_param_dict
+from apm.run.utils import unpack_param_dict
 
 ###################################################################################################
 ###################################################################################################

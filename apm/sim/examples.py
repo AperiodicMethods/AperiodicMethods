@@ -4,9 +4,9 @@ from neurodsp.utils import create_times
 from neurodsp.sim import (sim_powerlaw, sim_synaptic_current, sim_knee,
                           sim_oscillation, sim_bursty_oscillation, sim_combined)
 from neurodsp.utils import set_random_seed
+from neurodsp.sim.combined import sim_combined_peak
+from neurodsp.sim.params import SimParams
 
-from apm.sim.objs import SimParams
-from apm.sim.funcs import sim_combined_peak
 from apm.sim.defs import SIM_DEFS
 from apm.sim.settings import N_SECONDS, FS
 

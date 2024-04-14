@@ -4,11 +4,12 @@ from copy import deepcopy
 
 import numpy as np
 
-from apm.sim.update import create_updater, create_sampler
+from neurodsp.sim.update import create_updater, create_sampler
+from neurodsp.sim.params import SimParams, SimIters, SimSamplers
+
 from apm.sim.settings import N_SAMPLES, N_SECONDS, FS
 from apm.sim.settings import EXP, EXP1, EXP2, KNEE, F_RANGE, FREQ, BW, HEIGHT, COMP_VARS
 from apm.sim.settings import EXPS, TSCALES, KNEES, FREQS, POWERS, CVARS, BWS, BPROBS
-from apm.sim.objs import SimParams, SimIters, SimSamplers
 
 ###################################################################################################
 ## Define parameters per simulation function
