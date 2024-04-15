@@ -15,11 +15,8 @@ from fooof.core.errors import NoModelError
 
 from neurodsp.spectral import compute_spectrum
 from neurodsp.aperiodic.dfa import compute_fluctuations
-from neurodsp.aperiodic.autocorr import compute_autocorr
 from neurodsp.aperiodic.irasa import compute_irasa, fit_irasa
-
-# Import local autocorrelation functions
-from apm.methods.ac import compute_decay_time, fit_acf
+from neurodsp.aperiodic.autocorr import compute_autocorr, compute_decay_time, fit_autocorr
 
 ###################################################################################################
 ###################################################################################################
@@ -41,7 +38,7 @@ def autocorr_decay_time(sig, fs, level=0, **kwargs):
 def autocorr_timescale(sig, fs, **kwargs):
     """Wrapper function for computing autocorrelation and timescale together."""
 
-    return fit_acf(*compute_autocorr(sig, **kwargs), fs)[0]
+    return fit_autocorr(*compute_autocorr(sig, **kwargs), fs)[0]
 
 
 ## FLUCTUATION MEASURES
