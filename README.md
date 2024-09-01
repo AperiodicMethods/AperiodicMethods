@@ -40,9 +40,9 @@ This project was written in Python 3 and requires Python >= 3.7 to run.
 This project requires external dependencies, including standard scientific packages.
 
 In addition, this project requires the following dependencies:
-- [neurodsp](https://github.com/neurodsp-tools/neurodsp) >= 2.3, used for simulating time series and applying methods
+- [neurodsp](https://github.com/neurodsp-tools/neurodsp) >= 2.4.0, used for simulating time series and applying methods
 - [fooof](https://github.com/fooof-tools/fooof) == 1.1, used for simulating power spectra and applying spectral fits
-- [lisc](https://github.com/lisc-tools/lisc) >= 0.3, used for the literature search
+- [lisc](https://github.com/lisc-tools/lisc) >= 0.4.0, used for the literature search
 - [antropy](https://github.com/raphaelvallat/antropy), used for entropy and complexity measures
 - [neurokit2](https://github.com/neuropsychology/NeuroKit), used for some additional complexity measures
 - [bootstrap](https://github.com/TomDonoghue/bootstrap) >= 0.2.0, used for bootstrapping correlation measures
