@@ -10,6 +10,6 @@ mne
 antropy
 neurokit2
 fooof == 1.1.0
-neurodsp >= 2.3.0
-lisc >= 0.3.0
+neurodsp >= 2.4.0
+lisc >= 0.4.0
 bootstrap @ git+https://github.com/TomDonoghue/bootstrap@main
