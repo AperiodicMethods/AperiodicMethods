@@ -1,5 +1,8 @@
 """Analysis script for analyzing the demo EEG dataset."""
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 from pathlib import Path
 
 import numpy as np
