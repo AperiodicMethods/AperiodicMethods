@@ -3,10 +3,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from neurodsp.plts.utils import savefig
+from neurodsp.plts.utils import make_axes, savefig
 
 from apm.plts.base import plot_lines
-from apm.plts.utils import make_axes
 from apm.plts.settings import COLORS
 from apm.sim.settings import EXPS, FREQS, POWERS
 

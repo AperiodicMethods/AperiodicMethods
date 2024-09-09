@@ -9,9 +9,10 @@ import numpy as np
 import pandas as pd
 from tqdm.notebook import tqdm
 
+from neurodsp.sim.io import load_sims
 from neurodsp.sim.multi import sig_yielder, sig_sampler
 
-from apm.io import load_pickle
+from apm.io.db import APMDB
 from apm.run.utils import unpack_param_dict
 
 ###################################################################################################
@@ -79,13 +80,16 @@ def run_sims_load(sims_file, measure_func, measure_params, n_sims=None,
     replacing `sims_files` for sim_func, sim_params.
     """
 
-    sigs = load_pickle(sims_file, None)
-    values = list(sigs.keys())
+    # Load saved out simulations file and collect info of interest
+    sigs = load_sims(sims_file, APMDB().sims_path / 'time_series')
+    values = sigs.values
+    n_sets = len(sigs)
     n_params = len(values)
 
     if n_sims:
-        sigs = {val : sigs[val][:n_sims, :] for val in values}
-    n_sims = sigs[values[0]].shape[0]
+        for el in range(n_sets):
+            sigs[el].signals = sigs[el].signals[:n_sims, :]
+    n_sims = len(sigs[0])
 
     results = np.zeros([n_params, n_sims, outsize]) if outsize > 1 \
         else np.zeros([n_params, n_sims])
@@ -95,7 +99,7 @@ def run_sims_load(sims_file, measure_func, measure_params, n_sims=None,
 
         for sp_ind, value in enumerate(values):
 
-            for s_ind, sig in enumerate(sigs[value]):
+            for s_ind, sig in enumerate(sigs[sp_ind]):
                 results[sp_ind, s_ind] = measure_func(sig, **measure_params)
 
     return results

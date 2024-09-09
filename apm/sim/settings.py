@@ -42,11 +42,11 @@ COMP_VARS = [1, 0.5]
 
 # Aperiodic parameters - ranges
 EXPS = np.round(np.arange(-3, 0.5, 0.5), 1)
-TSCALES = np.round(np.array([0.005, 0.015, 0.030, 0.050, 0.075]))
-KNEES = np.array([25, 100, 400, 900, 1600])
+TSCALES = np.round(np.array([0.005, 0.015, 0.030, 0.050, 0.075]), 3)
+KNEES = np.array([25., 100., 400., 900., 1600.])
 
 # Periodic parameter - ranges
-FREQS = np.arange(5, 36, 1)
+FREQS = np.arange(5., 36, 1)
 POWERS = np.round(np.arange(0, 2.1, 0.1), 1)
 CVARS = [[1, val] for val in POWERS]
 BWS = np.round(np.arange(0.5, 3.5, 0.5), 1)
