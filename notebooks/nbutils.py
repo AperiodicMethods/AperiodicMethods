@@ -9,7 +9,7 @@ import seaborn as sns
 ###################################################################################################
 ###################################################################################################
 
-def setup_notebook():
+def setup_notebook(set_plt_context=True):
     """Setup notebook state."""
 
     # Add the local path up one directory to allow for importing local code
@@ -19,4 +19,5 @@ def setup_notebook():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     
     # Set the plot context
-    sns.set_context('talk')
+    if set_plt_context:
+        sns.set_context('talk')
