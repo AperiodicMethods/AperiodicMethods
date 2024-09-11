@@ -28,3 +28,11 @@ def custom_psd_style_no_ticks(ax, **kwargs):
     for tick in ax.yaxis.get_major_ticks():
         tick.tick1line.set_visible(False)
         tick.tick2line.set_visible(False)
+
+    if 'legend_loc' in kwargs:
+        ax.legend(prop={'size': 20}, loc=kwargs['legend_loc'])
+
+    ax.set_xlabel(ax.get_xlabel(), fontsize=24)
+    ax.set_ylabel(ax.get_ylabel(), fontsize=24)
+
+    plt.tight_layout()
