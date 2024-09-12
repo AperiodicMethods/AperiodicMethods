@@ -15,8 +15,18 @@ from apm.plts.settings import LABELS
 ###################################################################################################
 
 @savefig
-def plot_results_rows(results, rows, columns, **plt_kwargs):
-    """Plot result comparisons, organized by rows and columns."""
+def plot_results_rows(results, rows, columns, tposition='tr', **plt_kwargs):
+    """Plot result comparisons, organized by rows and columns.
+
+    Parameters
+    ----------
+    results : Dict
+        Results, organized as {label : array_of_results}.
+    rows, columns : list of str
+        Which results to plot across the rows and columns.
+    tposition : str or array, optional
+        Position to place text, to report the correlation results.
+    """
 
     n_rows, n_cols = len(rows), len(columns)
     axes = make_axes(n_rows, n_cols,
@@ -27,22 +37,25 @@ def plot_results_rows(results, rows, columns, **plt_kwargs):
 
     for ri, row in enumerate(rows):
         for ci, col in enumerate(columns):
+            tpos = tposition[ri, ci] if isinstance(tposition, np.ndarray) else tposition
             plot_dots(results[row], results[col],
                       xlabel=LABELS[row], ylabel=LABELS[col],
-                      **plt_kwargs, ax=axes[ri, ci])
+                      tposition=tpos, **plt_kwargs, ax=axes[ri, ci])
 
 
 @savefig
-def plot_results_all(results, labels=None, **plt_kwargs):
+def plot_results_all(results, labels=None, tposition='tr', **plt_kwargs):
     """Plot multi-axis figure comparing all measures to each other.
 
     Parameters
     ----------
     results : dict
-        Results.
+        Results, organized as {label : array_of_results}..
     labels : list of str, optional
         Set of measures in results to plot.
         If not provided, plots all measures in results.
+    tposition : str or array, optional
+        Position to place text, to report the correlation results.
     """
 
     if not labels:
@@ -57,28 +70,29 @@ def plot_results_all(results, labels=None, **plt_kwargs):
                      wspace=plt_kwargs.pop('wspace', 0.2),
                      hspace=plt_kwargs.pop('hspace', 0.2))
 
-    for ax_r, l1 in enumerate(labels[1:]):
-        for ax_c, l2 in enumerate(labels[:-1]):
+    for ri, row in enumerate(labels[1:]):
+        for ci, col in enumerate(labels[:-1]):
 
-            if ax_r < ax_c:
-                axes[ax_r, ax_c].axis('off')
+            if ri < ci:
+                axes[ri, ci].axis('off')
                 continue
 
             with warnings.catch_warnings():
                 warnings.simplefilter('ignore')
 
                 ax_kwargs = {}
-                if ax_r != (n_measures) - 1:
+                if ri != (n_measures) - 1:
                     ax_kwargs['xticks'] = []
                 else:
-                    ax_kwargs['xlabel'] = LABELS[l2]
-                if ax_c != 0:
+                    ax_kwargs['xlabel'] = LABELS[col]
+                if ci != 0:
                     ax_kwargs['yticks'] = []
                 else:
-                    ax_kwargs['ylabel'] = LABELS[l1]
+                    ax_kwargs['ylabel'] = LABELS[row]
 
-                plot_dots(results[l2], results[l1], **ax_kwargs,
-                          **plt_kwargs, ax=axes[ax_r, ax_c])
+                tpos = tposition[ri, ci] if isinstance(tposition, np.ndarray) else tposition
+                plot_dots(results[col], results[row], tposition=tpos,
+                          **ax_kwargs, **plt_kwargs, ax=axes[ri, ci])
 
 
 @savefig

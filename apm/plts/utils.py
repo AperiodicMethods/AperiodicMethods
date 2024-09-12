@@ -58,6 +58,7 @@ def add_text(text, position='tr', xtp=None, ytp=None, ax=None):
     """
 
     if not xtp:
+        assert position in ['tl', 'tr', 'bl', 'br'], 'Position input not understood.'
         if position == 'tl':
             xtp, ytp = 0.050, 0.8755
             ha = 'left'
