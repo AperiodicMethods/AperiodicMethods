@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from matplotlib import cm
 
 from neurodsp.plts.utils import savefig
 
@@ -82,7 +83,7 @@ def formr(r_val):
 
 
 @savefig
-def plot_colorbar(cmap, vmin, vmax, label, figsize=(2, 6), orientation='vertical'):
+def plot_colorbar(label, vmin, vmax, cmap=cm.viridis, orientation='vertical', figsize=(2, 6)):
     """Create a colorbar."""
 
     norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
