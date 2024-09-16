@@ -2,6 +2,7 @@
 
 `AperiodicMethods` project repository: characterizing methods for measuring aperiodic neural activity.
 
+[![Preprint](https://img.shields.io/badge/preprint-10.1101/2024.09.15.613114-informational.svg)](https://doi.org/10.1101/2024.09.15.613114)
 [![Website](https://img.shields.io/badge/site-aperiodicmethods.github.io-informational.svg)](https://aperiodicmethods.github.io)
 
 ## Overview
@@ -31,7 +32,12 @@ You can explore this project by looking through the `notebooks`, and/or explore 
 
 ## Reference
 
-A preprint for this project is upcoming.
+This project is described in the following preprint:
+
+    Donoghue T, Hammonds R, Eric Lybrand, Waschke L, Gao R, & Voytek B. Evaluating and
+    Comparing Measures of Aperiodic Neural Activity. bioRxiv. DOI: 10.1101/2024.09.15.613114
+
+Direct Link: https://doi.org/10.1101/2024.09.15.613114
 
 ## Requirements
 
